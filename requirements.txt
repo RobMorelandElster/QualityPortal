@@ -2,8 +2,16 @@ Django==1.6.5
 argparse==1.2.1
 dj-database-url==0.3.0
 dj-static==0.0.6
+django-allauth==0.17.0
+django-bootstrap3==4.8.2
+django-sendgrid==1.0.1
+django-storages==1.1.8
 django-toolbelt==0.0.1
 gunicorn==19.1.0
+oauthlib==0.6.3
 psycopg2==2.5.3
+python-openid==2.2.5
+requests==2.3.0
+requests-oauthlib==0.4.1
 static3==0.5.1
 wsgiref==0.1.2
