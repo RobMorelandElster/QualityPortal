@@ -1,0 +1,113 @@
+
+.form-signin {
+  max-width: 330px;
+  padding: 15px;
+  margin: 0 auto;
+}
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+  margin-bottom: 10px;
+}
+.form-signin .checkbox {
+  font-weight: normal;
+}
+.form-signin .form-control {
+  position: relative;
+  height: auto;
+  -webkit-box-sizing: border-box;
+	 -moz-box-sizing: border-box;
+		  box-sizing: border-box;
+  padding: 10px;
+  font-size: 16px;
+}
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+
+input[type='password'],
+input[type='text'],
+input[type='email'] {
+  width: 86%;
+  border-radius:4px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  padding: 2px 4px;
+  margin: 6px;
+}
+
+.fb {
+  background: url('{{STATIC_URL}}img/fb_200.png') no-repeat center top;
+  box-shadow: 2px 2px 8px rgba(0,0,0,.7);
+  border-radius: 5px;
+  width: 198px;
+  height: 37px;
+  margin: 80px auto;
+  overflow: hidden;
+}
+.inset {
+  width: 300px;
+  padding: 30px;
+  background: rgba(255,255,255,.65);
+  box-shadow: 2px 2px 8px rgba(0,0,0,.7);
+  border-radius: 5px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 40px;
+  text-align: center;
+}
+.inset-wide {
+  width: 400px;
+  padding: 30px;
+  background: rgba(255,255,255,.65);
+  box-shadow: 2px 2px 8px rgba(0,0,0,.7);
+  border-radius: 5px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 40px;
+  text-align: center;
+}
+.inset .header {
+  margin-bottom: 10px;
+}
+.inset-wide .header {
+  margin-bottom: 20px;
+}
+
+.remember-forgot-section {
+  width: 94%;
+  text-align: left;
+  margin: 8px auto;
+  font-size: 10px;
+}
+.forgot {
+  float: right;
+  margin-top: 2px;
+}
+.footnote {
+  position: relative;
+  top: 14px;
+  margin-top: 6px;
+  font-size: 10px;
+}
+.banner-img-logged-out,
+.banner-img {
+  display:block;
+  margin-right:auto;
+  margin-left:auto;
+  margin-top:50px;
+}
+.pull-right {
+  float:right;
+}
+

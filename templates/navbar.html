@@ -1,0 +1,40 @@
+<link rel="stylesheet" type="text/css" href='{{STATIC_URL}}css/font-awesome.min.css'/>
+
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-fixed-top" color="#1E7D9E" role="navigation">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/">Elster CQ Portal
+	    </a> 
+      </div>
+      <div class="collapse navbar-collapse navbar-ex1-collapse">
+        <ul id="nav" class="nav navbar-nav navbar-right">
+        	<li><a href="{% url 'index' %}"><i class="fa fa-home fa-fw"></i>Home</a></li>
+		{% if request.user.is_authenticated %}
+		<li class="dropdown">
+			<a href="#" data-toggle="dropdown" id="dropdownMenu2" class="dropdown-toggle"><i class="fa fa-bolt fa-fw"></i>Quality<b class="caret"></b></a>
+			<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2">
+				<li class=""><a href="{% url 'contact_us' %}"><i class="fa fa-bolt fa-fw"></i>Summary</a></li>
+			</ul>
+		{% endif %}
+    		<li class="dropdown">
+			<a href="#" data-toggle="dropdown" id="dropdownMenu1" class="dropdown-toggle"><i class="fa fa-user fa-fw"></i>{{ user }}<b class="caret"></b></a>
+			<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+	 				<li role="presentation" class="{% block navbar-login %}{% endblock %}"><a href="{% url 'account_login' %}"><i class="fa fa-sign-in fa-fw"></i>Login</a></li>     
+	 				{% if request.user.is_authenticated %}
+	 				<li role="presentation" class="{% block navbar-logout %}{% endblock %}"><a href="{% url 'account_logout' %}"><i class="fa fa-sign-out fa-fw"></i>Logout</a></li>
+	 				<li role="presentation" class="{% block navbar-pass-change %}{% endblock %}"><a href="{% url 'account_change_password' %}"><i class="fa fa-wrench fa-fw"></i>Change Password</a></li>
+	 				<li role="presentation" class="{% block navbar-email %}{% endblock %}"><a href="{% url 'account_email' %}"><i class="fa fa-envelope fa-fw"></i>Account Email</a></li>
+	 				{% endif %}
+    			 	</ul>
+		<li ><a href="{% url 'contact_us' %}"><i class="fa fa-mobile fa-fw"></i>Contact</a></li>
+    		</ul>
+      </div><!--/.nav-collapse -->
+  </div>
+</nav>
