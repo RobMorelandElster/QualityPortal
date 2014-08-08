@@ -8,7 +8,8 @@
 {% block title %}{{ title }} | {{ site_title }}{% endblock %}
 
 {% block branding %}
-<h1 id="site-name">e<font SIZE="7">l</font>ste<font SIZE="7">r</font> <small>CQ ADMIN</small><a href="{% url 'admin:index' %}">{{ site_header }}</a></h1>
+ <img  id="site-name" class="navbar-brand" src="http://www.elstersolutions.com/assets/images_system/elster-logo.png" alt="elster logo" /> 
+ elster <small>CQ ADMIN</small><a href="{% url 'admin:index' %}">{{ site_header }}</a>
 {% endblock %}
 
 {% block nav-global %}{% endblock %}
