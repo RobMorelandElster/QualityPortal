@@ -20,5 +20,11 @@ urlpatterns = patterns('',
 )
 
 urlpatterns += patterns('',
-        (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
-    )
+	# forms and lists
+	url(r'^elster_qportal/$', views.elster_meter_q_list, name='elster_meter_q_list'),
+	url(r'^cust_qportal/$', views.cust_meter_q_list, name='cust_meter_q_list'),
+)
+    
+urlpatterns += patterns('',
+	(r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
+)

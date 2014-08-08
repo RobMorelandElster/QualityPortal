@@ -4,14 +4,16 @@
 <nav class="navbar navbar-default navbar-fixed-top" color="#1E7D9E" role="navigation">
     <div class="container">
       <div class="navbar-header">
+        <img  class="navbar-brand" src="http://www.elstersolutions.com/assets/images_system/elster-logo.png" alt="" /> 
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
           <span class="sr-only">Toggle navigation</span>
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="/">elster <small>CQ</small> portal
-	    </a> 
+        <a  class="navbar-brand" href="/">
+	&nbsp;&nbsp;elster <small>CQ</small> portal 
+	</a> 
       </div>
       <div class="collapse navbar-collapse navbar-ex1-collapse">
         <ul id="nav" class="nav navbar-nav navbar-right">
@@ -20,7 +22,8 @@
 		<li class="dropdown">
 			<a href="#" data-toggle="dropdown" id="dropdownMenu2" class="dropdown-toggle"><i class="fa fa-bolt fa-fw"></i>Quality<b class="caret"></b></a>
 			<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2">
-				<li class=""><a href="{% url 'contact_us' %}"><i class="fa fa-bolt fa-fw"></i>Summary</a></li>
+				<li class=""><a href="{% url 'elster_meter_q_list' %}"><i class="fa fa-bolt fa-fw"></i>Elster Quality Status</a></li>
+				<li class=""><a href="{% url 'cust_meter_q_list' %}"><i class="fa fa-bolt fa-fw"></i>Customer Quality Status</a></li>
 			</ul>
 		{% endif %}
     		<li class="dropdown">

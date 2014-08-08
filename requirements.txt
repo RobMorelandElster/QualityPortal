@@ -8,6 +8,7 @@ django-autocomplete-light==1.4.14
 django-bootstrap3==4.8.2
 django-sendgrid==1.0.1
 django-storages==1.1.8
+django-tables2==0.15.0
 django-toolbelt==0.0.1
 gunicorn==19.1.0
 oauthlib==0.6.3
@@ -15,5 +16,6 @@ psycopg2==2.5.3
 python-openid==2.2.5
 requests==2.3.0
 requests-oauthlib==0.4.1
+six==1.7.3
 static3==0.5.1
 wsgiref==0.1.2

@@ -59,6 +59,7 @@ INSTALLED_APPS = (
     'sendgrid',
     'storages',
     'bootstrap3',
+    'django_tables2',
     'portal',
 )
 
@@ -178,4 +179,5 @@ EMAIL_PORT = 587
 if (DEBUG):
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+ITEMS_PER_PAGE = 20
 
