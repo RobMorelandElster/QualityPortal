@@ -28,14 +28,18 @@
 <style class="text/css">
 .jumbotron {
 	margin-bottom: 0px;
-	background-image: url({{STATIC_URL}}img/background.png);
+	/* background-image: url({{STATIC_URL}}img/background.png); */
 	background-position: 0% 25%;
 	background-size: cover;
+	background-color: #57A3C9;
 	background-repeat: no-repeat;
-	color: white;
-	text-shadow: black 0.3em 0.3em 0.3em;
+	color: white; 
 }
-
+.img-responsive {
+	display: block;
+	height: auto;
+	max-width: 100%;
+}
 .primary_content {
 	font-size: 1.3em;
 	margin: .5em 0;
@@ -64,8 +68,8 @@
 	    		<p class="primary_content"><a href="{% url 'account_login' %}" class="btn btn-primary btn-lg" role="button">Login or Signup Now</a></p>
 	    	{% endif %}
   
-      		<div class="col-md-4">
-		  <img src="{{STATIC_URL}}img/elster-system.jpg" style="opacity:0.9;filter:alpha(opacity=90);">
+      		<div class="col-md-12">
+		  <img class="img-responsive" src="{{STATIC_URL}}img/elster-system.jpg"  >
 	      	  <p>
 		  <p class="primary_content"><a href="{% url 'contact_us' %}" class="btn btn-primary btn-lg" role="button">Need Help? &raquo;</a></p>
 		</div>
