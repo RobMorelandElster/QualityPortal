@@ -130,7 +130,7 @@ TEMPLATE_CONTEXT_PROCESSORS += (
 )
 
 FILE_UPLOAD_HANDLERS = (
-    "progressbarupload.uploadhandler.ProgressBarUploadHandler",
+    #"progressbarupload.uploadhandler.ProgressBarUploadHandler",
     "django.core.files.uploadhandler.MemoryFileUploadHandler",
     "django.core.files.uploadhandler.TemporaryFileUploadHandler",
 )
