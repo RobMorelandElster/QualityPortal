@@ -58,7 +58,7 @@ class CustomerMeterTrack(models.Model):
 	exposure = models.CharField(max_length = 1, null=True,blank=True, choices = METER_EXPOSURE_CHOICES, verbose_name="Meter Facing Direction")
 	order_specs = models.CharField(max_length=100,  null=True,blank=True,verbose_name="Meter Order Specs")
 	service_status = models.CharField(max_length = 1, null=True,blank=True, choices = METER_SERVICE_CHOICES, default=IN_INVENTORY, verbose_name="Meter Service Status")
-	firmware_version = models.CharField(max_length=200,  verbose_name="Meter Firmware Version")
+	firmware_version = models.CharField(max_length=200,  null=True,blank=True, verbose_name="Meter Firmware Version")
 	longitude = models.DecimalField(max_digits=12, decimal_places=6, null=True, blank=True,verbose_name="Meter Longitude Position")
 	latitude = models.DecimalField(max_digits=12, decimal_places=6, null=True, blank=True,verbose_name="Meter Latitude Position")
 	

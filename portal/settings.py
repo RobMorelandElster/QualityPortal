@@ -42,6 +42,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = (
+    'django_admin_bootstrapped',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -54,9 +55,11 @@ INSTALLED_APPS = (
     'allauth.socialaccount',
     # ... Social auth providers
     #'allauth.socialaccount.providers.facebook',
+    'autocomplete_light',
     'sendgrid',
     'storages',
     'bootstrap3',
+    'portal',
 )
 
 MIDDLEWARE_CLASSES = (
