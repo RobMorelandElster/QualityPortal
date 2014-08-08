@@ -13,7 +13,18 @@ def utc_to_local(utc_dt):
 	return utc_dt.replace(tzinfo=timezone.utc).astimezone(timezone.get_current_timezone())
 
 class ElsterMeterTrack(models.Model):
+	def __unicode__(self):
+		return ("%s:%s:%s:%s"%(self.manufacture_number, str(self.rma_number), str(self.rma_receive_date), str(self.rma_complete_date)))
+
+	OTHER = 'OT'
+	GK = 'GK'
+	METER_TYPES = (
+		(OTHER, 'Non Gatekeeper'),
+		(GK, 'Gatekeeper'),
+	)
+	
 	manufacture_number = models.CharField(max_length=100,  verbose_name="Manufacturer Number")
+	meter_type = models.CharField(max_length = 2, choices = METER_TYPES, default=OTHER, verbose_name="Meter Type")
 	serial_number = models.CharField(max_length=80,null=True, blank=True)
 	manufacture_date = models.DateField(null=True, blank=True)
 	purchase_date = models.DateField(null=True, blank=True)
@@ -27,10 +38,11 @@ class ElsterMeterTrack(models.Model):
 	remediation_action_desc = models.TextField(max_length=2000, verbose_name="Elster remediation action (description)",null=True, blank=True)
 	active = models.BooleanField(default=True)
 	
-	def __unicode__(self):
-		return ("%s:%s:%s:%s"%(self.manufacture_number, str(self.rma_number), str(self.rma_receive_date), str(self.rma_complete_date)))
-
+	
 class CustomerMeterTrack(models.Model):
+	def __unicode__(self):
+		return ("%s:%s:%s:%s"%(self.number, str(self.order_date), str(self.failure_date), str(self.customer_defined_failure_code)))
+
 	NORTH = 'N'
 	SOUTH = 'S'
 	EAST = 'E'
@@ -48,7 +60,15 @@ class CustomerMeterTrack(models.Model):
 		(IN_FIELD, 'In Field'),
 		(IN_INVENTORY, 'Inventoried'),
 	)
+	
+	OTHER = 'OT'
+	GK = 'GK'
+	METER_TYPES = (
+		(OTHER, 'Non Gatekeeper'),
+		(GK, 'Gatekeeper'),
+	)
 	number = models.CharField(max_length=100,  verbose_name="Meter Number")
+	meter_type = models.CharField(max_length = 2, choices = METER_TYPES, default=OTHER, verbose_name="Meter Type")
 	order_date = models.DateField(null=True, blank=True,verbose_name="Meter Order Date")
 	set_date = models.DateField(null=True, blank=True,verbose_name="Meter Set Date")
 	failure_date = models.DateField(null=True, blank=True,verbose_name="Meter Failure Date")
@@ -62,6 +82,4 @@ class CustomerMeterTrack(models.Model):
 	longitude = models.DecimalField(max_digits=12, decimal_places=6, null=True, blank=True,verbose_name="Meter Longitude Position")
 	latitude = models.DecimalField(max_digits=12, decimal_places=6, null=True, blank=True,verbose_name="Meter Latitude Position")
 	
-	def __unicode__(self):
-		return ("%s:%s:%s:%s"%(self.number, str(self.order_date), str(self.failure_date), str(self.customer_defined_failure_code)))
-
+	

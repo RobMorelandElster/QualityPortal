@@ -16,8 +16,7 @@ urlpatterns = patterns('',
     
     url(r'^account/login', include('allauth.urls'), name='login'),
     url(r'^account/', include('allauth.urls')),
-    
-    url(r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
+
 )
 
 urlpatterns += patterns('',
