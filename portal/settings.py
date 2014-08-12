@@ -175,6 +175,7 @@ EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_HOST_USER = os.environ['SENDGRID_USERNAME']
 EMAIL_HOST_PASSWORD = os.environ['SENDGRID_PASSWORD']
 EMAIL_PORT = 587
+#ACCOUNT_EMAIL_SUBJECT_PREFIX (="Elster Common Quality DB ")
 #ACCOUNT_SIGNUP_FORM_CLASS = 'portal.account.forms.SignupForm'
 #SOCIALACCOUNT_ADAPTER = 'mdm.account.social_login_adapter.SocialAdapter'
 if (DEBUG):
