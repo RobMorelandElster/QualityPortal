@@ -1,3 +1,0 @@
-"manufacture_number","meter_type","serial_number","manufacture_date","purchase_date","ship_date","rma_number","rma_receive_date","rma_complete_date","defect_code","defect_code_desc","remediation_action","remediation_action_desc","active"
-21436587,"OT",12345,2014-02-14,2014-03-14,2014-03-16,54321,2014-04-12,2014-04-15,"none","no problem found","none","none","False"
-32547698,"GK",23456,2013-02-14,2013-03-14,2013-03-16,65432,2013-04-12,2013-04-15,"bad display","display segment 12 bad","replace","replace","True"
