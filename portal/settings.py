@@ -60,6 +60,7 @@ INSTALLED_APPS = (
     'storages',
     'bootstrap3',
     'django_tables2',
+    'csvimport',
     'portal',
 )
 

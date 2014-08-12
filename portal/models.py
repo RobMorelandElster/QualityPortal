@@ -36,8 +36,42 @@ class ElsterMeterTrack(models.Model):
 	defect_code_desc = models.TextField(max_length=2000, verbose_name="Defect Code (description)",null=True, blank=True)
 	remediation_action = models.CharField(max_length=50,null=True,blank=True, verbose_name="Elster remediation action")
 	remediation_action_desc = models.TextField(max_length=2000, verbose_name="Elster remediation action (description)",null=True, blank=True)
-	active = models.BooleanField(default=True)
 	
+	class Meta:
+		unique_together = (("manufacture_number","rma_number"),)
+		ordering = ["manufacture_number"]
+		
+	def clean(self):
+		if self.manufacture_number is None:
+			raise ValidationError('Manufacture Number must be filled in')
+		elif len(self.manufacture_number) == 0:
+			raise ValidationError('Manufacture Number must be filled in')
+			
+		# validate dates
+		if self.purchase_date is not None and self.manufacture_date is not None:
+			if self.purchase_date < self.manufacture_date:
+				raise ValidationError('Purchase Date may not preceed Manufacture Date')
+		
+		if self.purchase_date is not None and self.ship_date is not None:
+			if self.ship_date < self.purchase_date:
+				raise ValidationError('Ship Date may not preceed Purchase Date')
+				
+		if self.rma_receive_date is not None and self.rma_complete_date is not None:
+			if self.rma_complete_date < self.rma_receive_date:
+				raise ValidationError('RMA Complete Date may not preceed RMA Receive Date')
+				
+		# validate defect entry
+		if self.rma_complete_date is not None and self.defect_code is None:
+			raise ValidationError('Defect Code may not be empty when RMA Complete Date is entered')
+		if self.rma_complete_date is not None and self.defect_code is not None:
+			if len(self.defect_code) ==0:
+				raise ValidationError('Defect Code may not be empty when RMA Complete Date is entered')
+				
+		# meter_type validation
+		if self.meter_type is not None:
+			if self.meter_type != ElsterMeterTrack.GK and self.meter_type != ElsterMeterTrack.OTHER:
+				raise ValidationError('Meter Type %s is invalid' %self.meter_type)
+				
 	
 class CustomerMeterTrack(models.Model):
 	def __unicode__(self):
@@ -82,4 +116,6 @@ class CustomerMeterTrack(models.Model):
 	longitude = models.DecimalField(max_digits=12, decimal_places=6, null=True, blank=True,verbose_name="Meter Longitude Position")
 	latitude = models.DecimalField(max_digits=12, decimal_places=6, null=True, blank=True,verbose_name="Meter Latitude Position")
 	
-	
+	class Meta:
+		unique_together = (("number","failure_date"),)
+		ordering = ["number"]
