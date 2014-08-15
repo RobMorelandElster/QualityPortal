@@ -1,5 +1,6 @@
 Django==1.6.5
 argparse==1.2.1
+boto==2.32.1
 chardet==2.2.1
 dj-database-url==0.3.0
 dj-static==0.0.6
@@ -8,7 +9,6 @@ django-allauth==0.17.0
 django-appconf==0.6
 django-autocomplete-light==1.4.14
 django-bootstrap3==4.8.2
-django-csvimport==1.0
 django-sendgrid==1.0.1
 django-storages==1.1.8
 django-tables2==0.15.0

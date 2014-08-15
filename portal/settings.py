@@ -59,8 +59,8 @@ INSTALLED_APPS = (
     'sendgrid',
     'storages',
     'bootstrap3',
-    'django_tables2',
     'csvimport',
+    'django_tables2',
     'portal',
 )
 
