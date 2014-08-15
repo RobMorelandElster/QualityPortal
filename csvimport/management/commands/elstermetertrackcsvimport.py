@@ -252,7 +252,7 @@ class Command(LabelCommand):
 					# New ElsterMeterTrack
 					eMeterTrack = ElsterMeterTrack(
 						elster_serial_number = elster_serial_number,
-						meter_style = meter_style
+						meter_style = meter_style,
 						meter_barcode = meter_barcode,
 						manufacture_date = manufacture_date,
 						rma_number = self.eval_for_null(row[self.columns['RMA_NUMBER']]),
