@@ -1,0 +1,39 @@
+{% extends "account/base.html" %}
+
+{% load url from future %}
+{% load i18n %}
+
+{% block head_title %}{% trans "Signup" %}{% endblock %}
+
+{% load bootstrap3 %}
+
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{%bootstrap_messages %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href='{{STATIC_URL}}css/signin.css'/>
+
+<div class="container">
+  <div class="row" >
+  <div class="col-md-6 col-md-offset-3">
+    
+    <h1>{% trans "Sign Up" %}</h1>
+    
+    {% blocktrans %}Already have an account? Then please <a href="{{ login_url }}">sign in</a>.{% endblocktrans %}
+  </div>
+  </div>
+</div>    
+<div class="inset-wide">
+	<div class="jumbotron">
+		<h3 class="text-center">
+			Signups are not accepted at this time
+		</h1>
+	</div>
+    </div>
+</div>
+
+{% endblock %}
+
+
