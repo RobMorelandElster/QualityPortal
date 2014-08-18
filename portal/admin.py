@@ -118,5 +118,9 @@ class CustomerMeterTrackAdmin(admin.ModelAdmin):
 		] 
 	search_fields = ['number','order_date','failure_date','system_failure_code','customer_failure_code',]
 
+class AccountAdmin(admin.ModelAdmin):
+	fields=[]
+	
 admin.site.register(ElsterMeterTrack, ElsterMeterTrackAdmin)
 admin.site.register(CustomerMeterTrack, CustomerMeterTrackAdmin)
+admin.site.register(Account,AccountAdmin)

@@ -268,3 +268,10 @@ class UserProfile(models.Model):
 		return default_user_profile
 	
 User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
+
+class Account(models.Model):
+	def __unicode__(self):
+		return ("%s:%s"%(self.name, self.verification))
+	name = models.CharField(max_length=25,  verbose_name="Account name")
+	verification = models.CharField(max_length = 25,  verbose_name="Verification code")
+

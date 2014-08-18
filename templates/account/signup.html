@@ -26,11 +26,16 @@
   </div>
 </div>    
 <div class="inset-wide">
-	<div class="jumbotron">
-		<h3 class="text-center">
-			Signups are not accepted at this time
-		</h1>
-	</div>
+    <div class="header">Sign Up for Account</div>
+    <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+      {% csrf_token %}
+      {{ form.as_p }}
+      {% if redirect_field_value %}
+      <input type="password" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+      {% endif %}
+      <button type="submit">{% trans "Sign Up" %} &raquo;</button>
+    </form>
+    
     </div>
 </div>
 
