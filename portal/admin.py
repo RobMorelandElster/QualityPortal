@@ -104,7 +104,7 @@ class ElsterMeterTrackAdmin(admin.ModelAdmin):
 					('defect_id','defect_id_desc','complaint',),
 					('finding','action_taken',),]})
 		] 
-	#list_display = ('manufacture_number',)
+	list_display = ('elster_serial_number','rma_number','meter_style_to_type','rma_create_date','rma_complete_date','defect_id_desc',)
 	search_fields = ['elster_serial_number', 'rma_number', 'meter_barcode',]
 	list_filter = [ElsterMeterRmaCreateListFilter, 'defect_id']
 

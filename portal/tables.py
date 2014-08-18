@@ -14,7 +14,7 @@ class ElsterMeterTrackTable(tables.Table):
 		model = ElsterMeterTrack
 		# add class="paleblue" to <table> tag
 		#sequence = ('manufacture_number', 'edit', )
-		exclude = ('id', )
+		exclude = ('id','defect_id' )
 		attrs = {"class": "table table-striped"}
 		template = ('table.html')
 

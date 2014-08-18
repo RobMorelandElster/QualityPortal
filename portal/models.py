@@ -113,6 +113,16 @@ class ElsterMeterTrack(models.Model):
 		ordering = ["rma_number"]
 	
 	@property
+	def meter_style_to_type(self):
+		if self.meter_style:
+			type=[ms[1] for ms in ElsterMeterTrack.METER_TYPE_CHOICES if ms[0].lower() in (self.meter_style).lower()]
+			if len(type):
+				return type
+			else:
+				return 'No Style Match %s'%self.meter_style
+		else:
+			return 'No Value'
+	@property
 	def defect_id_text(self):
 		if self.defect_code:
 			ct = [id[1] for id in ElsterMeterTrack.DEFECT_ID_CHOICES if id[0]==self.defect_id]
