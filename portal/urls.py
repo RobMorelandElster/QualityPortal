@@ -23,6 +23,7 @@ urlpatterns += patterns('',
 	# forms and lists
 	url(r'^elster_qportal/$', views.elster_meter_q_list, name='elster_meter_q_list'),
 	url(r'^cust_qportal/$', views.cust_meter_q_list, name='cust_meter_q_list'),
+	url(r'^elster_top_five/$', views.elster_meter_top_five, name='elster_top_five'),
 )
     
 urlpatterns += patterns('',

@@ -28,6 +28,8 @@ class CustomerMeterTrackTable(tables.Table):
 		exclude = ('id', 'longitude', 'latitude',)
 		attrs = {"class": "table table-striped"}
 		template = ('table.html')
+		
+
 """
 class BinPartTable(tables.Table):
 	#part_name = tables.TemplateColumn('<a href="/inventory/{{record.part_type.id}}">{{record.part_type.name}}</a>')

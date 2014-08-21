@@ -182,6 +182,35 @@ class Command(LabelCommand):
 				meter_barcode = self.eval_for_null(row[self.columns['METER_BARCODE']])
 				rma_number = self.eval_for_null(row[self.columns['RMA_NUMBER']])
 				
+				# Handle defect
+				defect_id_str = self.eval_for_null(row[self.columns['DEFECT_ID']])
+				defect = None
+				if defect_id_str != None:
+					defect_id = int(defect_id_str)
+					# Lookup or create defect object
+					try:
+						defect = ElsterRmaDefect.objects.get(defect_id = defect_id)
+					except ObjectDoesNotExist:
+						defect = ElsterRmaDefect(
+							defect_id=defect_id, 
+							description=self.eval_for_null(row[self.columns['DEFECT_ID_DESC']])
+							)
+						with transaction.atomic():
+							defect.save()
+						loglist.append('Import Info:Added new Defect Code - %s -- file line %d' % (self.eval_for_null(row[self.columns['DEFECT_ID_DESC']]),counter))
+					
+				meter_style_str = self.eval_for_null(row[self.columns['METER_STYLE']])
+				meter_style = None
+				if meter_style_str != None:
+					# Lookup or create MeterType
+					try:
+						meter_style = ElsterMeterType.objects.get(style=meter_style_str)
+					except ObjectDoesNotExist:
+						meter_style = ElsterMeterType(style=meter_style_str)
+						with transaction.atomic():
+							meter_style.save()
+						loglist.append('Import Info:Added new MeterType - %s -- file line %d' % (meter_style_str,counter))
+				
 				# Pull the date fields
 				ds = row[self.columns['MANUFACTURE_DATE']]
 				manufacture_date = None
@@ -223,14 +252,6 @@ class Command(LabelCommand):
 						loglist.append('Invalid RMA Complete Date %s -- file line %d' %(ds, counter))
 						continue
 						
-				defect_id_str = self.eval_for_null(row[self.columns['DEFECT_ID']])
-				defect_id = None
-				if defect_id_str != None:
-					defect_id = int(defect_id_str)
-					
-				meter_style = self.eval_for_null(row[self.columns['METER_STYLE']])
-				if meter_style == None:
-					meter_style = 'Other'
 					
 				eMeterTrack = None
 				try: # See if there is an existing record to update
@@ -243,8 +264,7 @@ class Command(LabelCommand):
 					eMeterTrack.rma_create_date = rma_create_date
 					eMeterTrack.rma_receive_date = rma_receive_date
 					eMeterTrack.rma_complete_date = rma_complete_date
-					eMeterTrack.defect_id = defect_id
-					eMeterTrack.defect_id_desc = self.eval_for_null(row[self.columns['DEFECT_ID_DESC']])
+					eMeterTrack.defect = defect
 					eMeterTrack.complaint = self.eval_for_null(row[self.columns['COMPLAINT']])
 					eMeterTrack.finding = self.eval_for_null(row[self.columns['FINDING']])
 					eMeterTrack.action_taken = self.eval_for_null(row[self.columns['ACTION_TAKEN']])
@@ -259,8 +279,7 @@ class Command(LabelCommand):
 						rma_create_date = rma_create_date,
 						rma_receive_date = rma_receive_date,
 						rma_complete_date = rma_complete_date,
-						defect_id = defect_id,
-						defect_id_desc = self.eval_for_null(row[self.columns['DEFECT_ID_DESC']]),
+						defect = defect,
 						complaint =  self.eval_for_null(row[self.columns['COMPLAINT']]),
 						finding = self.eval_for_null(row[self.columns['FINDING']]),
 						action_taken =  self.eval_for_null(row[self.columns['ACTION_TAKEN']])

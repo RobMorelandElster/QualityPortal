@@ -11,12 +11,14 @@ from django.core.exceptions import ObjectDoesNotExist
 
 def utc_to_local(utc_dt):
 	return utc_dt.replace(tzinfo=timezone.utc).astimezone(timezone.get_current_timezone())
-
-class ElsterMeterTrack(models.Model):
-
+	
+class ElsterMeterType(models.Model):
 	def __unicode__(self):
-		return ("%s:RMA-%s:Receipt-%s:Complete-%s"%(self.elster_serial_number, str(self.rma_number), str(self.rma_receive_date), str(self.rma_complete_date)))
-
+		if self.description:
+			return ("%s-%s-%s"%(self.style, self.category, self.description))
+		else:
+			return("%s-%s-No Desc"%(self.style, self.category))
+		
 	OTHER_M = 'OT'
 	REX = 'ZF'
 	GRX = 'ZQ'
@@ -36,64 +38,47 @@ class ElsterMeterTrack(models.Model):
 		(OTHER_M, 'Other'),
 	)
 	
-	#Defect Codes
-	DEFECT_ID_CHOICES= (
-		(1,	'Product/Part Failure'),
-		(3,	'EEPROM, U4, (Suspected Failure)'),
-		(7,	'Power Supply'),
-		(8,	'Replaced Module/Meter/Assembly/Cable/etc.'),
-		(9,	'Option Boards'),
-		# (10,	'Option Boards'),
-		(11,	'Option Boards, Relay Board'),
-		(13,	'.INT. Modem,Callback Feature'),
-		(15,	'Replaced Module/Meter/Assembly/Cable/etc.'),
-		(16,	'CSB / Recall'),
-		(19,	'CSB / Recall, EEPROM (CSI 9445)'),
-		(23,	'Firmware/Upgrades'),
-		(24,	'Firmware'),
-		(29,	'Upgrade at customer request'),
-		(31,	'(Upgrade) Replace Module/Meter/Assembly/Cable/etc.'),
-		(32,	'Software Problem'),
-		(33,	'Software, Password'),
-		(34,	'Quality Issues'),
-		(35,	'Assembly'),
-		(36,	'Suspected Overvoltage (Surge)'),
-		(37,	'Burn Damage, Overvoltage, Surge/Lightning'),
-		(38,	'Calibration'),
-		(39,	'Damage (Misapp.), Shipping/Handling'),
-		(40,	'Damage (Misapp.), Handling'),
-		(41,	'Damage (Misapp.) Base or CT Housing Broken'),
-		(42,	'Damage (Misapp.), Water Damage'),
-		(43,	'Order Error'),
-		(44,	'Mechanical or Wiring Error'),
-		(46,	'LCD, Ghosting'),
-		(47,	'LCD, Missing Segments'),
-		(48,	'LCD, Loose Mounting Screws'),
-		(50,	'LCD, Elastomeric Strip'),
-		(51,	'LCD, Quality Issues'),
-		(54,	'Unknown'),
-		(55,	'Third Party Repair or Fault'),
-		(56,	'<<<Undefined or MRE Cancelled>>>'),
-		(58,	'NPF, No Problem Found'),
-		# (61,	'<<<Undefined or MRE Cancelled>>>'),
-		(67,	'Meter, Defective part/assy'),
-		(100,	'U6 issue'),
-		(103,	'MISC.'),
-		(397,	'No Evaluation Required'),
-		(403,	'Configuration Error.'),
-		(404,	'EEPROM Write (Access) Error'),
-		(405,	'Improper Meter Engine Operation or Radio Microprocessor operation Error'),
-		(406,	'Radio Config Error'),
-		(407,	'Registered Memory/Power Fail Data Save Error'),
-		(408,	'ROM Checksum Error'),
-		(409,	'Table CRC Error'),
-		# (414,	'Registered Memory/Power Fail Data Save Error'),
-		(447,	'Surge, Lightning Damage'),
-		(448,	'Misapplication of Equipment'),
+	C_ELE = 'E'
+	C_WAT = 'W'
+	C_GAS = 'G'
+	METER_CATEGORY_CHOICES=(
+		(C_ELE, 'Electric'),
+		(C_WAT, 'Water'),
+		(C_GAS, 'Gas'),
 	)
+	
+	style =  models.CharField(max_length = 15, verbose_name="Manufacturer Style")
+	category =  models.CharField(max_length = 1, choices = METER_CATEGORY_CHOICES, default=C_ELE, verbose_name="Meter Category")
+	description = models.CharField(max_length = 50, null=True, blank=True)
+	
+	@property
+	def meter_style_to_type(self):
+		if self.meter_style:
+			type=[ms[1] for ms in ElsterMeterType.METER_TYPE_CHOICES if ms[0].lower() in (self.style).lower()]
+			if len(type):
+				return type
+			else:
+				return 'No Style Match %s'%self.style
+		else:
+			return 'No Value'
+
+class ElsterRmaDefect(models.Model):
+	def __unicode__(self):
+		if self.description:
+			return ("%03d-%s"%(self.defect_id, self.description))
+		else:
+			return ("%03d"%self.defect_id)
+		
+	defect_id = models.PositiveSmallIntegerField(verbose_name="Defect ID after root cause analysis")
+	description = models.CharField(max_length=300, verbose_name="Defect Code (description)",null=True, blank=True)
+
+class ElsterMeterTrack(models.Model):
+
+	def __unicode__(self):
+		return ("%s:RMA-%s:Receipt-%s:Complete-%s"%(self.elster_serial_number, str(self.rma_number), str(self.rma_receive_date), str(self.rma_complete_date)))
 
 	elster_serial_number = models.CharField(max_length=100, )
-	meter_style = models.CharField(max_length = 15, choices = METER_TYPE_CHOICES, default=REX, verbose_name="Meter Type")
+	meter_style = models.ForeignKey(ElsterMeterType, null=True, blank=True,verbose_name="Elster Meter Type")
 	meter_barcode = models.CharField(max_length=100,null=True, blank=True)
 	manufacture_date = models.DateField(null=True, blank=True)
 	#purchase_date = models.DateField(null=True, blank=True)
@@ -102,8 +87,7 @@ class ElsterMeterTrack(models.Model):
 	rma_create_date = models.DateField(null=True, blank=True)
 	rma_receive_date = models.DateField(null=True, blank=True)
 	rma_complete_date = models.DateField(null=True, blank=True)
-	defect_id = models.PositiveSmallIntegerField(null=True,blank=True, choices=DEFECT_ID_CHOICES, verbose_name="Defect Code after root cause analysis")
-	defect_id_desc = models.CharField(max_length=300, verbose_name="Defect Code (description)",null=True, blank=True)
+	defect = models.ForeignKey(ElsterRmaDefect, null=True, blank=True, verbose_name="Defect after root cause analysis")
 	complaint = models.CharField(max_length=300, verbose_name="Customer Complaint",null=True, blank=True)
 	finding = models.CharField(max_length=300,null=True,blank=True)
 	action_taken = models.CharField(max_length=300, verbose_name="Elster action",null=True, blank=True)
@@ -113,25 +97,21 @@ class ElsterMeterTrack(models.Model):
 		ordering = ["rma_number"]
 	
 	@property
-	def meter_style_to_type(self):
+	def meter_style_description(self):
 		if self.meter_style:
-			type=[ms[1] for ms in ElsterMeterTrack.METER_TYPE_CHOICES if ms[0].lower() in (self.meter_style).lower()]
-			if len(type):
-				return type
+			if self.meter_style.description:
+				return self.meter_style.description
 			else:
-				return 'No Style Match %s'%self.meter_style
+				return self.meter_style.style
 		else:
 			return 'No Value'
+			
 	@property
-	def defect_id_text(self):
-		if self.defect_code:
-			ct = [id[1] for id in ElsterMeterTrack.DEFECT_ID_CHOICES if id[0]==self.defect_id]
-			if len(ct):
-				return ct
-			else:
-				return 'Unknown Defect Code: %d'%self.defect_id
+	def defect_id_desc(self):
+		if self.defect:
+			return self.defect.description
 		else:
-			return 'No value'
+			return 'No Value'
 			
 	def clean(self):
 		if self.elster_serial_number is None:

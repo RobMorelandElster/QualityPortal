@@ -75,16 +75,17 @@ def export_elster_meter_track_csv(modeladmin, request, queryset):
 		smart_str(u'action_taken'),
 		])
 	for obj in queryset:
+		
 		writer.writerow([
 			smart_str(obj.elster_serial_number),
-			smart_str(obj.meter_style),
+			smart_str(obj.meter_style.description),
 			smart_str(obj.meter_barcode),
 			smart_str(obj.manufacture_date),
 			smart_str(obj.rma_number),
 			smart_str(obj.rma_create_date),
 			smart_str(obj.rma_receive_date),
 			smart_str(obj.rma_complete_date),
-			smart_str(obj.defect_id_desc),
+			smart_str(obj.defect.description),
 			smart_str(obj.complaint),
 			smart_str(obj.finding),
 			smart_str(obj.action_taken),
@@ -101,12 +102,12 @@ class ElsterMeterTrackAdmin(admin.ModelAdmin):
 	fieldsets = [ 
 		(None,              {'fields': [('elster_serial_number', 'meter_style','meter_barcode','manufacture_date',), 
 					('rma_number','rma_create_date','rma_receive_date','rma_complete_date',),
-					('defect_id','defect_id_desc','complaint',),
+					('defect','complaint',),
 					('finding','action_taken',),]})
 		] 
-	list_display = ('elster_serial_number','rma_number','meter_style_to_type','rma_create_date','rma_complete_date','defect_id_desc',)
+	list_display = ('elster_serial_number','rma_number','meter_style_description','complaint','rma_create_date','rma_complete_date','defect_id_desc',)
 	search_fields = ['elster_serial_number', 'rma_number', 'meter_barcode',]
-	list_filter = [ElsterMeterRmaCreateListFilter, 'defect_id']
+	list_filter = [ElsterMeterRmaCreateListFilter, 'defect__description']
 
 class CustomerMeterTrackAdmin(admin.ModelAdmin):
 	fieldsets = [ 
@@ -118,9 +119,19 @@ class CustomerMeterTrackAdmin(admin.ModelAdmin):
 		] 
 	search_fields = ['number','order_date','failure_date','system_failure_code','customer_failure_code',]
 
+class ElsterRmaDefectAdmin(admin.ModelAdmin):
+	fields=[]
+	list_display = ('defect_id', 'description')
+	
+class ElsterMeterTypeAdmin(admin.ModelAdmin):
+	fields=[]
+	list_display = ('style','category','description')
+	
 class AccountAdmin(admin.ModelAdmin):
 	fields=[]
 	
 admin.site.register(ElsterMeterTrack, ElsterMeterTrackAdmin)
 admin.site.register(CustomerMeterTrack, CustomerMeterTrackAdmin)
+admin.site.register(ElsterMeterType, ElsterMeterTypeAdmin)
+admin.site.register(ElsterRmaDefect, ElsterRmaDefectAdmin)
 admin.site.register(Account,AccountAdmin)

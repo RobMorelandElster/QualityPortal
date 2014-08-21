@@ -22,19 +22,7 @@ def get_file_path(instance, filename):
 		   
 class CSVImportElsterMeterTrack(models.Model):
 	""" For importing portal.ElsterMeterTrack """
-	'''
-	org_names = []
-	try:
-		for o in Org.objects.all():
-			org_names.append((o.name, o.name))
-	except:
-		pass
-				
-	organization_name = models.CharField(max_length=200, blank=False,
-											default='default',
-											help_text='Please specifiy the organization',
-											choices=org_names)
-	'''
+
 	upload_file = models.FileField(upload_to=get_file_path)
 	file_name = models.CharField(max_length=255, blank=True)
 	encoding = models.CharField(max_length=32, blank=True)

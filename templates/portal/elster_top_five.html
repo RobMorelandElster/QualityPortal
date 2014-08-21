@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+
+{# Load CSS and JavaScript #}
+
+{% bootstrap_css %}
+
+{% bootstrap_javascript %}
+
+{% bootstrap_messages %}
+
+{% block title %}Energy Summary{% endblock %}
+
+{% block toggle_login %}{% endblock %}
+
+{% block heading %}
+Usage Summary
+{% endblock %}
+
+{% block content %}
+
+
+<!-- Navigation -->
+{% include 'navbar.html' %}<section id="summary">
+	
+<div class="row row-padded" />
+<div class="container">
+	<div class = "col-md-12">
+	<h1 class="text-center">Top 5 Defects</h1>
+	</div>
+</div>
+<div class="container">
+	<div class = "col-md-12">
+		<h2>Top 5 Defects for {{this_year}}</h2>
+		<table class="table table-striped table-hover">
+		  <tr  class="success">
+			<th >Defect Description</th>
+			{% for month in month_list %}
+				<th>{{month}}</th>
+			{% endfor %}
+			<th >Grand Total</th>
+		  </tr>
+		{% for defect in defects_through_months %}
+			<tr>
+				<td >{{ defect.defect }}</td>
+				{% for month_item in defect.months %}
+					<td >{{month_item.count}}</td>
+				{% endfor %}
+				<td>{{defect.total_count}}</td>
+			</tr>
+		{% endfor %}
+		<tr  class="warning">
+		{% for total in totals_by_month %}
+			<td>{{total}}</td>
+		{% endfor %}
+		</tr>
+		<tr class="info">
+		{% for total in totals_others_by_month %}
+			<td>{{total}}</td>
+		{% endfor %}
+		</tr>
+		<tr class="danger">
+		{% for total in grand_totals_by_month %}
+			<td>{{total}}</td>
+		{% endfor %}
+		</tr>
+	</table>
+
+	<hr/>
+	</div>
+	</div>
+<div class="container">
+	<div class = "col-md-12">
+		<h2>Top 5 Defects through the years</h2>
+		<table class="table table-striped table-hover">
+		  <tr  class="success">
+			<th >Defect Description</th>
+			{% for year in year_list %}
+				<th>{{year}}</th>
+			{% endfor %}
+			<th >Grand Total</th>
+		  </tr>
+		{% for defect in defects_through_years %}
+			<tr>
+				<td >{{ defect.defect }}</td>
+				{% for year_item in defect.years %}
+					<td >{{year_item.count}}</td>
+				{% endfor %}
+				<td>{{defect.total_count}}</td>
+			</tr>
+		{% endfor %}
+		<tr  class="warning">
+		{% for total in totals_by_year %}
+			<td>{{total}}</td>
+		{% endfor %}
+		</tr>
+		<tr class="info">
+		{% for total in totals_others_by_year %}
+			<td>{{total}}</td>
+		{% endfor %}
+		</tr>
+		<tr class="danger">
+		{% for total in grand_totals_by_year %}
+			<td>{{total}}</td>
+		{% endfor %}
+		</tr>
+	</table>
+
+	<hr/>
+	</div>
+</div>
+
+</div>
+
+</section>  
+{% endblock %}
