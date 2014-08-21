@@ -2,6 +2,7 @@ from django.template import RequestContext
 from django.shortcuts import render, get_object_or_404, render_to_response
 from django.contrib.auth.decorators import login_required
 from django_tables2   import RequestConfig
+from django.core.exceptions import ObjectDoesNotExist
 import settings
 from portal.models import *
 from portal.tables import *
@@ -51,9 +52,10 @@ def elster_meter_top_five(request):
 	try:
 		no_eval_defect = ElsterRmaDefect.objects.get(defect_id=397)
 		del all_time_defects[no_eval_defect] # this one doesn't count in the total
-	except ObjectNotFound:
+	except ObjectDoesNotExist:
 		pass
-	
+		
+		
 	top_five_all_time = sorted(all_time_defects,key=all_time_defects.get,reverse=True)[:5]
 	
 	# Collect counts for all-time-top-5 by year
