@@ -53,9 +53,10 @@
     	<p class="primary_content">The EMQP ties quality information from your
 		system to quality findings from Elster </p>
 	    	{% if request.user.is_authenticated %}
+			<p class="primary_content">
 	    		<h2>Welcome</h2>
-	    		<p class="primary_content">
-	    		<img src="{{user.socialaccount_set.all.0.get_avatar_url}}" height="70"/>
+	    		
+	    		
 	    		{% if request.user.first_name or request.user.last_name %}
 	    			{{ request.user.first_name }} {{ request.user.last_name }}
 	    		{% else %}

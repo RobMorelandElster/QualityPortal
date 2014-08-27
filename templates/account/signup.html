@@ -27,7 +27,7 @@
 </div>    
 <div class="inset-wide">
     <div class="header">Sign Up for Account</div>
-    <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+    <form class="form" id="signup_form" method="post" action="{% url 'account_signup' %}">
       {% csrf_token %}
       {{ form.as_p }}
       {% if redirect_field_value %}

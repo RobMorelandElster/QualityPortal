@@ -10,6 +10,10 @@ from portal.forms import *
 from django import forms
 import calendar
 
+import csv
+from django.utils.encoding import smart_str
+from django.http import HttpResponse
+
 ITEMS_PER_PAGE = settings.ITEMS_PER_PAGE
 
 def index(request):
@@ -215,6 +219,29 @@ def elster_meter_top_five(request):
 	data['grand_totals_by_month']=grand_totals_by_month
 
 	return render(request, template, data)
+
+@login_required
+def top_five_all_time_to_csv(request):
+	template = 'portal/elster_top_five.html'
+	
+	# Create the HttpResponse object with the appropriate CSV header.
+	response = HttpResponse(content_type='text/csv')
+	response['Content-Disposition'] = 'attachment; filename="elster_top_5_all_time.csv"'
+	
+	writer = csv.writer(response)
+		
+	try:
+		# do some stuff
+		response.write(u'\ufeff'.encode('utf8')) # BOM (optional...Excel needs it to open UTF-8 file properly)
+		writer.writerow([
+			smart_str(u'Defect Description'), 
+			# write a header for each year
+			])
+	except Exception as err:
+		messages.error(request, 'Error %s building download' )
+		return HttpResponseRedirect('/')
+			
+	return response
 	
 @login_required()
 def choose_elster_rma(request):

@@ -16,6 +16,7 @@ django-toolbelt==0.0.1
 gunicorn==19.1.0
 oauthlib==0.6.3
 psycopg2==2.5.3
+python-dateutil==2.2
 python-openid==2.2.5
 requests==2.3.0
 requests-oauthlib==0.4.1
