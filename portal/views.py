@@ -1,5 +1,5 @@
 from django.template import RequestContext
-from django.shortcuts import render, get_object_or_404, render_to_response
+from django.shortcuts import render, get_object_or_404, render_to_response, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django_tables2   import RequestConfig
 from django.core.exceptions import ObjectDoesNotExist
@@ -9,6 +9,7 @@ from portal.tables import *
 from portal.forms import *
 from django import forms
 import calendar
+from django.contrib import messages
 
 import csv
 from django.utils.encoding import smart_str
@@ -38,17 +39,11 @@ def cust_meter_q_list(request):
 	RequestConfig(request,paginate={"per_page": ITEMS_PER_PAGE}).configure(table)
 	return render(request, 'portal/cust_meter_q_list.html', {'table': table})
 
-@login_required()
-def elster_meter_top_five(request):
-	template = 'portal/elster_top_five.html'
-	
-	data = {} # Table data will go into this dictionary
-	
+def __top_five_all_time(request, data):
 	now = datetime.datetime.now()
 	this_year = now.year
 	this_month = now.month
 	all_time_defects = {}
-	this_year_defects = {}
 	
 	# Top defects 'all time'
 	for defect in ElsterRmaDefect.objects.all():
@@ -124,11 +119,26 @@ def elster_meter_top_five(request):
 	for i in xrange(1, len(totals_by_year)):
 		grand_totals_by_year.append(totals_by_year[i] + totals_others_by_year[i])
 		
+	# Populate data dictionary
+	data['defects_through_years']=defects_through_years
+	data['all_time_defects']=all_time_defects
+	data['top_five_all_time']=top_five_all_time
+	data['totals_by_year']=totals_by_year
+	data['year_list']=year_list
+	data['totals_others_by_year']=totals_others_by_year
+	data['grand_totals_by_year']=grand_totals_by_year
+
+def __this_year_top_five(request, data):
 	'''
 		Now Build the same information but just for the months of present year to-date
 		this_year
 		month
 	'''
+	now = datetime.datetime.now()
+	this_year = now.year
+	this_month = now.month
+	all_time_defects = {}
+	
 	# Top defects 'all time'
 	for defect in ElsterRmaDefect.objects.all():
 		all_time_defects[defect] = ElsterMeterTrack.objects.filter(
@@ -201,14 +211,6 @@ def elster_meter_top_five(request):
 	for i in xrange(1, len(totals_by_month)):
 		grand_totals_by_month.append(totals_by_month[i] + totals_others_by_month[i])
 	
-	# Dictionaries to pass to html
-	data['defects_through_years']=defects_through_years
-	data['all_time_defects']=all_time_defects
-	data['top_five_all_time']=top_five_all_time
-	data['totals_by_year']=totals_by_year
-	data['year_list']=year_list
-	data['totals_others_by_year']=totals_others_by_year
-	data['grand_totals_by_year']=grand_totals_by_year
 	
 	data['top_five_this_year']=top_five_this_year
 	data['this_year']=this_year
@@ -217,12 +219,22 @@ def elster_meter_top_five(request):
 	data['month_list']=month_list
 	data['totals_others_by_month']=totals_others_by_month
 	data['grand_totals_by_month']=grand_totals_by_month
+	
+@login_required()
+def elster_meter_top_five(request):
+	template = 'portal/elster_top_five.html'
+
+	data = {} # Table data will go into this dictionary
+	__top_five_all_time(request, data)
+	__this_year_top_five(request,data)
 
 	return render(request, template, data)
 
 @login_required
 def top_five_all_time_to_csv(request):
 	template = 'portal/elster_top_five.html'
+	data = {}
+	__top_five_all_time(request, data)
 	
 	# Create the HttpResponse object with the appropriate CSV header.
 	response = HttpResponse(content_type='text/csv')
@@ -231,14 +243,56 @@ def top_five_all_time_to_csv(request):
 	writer = csv.writer(response)
 		
 	try:
+		response.write(u'\ufeff'.encode('utf8')) # BOM (optional...Excel needs it to open UTF-8 file properly)
+		#header
+		header = [smart_str(u'Defect Description')]
+		for year in data['year_list']:
+			header.append(smart_str(year))
+		header.append(smart_str(u'Total'))
+		writer.writerow(header)
+		
+		for defect in data['defects_through_years']:
+			row = [smart_str(defect['defect'])]
+			for year_item in defect['years']:
+				row.append(smart_str(year_item['count']))
+			row.append(smart_str(defect['total_count']))
+			writer.writerow(row)
+	except Exception as err:
+		messages.error(request, 'Error %s building download'%err )
+		return HttpResponseRedirect('/')
+			
+	return response
+	
+@login_required
+def top_five_monthly_to_csv(request):
+	template = 'portal/elster_top_five.html'
+	data = {}
+	__this_year_top_five(request, data)
+
+	# Create the HttpResponse object with the appropriate CSV header.
+	response = HttpResponse(content_type='text/csv')
+	response['Content-Disposition'] = 'attachment; filename="elster_top_5_monthly.csv"'
+	
+	writer = csv.writer(response)
+		
+	try:
 		# do some stuff
 		response.write(u'\ufeff'.encode('utf8')) # BOM (optional...Excel needs it to open UTF-8 file properly)
-		writer.writerow([
-			smart_str(u'Defect Description'), 
-			# write a header for each year
-			])
+		#header
+		header = [smart_str(u'Defect Description')]
+		for month in data['month_list']:
+			header.append(smart_str(month))
+		header.append(smart_str(u'Total'))
+		writer.writerow(header)
+		
+		for defect in data['defects_through_months']:
+			row = [smart_str(defect['defect'])]
+			for month_item in defect['months']:
+				row.append(smart_str(month_item['count']))
+			row.append(smart_str(defect['total_count']))
+			writer.writerow(row)
 	except Exception as err:
-		messages.error(request, 'Error %s building download' )
+		messages.error(request, 'Error %s building download'%err )
 		return HttpResponseRedirect('/')
 			
 	return response

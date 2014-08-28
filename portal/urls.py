@@ -25,6 +25,8 @@ urlpatterns += patterns('',
 	url(r'^cust_qportal/$', views.cust_meter_q_list, name='cust_meter_q_list'),
 	url(r'^elster_top_five/$', views.elster_meter_top_five, name='elster_top_five'),
 	url(r'^top_five_all_time_to_csv/$', views.top_five_all_time_to_csv, name='top_five_all_time_to_csv'),
+	url(r'^top_five_monthly_to_csv/$', views.top_five_monthly_to_csv, name='top_five_monthly_to_csv'),
+
 )
     
 urlpatterns += patterns('',
