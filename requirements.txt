@@ -1,5 +1,4 @@
 Django==1.6.5
-Pillow==2.5.3
 argparse==1.2.1
 boto==2.32.1
 chardet==2.2.1
