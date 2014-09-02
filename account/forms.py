@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 from django.forms import CharField, HiddenInput
 from django.utils.translation import ugettext_lazy as _
 from portal.models import  UserProfile, Account
+from captcha.fields import CaptchaField
 
 	
 class SignupForm(forms.Form):
@@ -14,6 +15,7 @@ class SignupForm(forms.Form):
 	last_name = forms.CharField(max_length=25, label='Last Name')
 	account_name = forms.CharField(max_length=25, label='Account Name', required=True)
 	account_verifification_key = forms.CharField(max_length=25, label="Account Verification Code", required=True)
+	show_your_not_a_robot = CaptchaField()
 	
 	def signup(self, request, user):
 		acct = Account.objects.filter(

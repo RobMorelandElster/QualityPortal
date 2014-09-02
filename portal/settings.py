@@ -58,6 +58,7 @@ INSTALLED_APPS = (
     'bootstrap3',
     'csvimport',
     'django_tables2',
+    'captcha',
     'portal',
 )
 

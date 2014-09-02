@@ -59,7 +59,10 @@ def __top_five_all_time(request, data):
 	
 	# Collect counts for all-time-top-5 by year
 	from_year = this_year
-	d = ElsterMeterTrack.objects.all().order_by('rma_create_date').first().rma_create_date
+	try:
+		d = ElsterMeterTrack.objects.all().order_by('rma_create_date').first().rma_create_date
+	except ObjectDoesNotExist:
+		d = None
 	if d:
 		from_year = d.year
 	defects_through_years = []
