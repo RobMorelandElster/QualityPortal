@@ -132,7 +132,7 @@ class ElsterMeterTrack(models.Model):
 		if self.rma_complete_date is not None and self.defect is None:
 			raise ValidationError('Defect Code may not be empty when RMA Complete Date is entered')
 		if self.rma_complete_date is not None and self.defect is not None:
-			if lself.defect is None:
+			if self.defect is None:
 				raise ValidationError('Defect Code may not be empty when RMA Complete Date is entered')
 				
 	
