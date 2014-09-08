@@ -26,15 +26,18 @@
 
 <link href="{{ STATIC_URL }}css/signin.css" rel="stylesheet">
 <style class="text/css">
+/*
 .jumbotron {
 	margin-bottom: 0px;
-	/* background-image: url({{STATIC_URL}}img/background.png); */
+	background-image: url({{STATIC_URL}}img/big-people-background1.jpg); 
 	background-position: 0% 25%;
 	background-size: cover;
 	background-color: #57A3C9;
 	background-repeat: no-repeat;
+	/* text-shadow: black 0.3em 0.3em 0.3em; */
 	color: white; 
 }
+*/
 .img-responsive {
 	display: block;
 	height: auto;
@@ -46,42 +49,37 @@
 	line-height: 1.45;
 }
 </style>
+	 <div style="background-color:#57A3C9;border-radius: 10px;margin-bottom:10px" >
+		<div style="margin: 1em;margin-bottom:1em;">
+			<div style="height: 1em;"></div>
+			<h1 >elster MQ portal</h1> 
+			<p class="primary_content">The EMQP ties quality information from your
+				system to quality findings from Elster </p>
+				{% if request.user.is_authenticated %}
+				
+					<h2>Welcome</h2>
+					{% if request.user.first_name or request.user.last_name %}
+						{{ request.user.first_name }} {{ request.user.last_name }}
+					{% else %}
+						{{ request.user.username }}
+					{% endif %}
+					{% if request.user.profile.account_verified %} (verified) {% else %} (unverified) {% endif %}
+				{% else %}
 
-  <div class="jumbotron">
-     <div class="container">
-    	<h1 >elster <font SIZE="7">MQ</font> portal</h1> 
-    	<p class="primary_content">The EMQP ties quality information from your
-		system to quality findings from Elster </p>
-	    	{% if request.user.is_authenticated %}
-			<p class="primary_content">
-	    		<h2>Welcome</h2>
-	    		
-	    		
-	    		{% if request.user.first_name or request.user.last_name %}
-	    			{{ request.user.first_name }} {{ request.user.last_name }}
-	    		{% else %}
-	    			{{ request.user.username }}
-	    		{% endif %}
-	    		{% if request.user.profile.account_verified %} (verified) {% else %} (unverified) {% endif %}
-	    	{% else %}
-	    		</p>
+					<a href="{% url 'account_login' %}" class="btn btn-primary btn-lg" role="button">Login or Signup Now</a>
+			{% endif %}
+			<div style="height: 1em;"></div>
 
-	    		<p class="primary_content"><a href="{% url 'account_login' %}" class="btn btn-primary btn-lg" role="button">Login or Signup Now</a></p>
-	    	{% endif %}
-  
-      		<div class="col-md-12">
-		  <img class="img-responsive" src="{{STATIC_URL}}img/elster-system.jpg"  >
-	      	  <p>
-		  <p class="primary_content"><a href="{% url 'contact_us' %}" class="btn btn-primary btn-lg" role="button">Need Help? &raquo;</a></p>
 		</div>
-	   </div>
-      </div>
-
-      <hr>
-    
-      <footer>
-    	<p> &copy; Elster Solutions 2014</p>
-      </footer>
-    </div> <!-- /container -->
+		<div style="margin: 1em;margin-bottom:1em;">
+		  <img style="border-radius: 10px;margin-left: auto;margin-right: auto" class="img-responsive" src="{{STATIC_URL}}img/people-background1.jpg"  >
+		  <p class="primary_content"><a href="{% url 'contact_us' %}" class="btn btn-primary btn-lg" role="button">Need Help? &raquo;</a></p>
+		  <div style="height: 1em;"/>
+		</div>
+	</div>
+	</div>
+	  <footer>
+		<p> &copy; Elster Solutions 2014</p>
+	  </footer>
 
 {% endblock %}

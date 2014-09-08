@@ -5,25 +5,21 @@
 
 {% bootstrap_css %}
 {% bootstrap_javascript %}
-
-
 {% block title %}Elster Common Quality System{% endblock %}
-
 {% block toggle_login %}{% endblock %}
-
-{% block heading %}
-<h2>Elster Meter Quality Items</h2>
-{% endblock %}
-
-{% load render_table from django_tables2 %}
-
-<section id="parts">
-{% block content %}
-{# Display django.contrib.messages as Bootstrap alerts #}
-{% bootstrap_messages %}
-  <div class="container">
-	<h1>Elster Meter Quality Items</h1>
-	{% render_table table %}
-  </div>
-{% endblock %}
-</section>
+	{% block heading %}
+	<h2>Elster Meter Quality Items</h2>
+	{% endblock %}
+	{% load render_table from django_tables2 %}
+	<section id="parts">
+	{% block content %}
+	<div class="body-no-background">
+		{# Display django.contrib.messages as Bootstrap alerts #}
+		{% bootstrap_messages %}
+		  <div class="container">
+			<h1>Elster Meter Quality Items</h1>
+			{% render_table table %}
+		  </div>
+		{% endblock %}
+	</div>
+	</section>

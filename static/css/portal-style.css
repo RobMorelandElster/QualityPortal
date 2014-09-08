@@ -1,0 +1,15 @@
+
+	.body-no-background {
+		background-image: none !important;
+		background-color: white !important; 
+		color: black; 
+	}
+
+
+	div.table-container {
+		background-image: none !important;
+		background-color: white !important; 
+		color: black; 
+		margin: 1em;
+		display: inline-table;
+	}

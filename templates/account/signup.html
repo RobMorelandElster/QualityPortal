@@ -20,10 +20,11 @@
     
     <h1>{% trans "Sign Up" %}</h1>
     
-    {% blocktrans %}Already have an account? Then please <a href="{{ login_url }}">sign in</a>.{% endblocktrans %}
+    {% blocktrans %}Already have an account? Then please <a class="btn btn-primary btn-md" href="{{ login_url }}">sign in</a>{% endblocktrans %}
   </div>
   </div>
 </div>    
+
 <div class="inset-wide">
     <div class="header">Sign Up for Account</div>
     <form class="form" id="signup_form" method="post" action="{% url 'account_signup' %}">
@@ -32,7 +33,7 @@
       {% if redirect_field_value %}
       <input type="password" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
       {% endif %}
-      <button type="submit">{% trans "Sign Up" %} &raquo;</button>
+      <button class="btn btn-primary btn-lg" type="submit">{% trans "Sign Up" %} &raquo;</button>
     </form>
  
     </div>
