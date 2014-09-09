@@ -1,40 +1,22 @@
-<!DOCTYPE html>
-<html>
-  <head>
-	<title>Customer Meter Quality List</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-	{% load bootstrap3 %}
-	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-	<!--[if lt IE 9]>
-	  <script src="../../assets/js/html5shiv.js"></script>
-	  <script src="../../assets/js/respond.min.js"></script>
-	<![endif]-->
-	{# Load CSS and JavaScript #}
-	<link href="{{STATIC_URL}}css/font-awesome.min.css" rel="stylesheet">
+{% extends "base.html" %}
+{% load bootstrap3 %}
 
-	{% bootstrap_css %}
-	{% bootstrap_javascript %}
-  <style type="text/css">
-	  body {
-	    padding-top: 60px;
-	  }
-  </style>
-  </head>
- <body>
+{# Load CSS and JavaScript #}
 
-<!-- Navigation -->
-{% include 'navbar.html' %}
-
-{% load render_table from django_tables2 %}
-
-<section id="parts">
-{% block content %}
-  <div class="container">
-	<h1>Customer Meter Quality Items</h1>
-	{% render_table table %}
-  </div>
-{% endblock %}
-</section>
-
-</html>
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% block title %}Customer Common Quality List{% endblock %}
+{% block toggle_login %}{% endblock %}
+	{% block heading %}
+	{% endblock %}
+	{% load render_table from django_tables2 %}
+	<section id="parts">
+		{% block content %}
+		{# Display django.contrib.messages as Bootstrap alerts #}
+		{% bootstrap_messages %}
+			  <div>
+				<h1>Customer Meter Quality Items</h1>
+				{% render_table table %}
+			  </div>
+		{% endblock %}
+	</section>

@@ -167,7 +167,7 @@ def __this_year_top_five(request, data):
 		total_count = 0
 		for m in range(1, now.month+1):
 			month = {}
-			month['month'] = datetime.date(this_year,m,1).strftime("%B")
+			month['month'] = datetime.date(this_year,m,1).strftime("%b")
 			count = ElsterMeterTrack.objects.filter(
 				rma_create_date__gte=datetime.date(this_year,m,1),
 				rma_create_date__lte=datetime.date(this_year,m,calendar.monthrange(this_year,m)[1]),
@@ -185,7 +185,7 @@ def __this_year_top_five(request, data):
 	grand_total = 0
 	month_list = []
 	for m in range(1, now.month+1):
-		month_list.append(datetime.date(this_year,m,1).strftime("%B"))
+		month_list.append(datetime.date(this_year,m,1).strftime("%b"))
 		total = 0
 		for d in top_five_this_year: 
 			count = ElsterMeterTrack.objects.filter(
