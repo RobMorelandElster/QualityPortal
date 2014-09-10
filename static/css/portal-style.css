@@ -1,9 +1,13 @@
 
-	div.table-container {
-		background-image: none !important;
-		background-color: white !important; 
-		color: black; 
-		display: inline-table;
-		border-radius:1em;
-		margin-bottom:1em;
-	}
+div.table-container {
+	background-image: none !important;
+	background-color: white !important; 
+	color: black; 
+	display: inline-table;
+	border-radius:1em;
+	margin-bottom:1em;
+}
+
+div.fixed-max-width-800 {
+   max-width:800px; 
+}
