@@ -11,3 +11,25 @@ div.table-container {
 div.fixed-max-width-800 {
    max-width:800px; 
 }
+
+::-webkit-input-placeholder {
+    color:    #666;
+}
+:-moz-placeholder {
+    color:    #666;
+}
+::-moz-placeholder {
+    color:    #666;
+}
+:-ms-input-placeholder {
+    color:    #666;
+}
+
+input {
+    color:black;
+    background:white;    
+    padding:3px;
+    margin:5px;
+    font-family:Arial;
+    border:1px solid #666;
+}
