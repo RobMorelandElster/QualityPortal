@@ -25,19 +25,21 @@ def contact(request):
 
 @login_required()
 def elster_meter_q_list(request):
+	template = 'portal/elster_meter_q_list.html'
 	# Retrieve 
 	meters = ElsterMeterTrack.objects.all().order_by('rma_receive_date')
 	table = ElsterMeterTrackTable(meters)
 	RequestConfig(request,paginate={"per_page": ITEMS_PER_PAGE}).configure(table)
-	return render(request, 'portal/elster_meter_q_list.html', {'table': table})
+	return render(request, template, {'table': table})
 
 @login_required()
 def cust_meter_q_list(request):
 	# Retrieve 
+	template = 'portal/cust_meter_q_list.html'	
 	meters = CustomerMeterTrack.objects.all().order_by('failure_date')
 	table = CustomerMeterTrackTable(meters)
 	RequestConfig(request,paginate={"per_page": ITEMS_PER_PAGE}).configure(table)
-	return render(request, 'portal/cust_meter_q_list.html', {'table': table})
+	return render(request, template, {'table': table})
 
 def __top_five_all_time(request, data):
 	now = datetime.datetime.now()
@@ -302,8 +304,8 @@ def top_five_monthly_to_csv(request):
 	
 @login_required()
 def choose_elster_rma(request):
-	template = 'report/choose_elster_rma.html'
-	redirect_template = '/report/elster_rma'
+	template = 'portal/choose_elster_rma.html'
+	redirect_template = 'portal/elster_rma'
 	
 	user = request.user
 
@@ -332,4 +334,67 @@ def choose_elster_rma(request):
 		data['form'] = form
 
 	return render(request, template, data)
+
+@login_required()
+def elster_rma_serial(request, serial):
+	#template = 'portal/elster_rma_serial.html'
+	template = 'portal/elster_meter_q_list.html'
+	try:
+		rma = ElsterMeterTrack.objects.filter(elster_serial_number=serial)
+	except Exception as err:
+		messages.error(request, 'Error %s looking up serial: %s' %(str(err),serial))
+		return HttpResponseRedirect('/')
+	if  len(rma) == 0:
+		messages.error(request, 'No records for elster serial#: %s' %serial, fail_silently=True)
+		return HttpResponseRedirect('/')
+		
+	'''
+	form = EnergyUsageForm()
+	form.fields["start_date"].initial = datetime.date(int(year),int(month),int(day))
+	form.fields["period"].initial = num
+	data['form'] = form
+	'''
+	table = ElsterMeterTrackTable(rma)
+	RequestConfig(request,paginate={"per_page": ITEMS_PER_PAGE}).configure(table)
+	return render(request, template, {'table': table})
 	
+@login_required()
+def elster_rma(request, rma_number):
+	template = 'portal/elster_meter_q_list.html'
+	try:
+		rma = ElsterMeterTrack.objects.filter(rma_number=rma_number)
+	except Exception as err:
+		messages.error(request, 'Error %s looking up rma number: %s' %(str(err),rma_number))
+		return HttpResponseRedirect('/')
+	if  len(rma) == 0:
+		messages.error(request, 'No records for elster rma#: %s' %rma_number, fail_silently=True)
+		return HttpResponseRedirect('/')
+		
+	'''
+	form = EnergyUsageForm()
+	form.fields["start_date"].initial = datetime.date(int(year),int(month),int(day))
+	form.fields["period"].initial = num
+	data['form'] = form
+	'''
+	table = ElsterMeterTrackTable(rma)
+	RequestConfig(request,paginate={"per_page": ITEMS_PER_PAGE}).configure(table)
+	return render(request, template, {'table': table})
+
+@login_required()
+def edit_elster_rma(request, id=None):
+	form_args = {}
+	emt = get_object_or_404(ElsterMeterTrack, pk=id)
+	# else create new ElsterMeterTrack...
+	if request.POST:
+		elster_meter_track_form = ElsterMeterTrackForm(request.POST, instance = emt)
+		if elster_meter_track_form.is_valid():
+			emt = elster_meter_track_form.save(commit=True)
+	else:
+		elster_meter_track_form = ElsterMeterTrackForm(instance = emt)
+		
+	return render_to_response('portal/elster_meter_track.html',
+			{
+			'elster_meter_track_form': elster_meter_track_form
+			},
+			context_instance=RequestContext(request)
+		)

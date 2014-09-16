@@ -8,12 +8,13 @@ counter = itertools.count()
 
 
 class ElsterMeterTrackTable(tables.Table):
+	rma_number = tables.TemplateColumn('<a href="/elster_rma/{{record.rma_number}}">{{record.rma_number}}</a>')
 	#name = tables.TemplateColumn('<a href="/inventory/{{record.id}}">{{record.name}}</a>')
-	#edit = tables.TemplateColumn('<a href="/inventory/part/edit/{{record.id}}"><i class="glyphicon glyphicon-edit"></i></a>',verbose_name = ("Action"), orderable=False)
+	edit = tables.TemplateColumn('<a href="/elster_rma_edit/{{record.id}}"><i class="glyphicon glyphicon-edit"></i></a>',verbose_name = ("Edit"), orderable=False)
 	class Meta:
 		model = ElsterMeterTrack
 		# add class="paleblue" to <table> tag
-		#sequence = ('manufacture_number', 'edit', )
+		sequence = ('edit','elster_serial_number',  )
 		exclude = ('id','defect_id' )
 		attrs = {"class": "table table-striped"}
 		template = ('table.html')

@@ -178,5 +178,5 @@ ACCOUNT_SIGNUP_FORM_CLASS = 'account.forms.SignupForm'
 if (DEBUG):
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-ITEMS_PER_PAGE = 20
+ITEMS_PER_PAGE = 15
 
