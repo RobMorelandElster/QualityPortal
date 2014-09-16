@@ -83,7 +83,7 @@ class ElsterMeterTrack(models.Model):
 	manufacture_date = models.DateField(null=True, blank=True)
 	#purchase_date = models.DateField(null=True, blank=True)
 	#ship_date = models.DateField(null=True, blank=True)
-	rma_number = models.CharField(max_length=100, null=True, blank=True, verbose_name="Elster assigned RMA Number")
+	rma_number = models.CharField(max_length=100, null=True, blank=True, verbose_name="Elster RMA Number")
 	rma_create_date = models.DateField(null=True, blank=True)
 	rma_receive_date = models.DateField(null=True, blank=True)
 	rma_complete_date = models.DateField(null=True, blank=True)

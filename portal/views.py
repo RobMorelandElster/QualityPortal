@@ -337,7 +337,6 @@ def choose_elster_rma(request):
 
 @login_required()
 def elster_rma_serial(request, serial):
-	#template = 'portal/elster_rma_serial.html'
 	template = 'portal/elster_meter_q_list.html'
 	try:
 		rma = ElsterMeterTrack.objects.filter(elster_serial_number=serial)
@@ -356,7 +355,33 @@ def elster_rma_serial(request, serial):
 	'''
 	table = ElsterMeterTrackTable(rma)
 	RequestConfig(request,paginate={"per_page": ITEMS_PER_PAGE}).configure(table)
-	return render(request, template, {'table': table})
+	return render(request, template, {'table': table, 'drill_down': serial})
+	
+@login_required()
+def elster_rma_date_range(request, byear, bmonth, bday, eyear, emonth, eday):
+	template = 'portal/elster_meter_q_list.html'
+	from_to_range_str = 'range %s-%s-%s, to: %s-%s-%s'%(byear, bmonth, bday, eyear, emonth, eday)
+	from_date = datetime.date(int(byear),int(bmonth),int(bday))
+	to_date = datetime.date(int(eyear),int(emonth),int(eday))
+	
+	try:
+		rma = ElsterMeterTrack.objects.filter(rma_create_date__gte=from_date, rma_create_date__lte=to_date).order_by('rma_create_date')
+	except Exception as err:
+		messages.error(request, 'Error %s searching for Elster Meter Tracks %s' %(str(err), from_to_range_str))
+		return HttpResponseRedirect('/')
+	if  len(rma) == 0:
+		messages.error(request, 'No records for elster meter tracks from create date:%s to:%s' %(from_date, to_date), fail_silently=True)
+		return HttpResponseRedirect('/')
+		
+	'''
+	form = EnergyUsageForm()
+	form.fields["start_date"].initial = datetime.date(int(year),int(month),int(day))
+	form.fields["period"].initial = num
+	data['form'] = form
+	'''
+	table = ElsterMeterTrackTable(rma)
+	RequestConfig(request,paginate={"per_page": ITEMS_PER_PAGE}).configure(table)
+	return render(request, template, {'table': table, 'drill_down': from_to_range_str})
 	
 @login_required()
 def elster_rma(request, rma_number):
@@ -378,22 +403,34 @@ def elster_rma(request, rma_number):
 	'''
 	table = ElsterMeterTrackTable(rma)
 	RequestConfig(request,paginate={"per_page": ITEMS_PER_PAGE}).configure(table)
-	return render(request, template, {'table': table})
+	return render(request, template, {'table': table, 'drill_down': rma_number})
+
+def is_elster_user(user):
+	return user.groups.filter(name='Elster')
+
+def is_customer_user(user):
+	return user.groups.filter(name='Customer')
 
 @login_required()
 def edit_elster_rma(request, id=None):
+	template = 'portal/elster_meter_track.html'
 	form_args = {}
 	emt = get_object_or_404(ElsterMeterTrack, pk=id)
 	# else create new ElsterMeterTrack...
 	if request.POST:
-		elster_meter_track_form = ElsterMeterTrackForm(request.POST, instance = emt)
-		if elster_meter_track_form.is_valid():
-			emt = elster_meter_track_form.save(commit=True)
+			elster_meter_track_form = ElsterMeterTrackForm(request.POST, instance = emt)
+			if elster_meter_track_form.is_valid():
+				if is_elster_user(request.user):
+					emt = elster_meter_track_form.save(commit=True)
+					messages.info(request, 'Record updated')
+				else:
+					messages.error(request, 'User: %s is not authorized to update Elster RMA Records' %request.user, fail_silently=False)
 	else:
 		elster_meter_track_form = ElsterMeterTrackForm(instance = emt)
 		
-	return render_to_response('portal/elster_meter_track.html',
+	return render_to_response(template,
 			{
+
 			'elster_meter_track_form': elster_meter_track_form
 			},
 			context_instance=RequestContext(request)

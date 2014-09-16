@@ -17,7 +17,13 @@
       </div>
       <div class="collapse navbar-collapse navbar-ex1-collapse">
         <ul id="nav" class="nav navbar-nav navbar-right">
-        	<li><a href="{% url 'index' %}"><i class="fa fa-home fa-fw"></i>Home</a></li>
+		<li class="dropdown">
+			<a href="#" data-toggle="dropdown" id="dropdownMenu2" class="dropdown-toggle"><i class="fa fa-sitemap fa-fw"></i>Site<b class="caret"></b></a>
+			<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2">
+				<li class=""><a href="{% url 'index' %}"><i class="fa fa-home fa-fw"></i>Index</a></li>
+				<li class=""><a href="/admin"><i class="fa fa-wrench fa-fw"></i>Administration</a></li>
+				<li class=""><a href="{% url 'contact_us' %}"><i class="fa fa-question fa-fw"></i>Questions</a></li>
+			</ul>
 		{% if request.user.is_authenticated %}
 		<li class="dropdown">
 			<a href="#" data-toggle="dropdown" id="dropdownMenu2" class="dropdown-toggle"><i class="fa fa-medkit fa-fw"></i>Quality<b class="caret"></b></a>
@@ -30,14 +36,17 @@
     		<li class="dropdown">
 			<a href="#" data-toggle="dropdown" id="dropdownMenu1" class="dropdown-toggle"><i class="fa fa-user fa-fw"></i>{{ user }}<b class="caret"></b></a>
 			<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-	 				<li role="presentation" class="{% block navbar-login %}{% endblock %}"><a href="{% url 'account_login' %}"><i class="fa fa-sign-in fa-fw"></i>Login</a></li>     
-	 				{% if request.user.is_authenticated %}
-	 				<li role="presentation" class="{% block navbar-logout %}{% endblock %}"><a href="{% url 'account_logout' %}"><i class="fa fa-sign-out fa-fw"></i>Logout</a></li>
-	 				<li role="presentation" class="{% block navbar-pass-change %}{% endblock %}"><a href="{% url 'account_change_password' %}"><i class="fa fa-wrench fa-fw"></i>Change Password</a></li>
-	 				<li role="presentation" class="{% block navbar-email %}{% endblock %}"><a href="{% url 'account_email' %}"><i class="fa fa-envelope fa-fw"></i>Account Email</a></li>
-	 				{% endif %}
-    			 	</ul>
-		<li ><a href="{% url 'contact_us' %}"><i class="fa fa-mobile fa-fw"></i>Contact</a></li>
+				{% if	request.user.is_anonymous %}
+				<li role="presentation" class="{% block navbar-login %}{% endblock %}"><a href="{% url 'account_login' %}"><i class="fa fa-sign-in fa-fw"></i>Login</a></li>     
+				{% endif %}
+				{% if request.user.is_authenticated %}
+				<li role="presentation" class="{% block navbar-pass-change %}{% endblock %}"><a href="{% url 'account_change_password' %}"><i class="fa fa-wrench fa-fw"></i>Change Password</a></li>
+				<li role="presentation" class="{% block navbar-email %}{% endblock %}"><a href="{% url 'account_email' %}"><i class="fa fa-envelope fa-fw"></i>Account Email</a></li>
+				{% endif %}
+			</ul>
+			{% if request.user.is_authenticated %}
+			<li role="presentation" class="{% block navbar-logout %}{% endblock %}"><a href="{% url 'account_logout' %}"><i class="fa fa-sign-out fa-fw"></i>Logout</a></li>
+			{% endif %}
     		</ul>
       </div><!--/.nav-collapse -->
   </div>

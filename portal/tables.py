@@ -6,11 +6,22 @@ from portal.models import *
 
 counter = itertools.count()
 
+class DivWrappedColumn(tables.Column):
+
+    def __init__(self, classname=None, *args, **kwargs):
+        self.classname=classname
+        super(DivWrappedColumn, self).__init__(*args, **kwargs)
+
+    def render(self, value):
+        return mark_safe("<div class='" + self.classname + "' >" +value+"</div>")
 
 class ElsterMeterTrackTable(tables.Table):
 	rma_number = tables.TemplateColumn('<a href="/elster_rma/{{record.rma_number}}">{{record.rma_number}}</a>')
 	#name = tables.TemplateColumn('<a href="/inventory/{{record.id}}">{{record.name}}</a>')
 	edit = tables.TemplateColumn('<a href="/elster_rma_edit/{{record.id}}"><i class="glyphicon glyphicon-edit"></i></a>',verbose_name = ("Edit"), orderable=False)
+	complaint = DivWrappedColumn(classname='custom_column')
+	finding = DivWrappedColumn(classname='custom_column')
+	action_taken = DivWrappedColumn(classname='custom_column')
 	class Meta:
 		model = ElsterMeterTrack
 		# add class="paleblue" to <table> tag

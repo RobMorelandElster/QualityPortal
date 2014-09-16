@@ -33,3 +33,18 @@ input {
     font-family:Arial;
     border:1px solid #666;
 }
+
+.concat div { 
+	overflow: hidden; 
+	-ms-text-overflow: ellipsis; 
+	-o-text-overflow: ellipsis; 
+	text-overflow: ellipsis; 
+	white-space: nowrap; 
+	width: inherit; 
+}
+
+div.custom_column {
+  white-space: normal;
+  width: 200px;
+  height: 4em;
+}
