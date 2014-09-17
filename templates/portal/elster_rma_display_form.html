@@ -47,15 +47,13 @@ function HideOrShow(controlToHide)
         document.getElementById('rma_number').style.display = 'none';
         document.getElementById('date_range').disabled = 'disabled';
         document.getElementById('rma_number').disabled = 'disabled';
-        // Display the requested region
-        document.getElementById
-            (controlToHide).style.display = 'block';
-        document.getElementById
-            (controlToHide).disabled = '';
-    }
-    else
-    {
-        alert('Sorry, your browser doesn\'t support this');
+		// Display the requested region
+		document.getElementById
+			(controlToHide).style.display = 'block';
+		document.getElementById
+			(controlToHide).disabled = '';
+		$('input[type=text]').val('');  
+		$('#textarea').val(''); 
     }
 }
 
