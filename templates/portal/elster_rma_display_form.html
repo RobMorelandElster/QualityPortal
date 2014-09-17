@@ -36,6 +36,38 @@
 	});
 	});
 	</script>
+
+<script type="text/javascript">
+function HideOrShow(controlToHide)
+{
+    if (document.getElementById)
+    {
+        // Hide all regions
+        document.getElementById('date_range').style.display = 'none';
+        document.getElementById('rma_number').style.display = 'none';
+        document.getElementById('date_range').disabled = 'disabled';
+        document.getElementById('rma_number').disabled = 'disabled';
+        // Display the requested region
+        document.getElementById
+            (controlToHide).style.display = 'block';
+        document.getElementById
+            (controlToHide).disabled = '';
+    }
+    else
+    {
+        alert('Sorry, your browser doesn\'t support this');
+    }
+}
+
+</script>
+
+
+    <input name="radio1" type="radio" checked="checked"
+        value="" onclick="HideOrShow('date_range')" /> Search by Date Range<br />
+    <input name="radio1" type="radio" 
+        value="" onclick="HideOrShow('rma_number')" /> Search by RMA Number<br />
+<br/>
+
 <div style="background-color:white;border-radius:1em;margin-bottom:1em" >
 	<div class="row"> 
 		<div class="container" style="margin-bottom:1em">
@@ -50,10 +82,11 @@
 					{% if form.start_date.errors %}
 						<div class="alert alert-danger"> {{ form.start_date.errors }}</div>
 					{% endif %}
+					<div id='date_range' >
 					<dt>
 						RMA Create start date
 					</dt>
-					<dd>
+					<dd >
 						{{form.start_date}}
 						<span class="help-block">
 							Enter the beginning RMA create date for search</span>
@@ -66,12 +99,15 @@
 						<span class="help-block">
 							Enter the ending RMA create date for search</span>
 					</dd>
-					<dt>Elster RMA number</dt>
-					<dd> 	
-						{{form.rma_number}}
-						<span class="help-block">
-							Enter RMA or leave blank</span>
-					</dd>
+					</div>
+					<div id='rma_number' style="display:none;">
+						<dt>Elster RMA number</dt>
+						<dd> 	
+							{{form.rma_number}}
+							<span class="help-block">
+								Enter RMA or leave blank</span>
+						</dd>
+					</div>
 					<dt><input class="btn btn-primary btn-md" type="submit" value="Find RMA Records" /></dt>
 				</dl>
 				</form>

@@ -397,7 +397,7 @@ def elster_rma_date_range(request, byear, bmonth, bday, eyear, emonth, eday):
 def elster_rma(request, rma_number):
 	template = 'portal/elster_meter_q_list.html'
 	try:
-		rma = ElsterMeterTrack.objects.filter(rma_number=rma_number)
+		rma = ElsterMeterTrack.objects.filter(rma_number__startswith=rma_number)
 		rec_count = len(rma)
 	except Exception as err:
 		messages.error(request, 'Error %s looking up rma number: %s' %(str(err),rma_number))
