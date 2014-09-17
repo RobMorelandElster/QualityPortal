@@ -1,0 +1,81 @@
+  <style class="text/css">
+		 ul li {
+			   list-style: none;
+		 }
+  
+	 FORM DT {
+	  clear:both;
+	  width:33%;
+	  float:left;
+	  text-align:left;
+	 }
+  
+	 FORM DD {
+	  float:left;
+	  width:66%;
+	  margin:0 0 0.5em 0.25em;
+	 }
+	 </style>
+  
+   <script src="{{STATIC_URL}}js/jquery.min.js" type="text/javascript"></script>
+   <link rel="stylesheet" href="{{STATIC_URL}}css/jquery-ui.css">
+  
+   <script src="{{STATIC_URL}}js/jquery-ui.js"></script>
+   <script>
+	$(function() {
+	$( ".datepicker" ).datepicker({
+	 changeMonth: true,
+	 changeYear: true,
+	 today: true,
+	 yearRange: "2008:2018",
+	 dateFormat: 'yy-mm-dd',
+	 showOn: "button",
+	 buttonImage: "{{STATIC_URL}}img/icon_calendar.gif",
+	 // You can put more options here.
+  
+	});
+	});
+	</script>
+<div style="background-color:white;border-radius:1em;margin-bottom:1em" >
+	<div class="row"> 
+		<div class="container" style="margin-bottom:1em">
+			<div class="col-md-8" style="color: black; ">
+				{% if choose_type == 'customer' %}
+					<form action="{% url 'choose_elster_rma' %}" method="post">{% csrf_token %}
+				{% else %}
+					<form action="{% url 'choose_elster_rma' %}" method="post">{% csrf_token %}
+				{% endif %}
+				
+				<dl>
+					{% if form.start_date.errors %}
+						<div class="alert alert-danger"> {{ form.start_date.errors }}</div>
+					{% endif %}
+					<dt>
+						RMA Create start date
+					</dt>
+					<dd>
+						{{form.start_date}}
+						<span class="help-block">
+							Enter the beginning RMA create date for search</span>
+					</dd>
+					<dt>
+						RMA Create end date
+					</dt>
+					<dd>
+						{{form.end_date}}
+						<span class="help-block">
+							Enter the ending RMA create date for search</span>
+					</dd>
+					<dt>Elster RMA number</dt>
+					<dd> 	
+						{{form.rma_number}}
+						<span class="help-block">
+							Enter RMA or leave blank</span>
+					</dd>
+					<dt><input class="btn btn-primary btn-md" type="submit" value="Find RMA Records" /></dt>
+				</dl>
+				</form>
+			</div>
+		</div>
+	  </div>
+</div>

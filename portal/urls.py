@@ -30,6 +30,7 @@ urlpatterns += patterns('',
 	url(r'^elster_rma/(?P<rma_number>\S+)/$', 'portal.views.elster_rma', name='elster_rma'),
 	url(r'^elster_rma_date_range/(?P<byear>\d{4})-(?P<bmonth>\d{2})-(?P<bday>\d{2})/(?P<eyear>\d{4})-(?P<emonth>\d{2})-(?P<eday>\d{2})/$', 'portal.views.elster_rma_date_range', name='elster_rma_date_range'),
 	url(r'^elster_rma_edit/(?P<id>\d+)?$', views.edit_elster_rma, name='edit_elster_rma'),
+	url(r'^choose_elster_rma/$', 'portal.views.choose_elster_rma', name='choose_elster_rma'),
 )
 	
 urlpatterns += patterns('',

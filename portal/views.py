@@ -307,34 +307,40 @@ def top_five_monthly_to_csv(request):
 @login_required()
 def choose_elster_rma(request):
 	template = 'portal/choose_elster_rma.html'
-	redirect_template = 'portal/elster_rma'
+	redirect_template = '/elster_rma_date_range'
+	redirect_template_rma = '/elster_rma'
 	
 	user = request.user
 
 	form = ElsterMeterTrackSearchForm(request.POST or None)
+	data = {}
 	data['form'] = form
 	if request.method == 'POST': # If the form has been submitted...
 		if form.is_valid(): # All validation rules pass
 
 			start_date = None
-			period = None
+			end_date = None
 			rma_number = None
 			start_date = form.cleaned_data['start_date']
+			end_date = form.cleaned_data['end_date']
 
 			if start_date:
 				start_date = str(start_date)
-			period = form.cleaned_data['period']
+			if end_date:
+				end_date = str(end_date)
+				
 			rma_number = form.cleaned_data['rma_number']
-			#if period:
-			#	period = str(period[0])
-
-			return HttpResponseRedirect('%s/%s/%02d' % (redirect_template, start_date, int(period))) # Redirect after POST
+			if len(rma_number):
+				return HttpResponseRedirect('%s/%s' % (redirect_template_rma, rma_number)) # Redirect after POST\
+			else:
+				return HttpResponseRedirect('%s/%s/%s' % (redirect_template, start_date, end_date)) # Redirect after POST
 		else:
+			data['form'] = form
 			return render(request, template, data)
 	else:
 		form = ElsterMeterTrackSearchForm() # An unbound form
-		data['form'] = form
-
+	data['form'] = form
+	print data
 	return render(request, template, data)
 
 @login_required()

@@ -1,0 +1,29 @@
+ {% extends "base.html" %}
+ {% load bootstrap3 %}
+ 
+ {# Load CSS and JavaScript #}
+ 
+ {% bootstrap_css %}
+ {% bootstrap_javascript %}
+ 
+ {% block title %}Choose Date{% endblock %}
+ 
+ {% block toggle_login %}{% endblock %}
+ 
+ {% block heading %}
+ {% endblock %}
+ 
+ {% block content %}
+
+<h1 class="text-center" >Elster Quality Track<br/><small style="color:white;">&nbsp;RMA Records</small></h1>
+{# Display django.contrib.messages as Bootstrap alerts #}
+
+{% bootstrap_messages %}
+{% if form.errors %}
+	<div class="alert alert-warning alert-dismissible" role="alert">
+		<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+		{{form.errors}}
+	</div>
+{% endif %}
+{% include "portal/elster_rma_display_form.html" %}
+ {% endblock %}
