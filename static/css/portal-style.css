@@ -43,8 +43,9 @@ input {
 	width: inherit; 
 }
 
-div.custom_column {
-  white-space: normal;
+div.long_text_column {
+  #white-space: normal;
+  white-space: no-wrap;
   width: 200px;
-  height: 4em;
+  #height: 4em;
 }

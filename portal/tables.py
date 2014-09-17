@@ -19,9 +19,11 @@ class ElsterMeterTrackTable(tables.Table):
 	rma_number = tables.TemplateColumn('<a href="/elster_rma/{{record.rma_number}}">{{record.rma_number}}</a>')
 	#name = tables.TemplateColumn('<a href="/inventory/{{record.id}}">{{record.name}}</a>')
 	edit = tables.TemplateColumn('<a href="/elster_rma_edit/{{record.id}}"><i class="glyphicon glyphicon-edit"></i></a>',verbose_name = ("Edit"), orderable=False)
-	complaint = DivWrappedColumn(classname='custom_column')
-	finding = DivWrappedColumn(classname='custom_column')
-	action_taken = DivWrappedColumn(classname='custom_column')
+	complaint = DivWrappedColumn(classname='long_text_column')
+	finding = DivWrappedColumn(classname='long_text_column')
+	action_taken = DivWrappedColumn(classname='long_text_column')
+	defect = DivWrappedColumn(classname='long_text_column', accessor='defect.description',verbose_name='Root Cause Description')
+	meter_style = tables.Column(accessor='meter_style.style', verbose_name='Meter Type')
 	class Meta:
 		model = ElsterMeterTrack
 		# add class="paleblue" to <table> tag

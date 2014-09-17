@@ -28,18 +28,20 @@ def elster_meter_q_list(request):
 	template = 'portal/elster_meter_q_list.html'
 	# Retrieve 
 	meters = ElsterMeterTrack.objects.all().order_by('rma_receive_date')
+	rec_count = len(meters)
 	table = ElsterMeterTrackTable(meters)
 	RequestConfig(request,paginate={"per_page": ITEMS_PER_PAGE}).configure(table)
-	return render(request, template, {'table': table})
+	return render(request, template, {'table': table, 'rec_count': rec_count})
 
 @login_required()
 def cust_meter_q_list(request):
 	# Retrieve 
 	template = 'portal/cust_meter_q_list.html'	
 	meters = CustomerMeterTrack.objects.all().order_by('failure_date')
+	rec_count=len(meters)
 	table = CustomerMeterTrackTable(meters)
 	RequestConfig(request,paginate={"per_page": ITEMS_PER_PAGE}).configure(table)
-	return render(request, template, {'table': table})
+	return render(request, template, {'table': table, 'rec_count': rec_count})
 
 def __top_five_all_time(request, data):
 	now = datetime.datetime.now()
@@ -340,6 +342,7 @@ def elster_rma_serial(request, serial):
 	template = 'portal/elster_meter_q_list.html'
 	try:
 		rma = ElsterMeterTrack.objects.filter(elster_serial_number=serial)
+		rec_count = len(rma)
 	except Exception as err:
 		messages.error(request, 'Error %s looking up serial: %s' %(str(err),serial))
 		return HttpResponseRedirect('/')
@@ -355,7 +358,7 @@ def elster_rma_serial(request, serial):
 	'''
 	table = ElsterMeterTrackTable(rma)
 	RequestConfig(request,paginate={"per_page": ITEMS_PER_PAGE}).configure(table)
-	return render(request, template, {'table': table, 'drill_down': serial})
+	return render(request, template, {'table': table, 'drill_down': serial, 'rec_count': rec_count})
 	
 @login_required()
 def elster_rma_date_range(request, byear, bmonth, bday, eyear, emonth, eday):
@@ -366,6 +369,7 @@ def elster_rma_date_range(request, byear, bmonth, bday, eyear, emonth, eday):
 	
 	try:
 		rma = ElsterMeterTrack.objects.filter(rma_create_date__gte=from_date, rma_create_date__lte=to_date).order_by('rma_create_date')
+		rec_count = len(rma)
 	except Exception as err:
 		messages.error(request, 'Error %s searching for Elster Meter Tracks %s' %(str(err), from_to_range_str))
 		return HttpResponseRedirect('/')
@@ -381,13 +385,14 @@ def elster_rma_date_range(request, byear, bmonth, bday, eyear, emonth, eday):
 	'''
 	table = ElsterMeterTrackTable(rma)
 	RequestConfig(request,paginate={"per_page": ITEMS_PER_PAGE}).configure(table)
-	return render(request, template, {'table': table, 'drill_down': from_to_range_str})
+	return render(request, template, {'table': table, 'drill_down': from_to_range_str, 'rec_count':rec_count})
 	
 @login_required()
 def elster_rma(request, rma_number):
 	template = 'portal/elster_meter_q_list.html'
 	try:
 		rma = ElsterMeterTrack.objects.filter(rma_number=rma_number)
+		rec_count = len(rma)
 	except Exception as err:
 		messages.error(request, 'Error %s looking up rma number: %s' %(str(err),rma_number))
 		return HttpResponseRedirect('/')
@@ -403,7 +408,7 @@ def elster_rma(request, rma_number):
 	'''
 	table = ElsterMeterTrackTable(rma)
 	RequestConfig(request,paginate={"per_page": ITEMS_PER_PAGE}).configure(table)
-	return render(request, template, {'table': table, 'drill_down': rma_number})
+	return render(request, template, {'table': table, 'drill_down': rma_number, 'rec_count':rec_count})
 
 def is_elster_user(user):
 	return user.groups.filter(name='Elster')
