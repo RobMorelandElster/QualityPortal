@@ -23,7 +23,7 @@ class ElsterMeterTrackTable(tables.Table):
 	finding = DivWrappedColumn(classname='long_text_column')
 	action_taken = DivWrappedColumn(classname='long_text_column')
 	defect = DivWrappedColumn(classname='long_text_column', accessor='defect.description',verbose_name='Root Cause Description')
-	meter_style = tables.Column(accessor='meter_style.style', verbose_name='Meter Type')
+	#meter_style = tables.Column(accessor='meter_style.meter_style_description', verbose_name='Meter Type')
 	class Meta:
 		model = ElsterMeterTrack
 		# add class="paleblue" to <table> tag

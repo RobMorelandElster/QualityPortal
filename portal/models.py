@@ -15,9 +15,9 @@ def utc_to_local(utc_dt):
 class ElsterMeterType(models.Model):
 	def __unicode__(self):
 		if self.description:
-			return ("%s-%s-%s"%(self.style, self.category, self.description))
+			return ("%s"%(self.description))
 		else:
-			return("%s-%s-No Desc"%(self.style, self.category))
+			return("%s"%(self.style))
 		
 	OTHER_M = 'OT'
 	REX = 'ZF'
