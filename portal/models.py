@@ -65,7 +65,7 @@ class ElsterMeterType(models.Model):
 class ElsterRmaDefect(models.Model):
 	def __unicode__(self):
 		if self.description:
-			return ("%03d-%s"%(self.defect_id, self.description))
+			return (self.description)
 		else:
 			return ("%03d"%self.defect_id)
 		

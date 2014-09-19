@@ -56,60 +56,60 @@ function HideOrShow(controlToHide)
 		$('#textarea').val(''); 
     }
 }
-
 </script>
-
-
-    <input name="radio1" type="radio" checked="checked"
-        value="" onclick="HideOrShow('date_range')" /> Search by Date Range<br />
-    <input name="radio1" type="radio" 
-        value="" onclick="HideOrShow('rma_number')" /> Search by RMA Number<br />
-<br/>
-
-<div style="background-color:white;border-radius:1em;margin-bottom:1em" >
-	<div class="row"> 
-		<div class="container" style="margin-bottom:1em">
-			<div class="col-md-8" style="color: black; ">
-				{% if choose_type == 'customer' %}
-					<form action="{% url 'choose_elster_rma' %}" method="post">{% csrf_token %}
-				{% else %}
-					<form action="{% url 'choose_elster_rma' %}" method="post">{% csrf_token %}
-				{% endif %}
-				
-				<dl>
-					{% if form.start_date.errors %}
-						<div class="alert alert-danger"> {{ form.start_date.errors }}</div>
-					{% endif %}
-					<div id='date_range' >
-					<dt>
-						RMA Create start date
-					</dt>
-					<dd >
-						{{form.start_date}}
-						<span class="help-block">
-							Enter the beginning RMA create date for search</span>
-					</dd>
-					<dt>
-						RMA Create end date
-					</dt>
-					<dd>
-						{{form.end_date}}
-						<span class="help-block">
-							Enter the ending RMA create date for search</span>
-					</dd>
-					</div>
-					<div id='rma_number' style="display:none;">
-						<dt>Elster RMA number</dt>
-						<dd> 	
-							{{form.rma_number}}
+<section id="search"> 
+	<div style="background-color:white;border-radius:1em;margin-bottom:1em" >
+		<div class="row"> 
+			<form action="{% url 'choose_elster_rma' %}" method="post">{% csrf_token %}
+			<div class="container" style="margin-bottom:1em">
+				<div class="col-md-4" style="color: black; ">
+					<br/>
+					<dl><input name="radio1" type="radio" 
+						{% if search_type == 'date_range' %}checked="checked" {% endif %}
+						value="" onclick="HideOrShow('date_range')" /> Search by Date Range</dl>
+					<dl><input name="radio1" type="radio" 
+						{% if search_type == 'rma' %}checked="checked" {% endif %}
+						value="" onclick="HideOrShow('rma_number')" /> Search by RMA Number</dl>
+					<dl><input class="btn btn-primary btn-md" type="submit" value="Find RMA Records" /></dl>
+				</div>
+				<div class="col-md-8" style="color: black; ">
+					<br/>
+					<dl>
+						{% if form.start_date.errors %}
+							<div class="alert alert-danger"> {{ form.start_date.errors }}</div>
+						{% endif %}
+						<div id='date_range'  
+							{% if search_type == 'rma' %}style="display:none;" {% endif %} >
+						<dt>
+							RMA Create start date
+						</dt>
+						<dd >
+							{{form.start_date}}
 							<span class="help-block">
-								Enter RMA or leave blank</span>
+								Enter the beginning RMA create date for search</span>
 						</dd>
-					</div>
-					<dt><input class="btn btn-primary btn-md" type="submit" value="Find RMA Records" /></dt>
-				</dl>
+						<dt>
+							RMA Create end date
+						</dt>
+						<dd>
+							{{form.end_date}}
+							<span class="help-block">
+								Enter the ending RMA create date for search</span>
+						</dd>
+						</div>
+						<div id='rma_number' {% if search_type == 'date_range' %}style="display:none;" {% endif %} >
+							<dt>Elster RMA number</dt>
+							<dd> 	
+								{{form.rma_number}}
+								<span class="help-block">
+									Enter RMA or leave blank</span>
+							</dd>
+						</div>
+						
+					</dl>
+				</div>
 				</form>
 			</div>
-		</div>
-	  </div>
-</div>
+		  </div>
+	</div>
+</section id="search">

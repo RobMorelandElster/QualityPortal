@@ -12,6 +12,9 @@ from django.forms.models import ModelForm
 from portal.models import *
 
 class ElsterMeterTrackForm(ModelForm):
+	complaint = forms.CharField(widget=forms.Textarea())
+	finding =  forms.CharField(widget=forms.Textarea())
+	action_taken =  forms.CharField(widget=forms.Textarea())
 	class Meta:
 			model = ElsterMeterTrack
 			fields = '__all__'
@@ -78,4 +81,7 @@ class ElsterMeterTrackSearchForm(forms.Form):
 		if len(data):
 			if b_date or  e_date:
 				raise forms.ValidationError("Only enter RMA if Dates are not set")
+		else:
+			if (b_date and e_date) == None:
+				raise forms.ValidationError("Enter dates if RMA not entered")
 		return data

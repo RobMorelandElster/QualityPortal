@@ -26,19 +26,63 @@ def contact(request):
 @login_required()
 def elster_meter_q_list(request):
 	template = 'portal/elster_meter_q_list.html'
+	redirect_template = '/elster_rma_date_range'
+	redirect_template_rma = '/elster_rma'
+	choose_template = '/choose_elster_rma'
+	
 	# Retrieve 
-	meters = ElsterMeterTrack.objects.all().order_by('rma_receive_date')
-	rec_count = len(meters)
+	meters = ElsterMeterTrack.objects.all().order_by('rma_create_date')
+	rec_count = meters.count()
 	table = ElsterMeterTrackTable(meters)
+	
+	start_date = None
+	if rec_count:
+		start_date = meters[0].rma_create_date
+		
+	form = ElsterMeterTrackSearchForm(request.POST or None)
+	data = {}
+	
+	data['form'] = form	
+	form.initial={'start_date': start_date, 'rma_number': ''}
+	
+	if request.method == 'POST': # If the form has been submitted...
+		if form.is_valid(): # All validation rules pass
+
+			start_date = None
+			end_date = None
+			rma_number = None
+			start_date = form.cleaned_data['start_date']
+			end_date = form.cleaned_data['end_date']
+
+			if start_date:
+				start_date = str(start_date)
+			if end_date:
+				end_date = str(end_date)
+				
+			rma_number = form.cleaned_data['rma_number']
+			if len(rma_number):
+				return HttpResponseRedirect('%s/%s' % (redirect_template_rma, rma_number)) # Redirect after POST
+			else:
+				return HttpResponseRedirect('%s/%s/%s' % (redirect_template, start_date, end_date)) # Redirect after POST
+		else:
+			data['form'] = form
+			return render(request, template, data)
+
 	RequestConfig(request,paginate={"per_page": ITEMS_PER_PAGE}).configure(table)
-	return render(request, template, {'table': table, 'rec_count': rec_count})
+	return render(request, template, 
+		{'table': table, 
+			'drill_down': '', 
+			'rec_count':rec_count, 
+			'form': form,
+			'search_type': 'date_range',
+		})
 
 @login_required()
 def cust_meter_q_list(request):
 	# Retrieve 
 	template = 'portal/cust_meter_q_list.html'	
 	meters = CustomerMeterTrack.objects.all().order_by('failure_date')
-	rec_count=len(meters)
+	rec_count=meters.count()
 	table = CustomerMeterTrackTable(meters)
 	RequestConfig(request,paginate={"per_page": ITEMS_PER_PAGE}).configure(table)
 	return render(request, template, {'table': table, 'rec_count': rec_count})
@@ -309,9 +353,6 @@ def choose_elster_rma(request):
 	template = 'portal/choose_elster_rma.html'
 	redirect_template = '/elster_rma_date_range'
 	redirect_template_rma = '/elster_rma'
-	
-	user = request.user
-
 	form = ElsterMeterTrackSearchForm(request.POST or None)
 	data = {}
 	data['form'] = form
@@ -331,7 +372,7 @@ def choose_elster_rma(request):
 				
 			rma_number = form.cleaned_data['rma_number']
 			if len(rma_number):
-				return HttpResponseRedirect('%s/%s' % (redirect_template_rma, rma_number)) # Redirect after POST\
+				return HttpResponseRedirect('%s/%s' % (redirect_template_rma, rma_number)) # Redirect after POST
 			else:
 				return HttpResponseRedirect('%s/%s/%s' % (redirect_template, start_date, end_date)) # Redirect after POST
 		else:
@@ -340,31 +381,7 @@ def choose_elster_rma(request):
 	else:
 		form = ElsterMeterTrackSearchForm() # An unbound form
 	data['form'] = form
-	print data
 	return render(request, template, data)
-
-@login_required()
-def elster_rma_serial(request, serial):
-	template = 'portal/elster_meter_q_list.html'
-	try:
-		rma = ElsterMeterTrack.objects.filter(elster_serial_number=serial)
-		rec_count = len(rma)
-	except Exception as err:
-		messages.error(request, 'Error %s looking up serial: %s' %(str(err),serial))
-		return HttpResponseRedirect('/')
-	if  len(rma) == 0:
-		messages.error(request, 'No records for elster serial#: %s' %serial, fail_silently=True)
-		return HttpResponseRedirect('/')
-		
-	'''
-	form = EnergyUsageForm()
-	form.fields["start_date"].initial = datetime.date(int(year),int(month),int(day))
-	form.fields["period"].initial = num
-	data['form'] = form
-	'''
-	table = ElsterMeterTrackTable(rma)
-	RequestConfig(request,paginate={"per_page": ITEMS_PER_PAGE}).configure(table)
-	return render(request, template, {'table': table, 'drill_down': serial, 'rec_count': rec_count})
 	
 @login_required()
 def elster_rma_date_range(request, byear, bmonth, bday, eyear, emonth, eday):
@@ -372,49 +389,114 @@ def elster_rma_date_range(request, byear, bmonth, bday, eyear, emonth, eday):
 	from_to_range_str = 'range %s-%s-%s, to: %s-%s-%s'%(byear, bmonth, bday, eyear, emonth, eday)
 	from_date = datetime.date(int(byear),int(bmonth),int(bday))
 	to_date = datetime.date(int(eyear),int(emonth),int(eday))
+	redirect_template = '/elster_rma_date_range'
+	redirect_template_rma = '/elster_rma'
+	choose_template = '/choose_elster_rma'
 	
-	try:
-		rma = ElsterMeterTrack.objects.filter(rma_create_date__gte=from_date, rma_create_date__lte=to_date).order_by('rma_create_date')
-		rec_count = len(rma)
-	except Exception as err:
-		messages.error(request, 'Error %s searching for Elster Meter Tracks %s' %(str(err), from_to_range_str))
-		return HttpResponseRedirect('/')
-	if  len(rma) == 0:
-		messages.error(request, 'No records for elster meter tracks from create date:%s to:%s' %(from_date, to_date), fail_silently=True)
-		return HttpResponseRedirect('/')
-		
-	'''
-	form = EnergyUsageForm()
-	form.fields["start_date"].initial = datetime.date(int(year),int(month),int(day))
-	form.fields["period"].initial = num
+	form = ElsterMeterTrackSearchForm(request.POST or None)
+	data = {}
 	data['form'] = form
-	'''
+	form.initial={'start_date': from_date, 'end_date': to_date, 'rma_number': ''}
+	
+	if request.method == 'POST': # If the form has been submitted...
+		if form.is_valid(): # All validation rules pass
+
+			start_date = None
+			end_date = None
+			rma_number = None
+			start_date = form.cleaned_data['start_date']
+			end_date = form.cleaned_data['end_date']
+
+			if start_date:
+				start_date = str(start_date)
+			if end_date:
+				end_date = str(end_date)
+				
+			rma_number = form.cleaned_data['rma_number']
+			if len(rma_number):
+				return HttpResponseRedirect('%s/%s' % (redirect_template_rma, rma_number)) # Redirect after POST
+			else:
+				return HttpResponseRedirect('%s/%s/%s' % (redirect_template, start_date, end_date)) # Redirect after POST
+		else:
+			data['form'] = form
+			return render(request, template, data)
+	else:
+		try:
+			rma = ElsterMeterTrack.objects.filter(rma_create_date__gte=from_date, rma_create_date__lte=to_date).order_by('rma_create_date')
+			rec_count = rma.count()
+		except Exception as err:
+			messages.error(request, 'Error %s searching for Elster Meter Tracks %s' %(str(err), from_to_range_str))
+			return HttpResponseRedirect(choose_template)
+		if  len(rma) == 0:
+			messages.error(request, 'No records for elster meter tracks from create date:%s to:%s' %(from_date, to_date), fail_silently=True)
+			return HttpResponseRedirect(choose_template)
+		
+
 	table = ElsterMeterTrackTable(rma)
 	RequestConfig(request,paginate={"per_page": ITEMS_PER_PAGE}).configure(table)
-	return render(request, template, {'table': table, 'drill_down': from_to_range_str, 'rec_count':rec_count})
+	return render(request, template, 
+		{'table': table, 
+			'drill_down': from_to_range_str, 
+			'rec_count':rec_count, 
+			'form': form,
+			'search_type': 'date_range',
+		})
 	
 @login_required()
 def elster_rma(request, rma_number):
 	template = 'portal/elster_meter_q_list.html'
-	try:
-		rma = ElsterMeterTrack.objects.filter(rma_number__startswith=rma_number)
-		rec_count = len(rma)
-	except Exception as err:
-		messages.error(request, 'Error %s looking up rma number: %s' %(str(err),rma_number))
-		return HttpResponseRedirect('/')
-	if  len(rma) == 0:
-		messages.error(request, 'No records for elster rma#: %s' %rma_number, fail_silently=True)
-		return HttpResponseRedirect('/')
-		
-	'''
-	form = EnergyUsageForm()
-	form.fields["start_date"].initial = datetime.date(int(year),int(month),int(day))
-	form.fields["period"].initial = num
+	redirect_template = '/elster_rma_date_range'
+	redirect_template_rma = '/elster_rma'
+	choose_template = '/choose_elster_rma'
+
+	form = ElsterMeterTrackSearchForm(request.POST or None)
+	data = {}
 	data['form'] = form
-	'''
+	form.initial={'rma_number': rma_number,'start_date': None, 'end_date': None, }
+	
+	
+	if request.method == 'POST': # If the form has been submitted...
+		if form.is_valid(): # All validation rules pass
+
+			start_date = None
+			end_date = None
+			rma_number = None
+			start_date = form.cleaned_data['start_date']
+			end_date = form.cleaned_data['end_date']
+
+			if start_date:
+				start_date = str(start_date)
+			if end_date:
+				end_date = str(end_date)
+				
+			rma_number = form.cleaned_data['rma_number']
+			if len(rma_number):
+				return HttpResponseRedirect('%s/%s' % (redirect_template_rma, rma_number)) # Redirect after POST
+			else:
+				return HttpResponseRedirect('%s/%s/%s' % (redirect_template, start_date, end_date)) # Redirect after POST
+		else:
+			data['form'] = form
+			return render(request, template, data)
+	else:
+		try:
+			rma = ElsterMeterTrack.objects.filter(rma_number__startswith=rma_number)
+			rec_count = rma.count()
+		except Exception as err:
+			messages.error(request, 'Error %s looking up rma number: %s' %(str(err),rma_number))
+			return HttpResponseRedirect(choose_template)
+		if  len(rma) == 0:
+			messages.error(request, 'No records for elster rma#: %s' %rma_number, fail_silently=True)
+			return HttpResponseRedirect(choose_template)
+		
 	table = ElsterMeterTrackTable(rma)
 	RequestConfig(request,paginate={"per_page": ITEMS_PER_PAGE}).configure(table)
-	return render(request, template, {'table': table, 'drill_down': rma_number, 'rec_count':rec_count})
+	return render(request, template, 
+		{'table': table, 
+			'drill_down': rma_number, 
+			'rec_count':rec_count, 
+			'form': form,
+			'search_type': 'rma',
+		})
 
 def is_elster_user(user):
 	return user.groups.filter(name='Elster')

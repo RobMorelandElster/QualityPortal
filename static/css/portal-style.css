@@ -44,8 +44,12 @@ input {
 }
 
 div.long_text_column {
-  #white-space: normal;
-  white-space: no-wrap;
-  width: 200px;
-  #height: 4em;
+	#white-space: normal;
+	white-space: no-wrap;
+	width: 12em;
+	height: 1.3em;
+	overflow: hidden; 
+	-ms-text-overflow: ellipsis; 
+	-o-text-overflow: ellipsis; 
+	text-overflow: ellipsis; 
 }

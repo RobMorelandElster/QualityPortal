@@ -14,9 +14,9 @@
 		{% block content %}
 		{# Display django.contrib.messages as Bootstrap alerts #}
 		{% bootstrap_messages %}
-			  <div>
-				<h1>Customer Meter Quality Items</h1>
-				{% render_table table %}
-			  </div>
+		<h1>Customer Meter Quality Items</h1>
+		<div style="max-width: 968px; overflow-x:scroll; border-radius:1em;">
+			{% render_table table %}
+		</div>
 		{% endblock %}
 	</section>
