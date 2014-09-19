@@ -15,7 +15,7 @@
 	
 	{# Display django.contrib.messages as Bootstrap alerts #}
 	{% bootstrap_messages %}
-		<div class="container"  style="margin:1em;">
+		<div class="container"  style="margin:1em; ">
 			<h1>{% if rec_count %} <span class="label label-info">{{rec_count}}</span> {% endif %}Elster Meter Quality Items </h1>
 			{% if drill_down %}<h2>Filtered by: <span class="label label-info"> {{drill_down}}</span></h2>{% endif %}
 			{% if form.errors %}
