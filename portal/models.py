@@ -71,6 +71,7 @@ class ElsterRmaDefect(models.Model):
 		
 	defect_id = models.PositiveSmallIntegerField(verbose_name="Defect ID after root cause analysis")
 	description = models.CharField(max_length=300, verbose_name="Defect Code (description)",null=True, blank=True)
+	failure = models.BooleanField(default=True, verbose_name="Defect is a counted a Failure")
 
 class ElsterMeterTrack(models.Model):
 

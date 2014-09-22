@@ -121,7 +121,7 @@ class CustomerMeterTrackAdmin(admin.ModelAdmin):
 
 class ElsterRmaDefectAdmin(admin.ModelAdmin):
 	fields=[]
-	list_display = ('defect_id', 'description')
+	list_display = ('defect_id', 'description','failure')
 	
 class ElsterMeterTypeAdmin(admin.ModelAdmin):
 	fields=[]
