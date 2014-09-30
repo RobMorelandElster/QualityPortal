@@ -18,7 +18,24 @@ from django.http import HttpResponse
 ITEMS_PER_PAGE = settings.ITEMS_PER_PAGE
 
 def index(request):
-	return render_to_response("index.html", RequestContext(request))
+	template = 'index.html'
+	total_elster_records = None
+	total_customer_records = None
+	total_outstanding_rma = None
+	try:
+		total_elster_records = ElsterMeterTrack.objects.all().count()
+		total_customer_records = CustomerMeterTrack.objects.all().count()
+		total_outstanding_rma = ElsterMeterTrack.objects.filter(rma_complete_date__isnull=True).count()
+	except Exception as err:
+		print "oops: %s"%err
+		messages.error(request, 'Error %s determing totals'%err )
+		return HttpResponseRedirect(template)
+	data = {
+		'total_elster_records': total_elster_records, 
+		'total_customer_records': total_customer_records, 
+		'total_outstanding_rma': total_outstanding_rma,
+		}
+	return render(request, template, data)
 	
 def contact(request):
 	return render(request,'contact.html')

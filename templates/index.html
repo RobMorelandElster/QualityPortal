@@ -39,28 +39,31 @@
 	line-height: 1.45;
 }
 </style>
-	 <div style="background-color:#57A3C9;" >
+	 <div style="container" style="background-color:#57A3C9;" >
 
-		<div style="margin: 1em;margin-bottom:1em;">
-			<h1 >Elster MQ Portal</h1> 
-			<p class="primary_content">Joining information from your system to quality findings from Elster </p>
-				{% if request.user.is_authenticated %}
-				
-					<h2>Welcome</h2>
-					{% if request.user.first_name or request.user.last_name %}
-						{{ request.user.first_name }} {{ request.user.last_name }}
-					{% else %}
-						{{ request.user.username }}
-					{% endif %}
-					{% if request.user.profile.account_verified %} (verified) {% else %} (unverified) {% endif %}
+		<div >
+			{% if request.user.is_authenticated %}
+				<ul class="list-group">
+					<li class="list-group-item" style="color:#57A3C9;">Total Elster RMA Records: {{total_elster_records}}</li>
+					<li class="list-group-item" style="color:#57A3C9;">Total Customer Records: {{total_customer_records}}</li>
+					<li class="list-group-item" style="color:#57A3C9;">Total Open RMA Records: <span class="label label-warning">{{total_outstanding_rma}}</span></li>
+				</ul>
+				<!--
+				{% if request.user.first_name or request.user.last_name %}
+					{{ request.user.first_name }} {{ request.user.last_name }}
 				{% else %}
-
+					{{ request.user.username }}
+				{% endif %}
+				{% if request.user.profile.account_verified %} (verified) {% else %} (unverified) {% endif %}
+				-->
+			{% else %}
 					<a href="{% url 'account_login' %}" class="btn btn-primary btn-lg" role="button">Login or Signup Now</a>
 			{% endif %}
-			<div style="height: 1em;"></div>
 
+			<h1 >Elster MQ Portal</h1> 
+			<p class="primary_content">Joining information from your system to quality findings from Elster </p>
 		</div>
-		<div style="margin: 1em;margin-bottom:1em;">
+		<div style="margin: 1em auto;margin-bottom:1em; display: table; ">
 		
 		<div id="carousel-elster-portal" class="carousel slide fixed-max-width-800" data-ride="carousel">
 		  <!-- Indicators -->
@@ -101,9 +104,9 @@
 		  </a>
 		</div>		
 		
-		<p class="primary_content"><a href="{% url 'contact_us' %}" class="btn btn-primary btn-lg" role="button">Need Help? &raquo;</a></p>
-		  <div style="height: 1em;"/>
-		</div>
+		<!--p class="primary_content"><a href="{% url 'contact_us' %}" class="btn btn-primary btn-lg" role="button">Need Help? &raquo;</a></p>
+		  <div style="height: 1em;">
+		</div-->
 	</div>
 	</div>
 	  <footer>
