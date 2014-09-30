@@ -12,6 +12,14 @@
 	{% load render_table from django_tables2 %}
 	<section id="parts">
 		{% block content %}
+			{% load breadcrumbs %}
+			{% block breadcrumbs %}
+			{% breadcrumb_style_open %}
+				{% breadcrumb_url 'Home' 'index' %}
+				{% breadcrumb "Customer Meters" "#" %}
+			{% breadcrumb_style_close %}
+			{% endblock %}
+
 		{# Display django.contrib.messages as Bootstrap alerts #}
 		{% bootstrap_messages %}
 		<h1>Customer Meter Quality Items</h1>

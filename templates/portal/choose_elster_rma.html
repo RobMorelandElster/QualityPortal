@@ -14,8 +14,15 @@
  {% endblock %}
  
  {% block content %}
+	{% load breadcrumbs %}
+	{% block breadcrumbs %}
+	{% breadcrumb_style_open %}
+		{% breadcrumb_url 'Home' 'index' %}
+		{% breadcrumb "Choose Elster RMA" "#" %}
+	{% breadcrumb_style_close %}
+	{% endblock %}
 
-<h1 class="text-center" >Elster Quality Track<br/><small style="color:white;">&nbsp;RMA Records</small></h1>
+<h1 class="text-center" >Choose Elster Quality Track<br/><small style="color:white;">&nbsp;RMA Records</small></h1>
 {# Display django.contrib.messages as Bootstrap alerts #}
 
 {% bootstrap_messages %}

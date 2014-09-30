@@ -17,7 +17,7 @@ STATIC_ROOT = 'staticfiles'
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
+	os.path.join(BASE_DIR, 'static'),
 )
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -39,42 +39,42 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = (
-    'django_admin_bootstrapped',
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django.contrib.sites',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    # ... Social auth providers
-    #'allauth.socialaccount.providers.facebook',
-    'autocomplete_light',
-    'sendgrid',
-    'storages',
-    'bootstrap3',
-    'csvimport',
-    'django_tables2',
-    'portal',
+	'django_admin_bootstrapped',
+	'django.contrib.admin',
+	'django.contrib.auth',
+	'django.contrib.contenttypes',
+	'django.contrib.sessions',
+	'django.contrib.messages',
+	'django.contrib.staticfiles',
+	'django.contrib.sites',
+	'allauth',
+	'allauth.account',
+	'allauth.socialaccount',
+	# ... Social auth providers
+	#'allauth.socialaccount.providers.facebook',
+	'autocomplete_light',
+	'sendgrid',
+	'storages',
+	'bootstrap3',
+	'csvimport',
+	'django_tables2',
+	'portal',
 )
 
 MIDDLEWARE_CLASSES = (
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+	'django.contrib.sessions.middleware.SessionMiddleware',
+	'django.middleware.common.CommonMiddleware',
+	'django.middleware.csrf.CsrfViewMiddleware',
+	'django.contrib.auth.middleware.AuthenticationMiddleware',
+	'django.contrib.messages.middleware.MessageMiddleware',
+	'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
 # for allauth
 SITE_ID = os.environ['DJANGO_SITE_ID']
 if len(SITE_ID) == 0:
-    SITE_ID = 1
-    
+	SITE_ID = 1
+	
 ROOT_URLCONF = 'portal.urls'
 
 WSGI_APPLICATION = 'portal.wsgi.application'
@@ -112,33 +112,39 @@ MEDIA_URL = "https://%s.s3.amazonaws.com/" % os.environ['AWS_STORAGE_BUCKET_NAME
 MEDIA_ROOT = ''
 
 STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'django.contrib.staticfiles.finders.FileSystemFinder',
+	'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+	'django.contrib.staticfiles.finders.FileSystemFinder',
+)
+
+TEMPLATE_LOADERS = (
+	'django.template.loaders.filesystem.Loader',
+	'django.template.loaders.app_directories.Loader',
 )
 
 TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
 
+
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
 TEMPLATE_CONTEXT_PROCESSORS += (
-    "django.contrib.auth.context_processors.auth",
-    # Required by allauth template tags
-    "django.core.context_processors.request",
-    # allauth specific context processors
-    "allauth.account.context_processors.account",
-    "allauth.socialaccount.context_processors.socialaccount",
+	"django.contrib.auth.context_processors.auth",
+	# Required by allauth template tags
+	"django.core.context_processors.request",
+	# allauth specific context processors
+	"allauth.account.context_processors.account",
+	"allauth.socialaccount.context_processors.socialaccount",
 )
 
 FILE_UPLOAD_HANDLERS = (
-    #"progressbarupload.uploadhandler.ProgressBarUploadHandler",
-    "django.core.files.uploadhandler.MemoryFileUploadHandler",
-    "django.core.files.uploadhandler.TemporaryFileUploadHandler",
+	#"progressbarupload.uploadhandler.ProgressBarUploadHandler",
+	"django.core.files.uploadhandler.MemoryFileUploadHandler",
+	"django.core.files.uploadhandler.TemporaryFileUploadHandler",
 )
 
 AUTHENTICATION_BACKENDS = (
-    # Needed to login by username in Django admin, regardless of `allauth`
-    "django.contrib.auth.backends.ModelBackend",
-    # `allauth` specific authentication methods, such as login by e-mail
-    "allauth.account.auth_backends.AuthenticationBackend",
+	# Needed to login by username in Django admin, regardless of `allauth`
+	"django.contrib.auth.backends.ModelBackend",
+	# `allauth` specific authentication methods, such as login by e-mail
+	"allauth.account.auth_backends.AuthenticationBackend",
 )
 
 # auth and allauth settings
@@ -146,10 +152,10 @@ LOGIN_URL = '/account/login/'
 LOGIN_REDIRECT_URL = '/'
 SOCIALACCOUNT_QUERY_EMAIL = True
 SOCIALACCOUNT_PROVIDERS = {
-    'facebook': {
-        'SCOPE': ['email', 'publish_stream'],
-        'METHOD': 'js_sdk'  # instead of 'oauth2'
-    }
+	'facebook': {
+		'SCOPE': ['email', 'publish_stream'],
+		'METHOD': 'js_sdk'  # instead of 'oauth2'
+	}
 }
 ACCOUNT_AUTHENTICATION_METHOD = ("email")
 ACCOUNT_EMAIL_VERIFICATION = ("mandatory")
@@ -176,6 +182,6 @@ EMAIL_PORT = 587
 ACCOUNT_SIGNUP_FORM_CLASS = 'account.forms.SignupForm'
 #SOCIALACCOUNT_ADAPTER = 'account.social_login_adapter.SocialAdapter'
 if (DEBUG):
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+	EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 ITEMS_PER_PAGE = 10

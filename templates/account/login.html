@@ -7,6 +7,13 @@
 {% block head_title %}{% trans "Sign In" %}{% endblock %}
 
 {% block content %}
+	{% load breadcrumbs %}
+	{% block breadcrumbs %}
+		{% breadcrumb_style_open %}
+		{% breadcrumb_url 'Home' 'index' %}
+		{% breadcrumb "login" "#" %}
+		{% breadcrumb_style_close %}
+	{% endblock %}
 
 <h1>{% trans "Sign In" %}</h1>
 

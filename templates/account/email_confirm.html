@@ -8,6 +8,14 @@
 
 
 {% block content %}
+	{% load breadcrumbs %}
+	{% block breadcrumbs %}
+		{% breadcrumb_style_open %}
+		{% breadcrumb_url 'Home' 'index' %}
+		{% breadcrumb "email confirm" "#" %}
+		{% breadcrumb_style_close %}
+	{% endblock %}
+
 <h1>{% trans "Confirm E-mail Address" %}</h1>
 
 {% if confirmation %}

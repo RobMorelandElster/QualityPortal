@@ -15,29 +15,19 @@
 {% endblock %}
 
 {% block content %}
+	{% load breadcrumbs %}
+	{% block breadcrumbs %}
+	{% breadcrumb_style_open %}	
+		{% breadcrumb_url 'Home' 'index' %}
+	{% breadcrumb_style_close %}		
+	{% endblock %}
+	
 {# Display django.contrib.messages as Bootstrap alerts #}
 {% bootstrap_messages %}
-
-
-<!--script type="text/javascript" src="//use.typekit.net/kay0rxs.js"></script>-->
-
 <script src="{{STATIC_URL}}js/jquery.min.js" type="text/javascript"></script>
-
 
 <link href="{{ STATIC_URL }}css/signin.css" rel="stylesheet">
 <style class="text/css">
-/*
-.jumbotron {
-	margin-bottom: 0px;
-	background-image: url({{STATIC_URL}}img/big-people-background1.jpg); 
-	background-position: 0% 25%;
-	background-size: cover;
-	background-color: #57A3C9;
-	background-repeat: no-repeat;
-	/* text-shadow: black 0.3em 0.3em 0.3em; */
-	color: white; 
-}
-*/
 .img-responsive {
 	display: block;
 	height: auto;
@@ -49,12 +39,11 @@
 	line-height: 1.45;
 }
 </style>
-	 <div style="background-color:#57A3C9;border-radius: 10px;margin-bottom:10px" >
+	 <div style="background-color:#57A3C9;" >
+
 		<div style="margin: 1em;margin-bottom:1em;">
-			<div style="height: 1em;"></div>
 			<h1 >Elster MQ Portal</h1> 
-			<p class="primary_content">The EMQP ties quality information from your
-				system to quality findings from Elster </p>
+			<p class="primary_content">Joining information from your system to quality findings from Elster </p>
 				{% if request.user.is_authenticated %}
 				
 					<h2>Welcome</h2>

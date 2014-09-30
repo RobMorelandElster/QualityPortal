@@ -310,7 +310,7 @@ def top_five_all_time_to_csv(request):
 			writer.writerow(row)
 	except Exception as err:
 		messages.error(request, 'Error %s building download'%err )
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect(template)
 			
 	return response
 	
@@ -344,7 +344,7 @@ def top_five_monthly_to_csv(request):
 			writer.writerow(row)
 	except Exception as err:
 		messages.error(request, 'Error %s building download'%err )
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect(template)
 			
 	return response
 	
@@ -356,6 +356,8 @@ def choose_elster_rma(request):
 	form = ElsterMeterTrackSearchForm(request.POST or None)
 	data = {}
 	data['form'] = form
+	data['search_type']='none'
+	
 	if request.method == 'POST': # If the form has been submitted...
 		if form.is_valid(): # All validation rules pass
 
@@ -377,6 +379,7 @@ def choose_elster_rma(request):
 				return HttpResponseRedirect('%s/%s/%s' % (redirect_template, start_date, end_date)) # Redirect after POST
 		else:
 			data['form'] = form
+
 			return render(request, template, data)
 	else:
 		form = ElsterMeterTrackSearchForm() # An unbound form
@@ -386,7 +389,7 @@ def choose_elster_rma(request):
 @login_required()
 def elster_rma_date_range(request, byear, bmonth, bday, eyear, emonth, eday):
 	template = 'portal/elster_meter_q_list.html'
-	from_to_range_str = 'range %s-%s-%s, to: %s-%s-%s'%(byear, bmonth, bday, eyear, emonth, eday)
+	from_to_range_str = 'range %s-%s-%s to: %s-%s-%s'%(byear, bmonth, bday, eyear, emonth, eday)
 	from_date = datetime.date(int(byear),int(bmonth),int(bday))
 	to_date = datetime.date(int(eyear),int(emonth),int(eday))
 	redirect_template = '/elster_rma_date_range'

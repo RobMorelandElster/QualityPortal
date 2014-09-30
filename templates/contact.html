@@ -2,6 +2,14 @@
 
 
 {% block content %}
+	{% load breadcrumbs %}
+	{% block breadcrumbs %}
+	{% breadcrumb_style_open %}	
+		{% breadcrumb_url 'Home' 'index' %}
+		{% breadcrumb_url "Contact" "contact_us" %}
+	{% breadcrumb_style_close %}		
+	{% endblock %}
+
 <div class="container primary_content">
 <div class="row" >
 <div class="col-md-6 col-md-offset-3">

@@ -10,14 +10,23 @@
 {% block heading %}
 {% endblock %}
 {% load render_table from django_tables2 %}
+
 <div class="container">
 	{% block content %}
-	
+
+	{% load breadcrumbs %}
+	{% block breadcrumbs %}
+	{% breadcrumb_style_open %}
+		{% breadcrumb_url 'Home' 'index' %}
+		{% breadcrumb "Elster-RMA" "#" %}
+	{% breadcrumb_style_close %}
+	{% endblock %}
+
 	{# Display django.contrib.messages as Bootstrap alerts #}
 	{% bootstrap_messages %}
 		<div class="container"  style="margin:1em; ">
-			<h1>{% if rec_count %} <span class="label label-info">{{rec_count}}</span> {% endif %}Elster Meter Quality Items </h1>
-			{% if drill_down %}<h2>Filtered by: <span class="label label-info"> {{drill_down}}</span></h2>{% endif %}
+			<h1>Elster Meter Quality Items {% if rec_count %} <span class="label label-info">{{rec_count}}</span> {% endif %}</h1>
+			<!--{% if drill_down %}<span class="label label-info"> {{drill_down}}</span>{% endif %}-->
 			{% if form.errors %}
 			<div class="alert alert-warning alert-dismissible" role="alert">
 				<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>

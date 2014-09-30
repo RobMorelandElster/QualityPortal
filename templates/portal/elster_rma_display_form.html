@@ -45,8 +45,8 @@ function HideOrShow(controlToHide)
         // Hide all regions
         document.getElementById('date_range').style.display = 'none';
         document.getElementById('rma_number').style.display = 'none';
-        document.getElementById('date_range').disabled = 'disabled';
-        document.getElementById('rma_number').disabled = 'disabled';
+        //document.getElementById('date_range').disabled = 'disabled';
+        //document.getElementById('rma_number').disabled = 'disabled';
 		// Display the requested region
 		document.getElementById
 			(controlToHide).style.display = 'block';
@@ -55,35 +55,42 @@ function HideOrShow(controlToHide)
 		$('input[type=text]').val('');  
 		$('#textarea').val(''); 
     }
+
 }
 </script>
-<section id="search"> 
+
+<section id="search" > 
 	<div style="background-color:white;border-radius:1em;margin-bottom:1em; max-width: 968px;" >
 		<div class="row"> 
 			<form action="{% url 'choose_elster_rma' %}" method="post">{% csrf_token %}
 			<div class="container" style="margin-bottom:1em">
 				<div class="col-md-4" style="color: black; ">
 					<br/>
-					<dl><input name="radio1" type="radio" 
+					<dt>Choose&nbsp;Search&nbsp;Type</dt>
+					<br/>
+					<dd><input name="radio1" type="radio" 
 						{% if search_type == 'date_range' %}checked="checked" {% endif %}
-						value="" onclick="HideOrShow('date_range')" /> Search by Date Range</dl>
-					<dl><input name="radio1" type="radio" 
+						
+						value="" onclick="HideOrShow('date_range')" /> Date Range</dd>
+					<dd><input name="radio1" type="radio" 
 						{% if search_type == 'rma' %}checked="checked" {% endif %}
-						value="" onclick="HideOrShow('rma_number')" /> Search by RMA Number</dl>
-					<dl><input class="btn btn-primary btn-md" type="submit" value="Find RMA Records" /></dl>
+						value="" onclick="HideOrShow('rma_number')" /> RMA Number</dd>
+					<dd><input class="btn btn-primary btn-md" type="submit" value="Find RMA Records" /></dd>
 				</div>
 				<div class="col-md-8" style="color: black; ">
 					<br/>
 					<dl>
-						{% if form.start_date.errors %}
-							<div class="alert alert-danger"> {{ form.start_date.errors }}</div>
-						{% endif %}
 						<div id='date_range'  
-							{% if search_type == 'rma' %}style="display:none;" {% endif %} >
+							{% if search_type == 'rma' %}style="display:none;" {% endif %} 
+							{% if search_type == 'none' %}style="display:none;" {% endif %}>
 						<dt>
 							RMA Create start date
 						</dt>
 						<dd >
+							{% if form.start_date.errors %}
+								<div class="alert alert-danger"> {{ form.start_date.errors }}</div>
+							{% endif %}
+
 							{{form.start_date}}
 							<span class="help-block">
 								Enter the beginning RMA create date for search</span>
@@ -91,15 +98,25 @@ function HideOrShow(controlToHide)
 						<dt>
 							RMA Create end date
 						</dt>
+
 						<dd>
+							{% if form.end_date.errors %}
+								<div class="alert alert-danger"> {{ form.end_date.errors }}</div>
+							{% endif %}	
+
 							{{form.end_date}}
 							<span class="help-block">
 								Enter the ending RMA create date for search</span>
 						</dd>
 						</div>
-						<div id='rma_number' {% if search_type == 'date_range' %}style="display:none;" {% endif %} >
+						<div id='rma_number' {% if search_type == 'date_range' %}style="display:none;" {% endif %} 
+							{% if search_type == 'none' %}style="display:none;" {% endif %}>
 							<dt>Elster RMA number</dt>
 							<dd> 	
+								{% if form.rma_number.errors %}
+									<div class="alert alert-danger"> {{ form.rma_number.errors }}</div>
+								{% endif %}
+
 								{{form.rma_number}}
 								<span class="help-block">
 									Enter RMA or leave blank</span>

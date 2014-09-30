@@ -6,6 +6,16 @@
 {# Display django.contrib.messages as Bootstrap alerts #}
 {% bootstrap_messages %}
 {% block content %}
+
+	{% load breadcrumbs %}
+	{% block breadcrumbs %}
+	{% breadcrumb_style_open %}
+		{% breadcrumb_url 'Home' 'index' %}
+		{% breadcrumb_url "Elster-RMA" "choose_elster_rma" %}
+		{% breadcrumb "Edit" "#" %}
+	{% breadcrumb_style_close %}
+	{% endblock %}
+
 <div class="container">
 	<div class="row">
 		<div class="col-md-6">
