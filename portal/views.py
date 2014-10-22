@@ -239,6 +239,7 @@ def __this_year_top_five(request, data):
 				rma_complete_date__isnull=False,
 				defect=d).count()
 			months.append(month)
+			month['date_str'] = "%s, %s, 1"%(this_year, m)
 			month['count'] = count
 			total_count += count
 		def_for_month['months']=months
@@ -291,6 +292,16 @@ def __this_year_top_five(request, data):
 @login_required()
 def elster_meter_top_five(request):
 	template = 'portal/elster_top_five.html'
+
+	data = {} # Table data will go into this dictionary
+	__top_five_all_time(request, data)
+	__this_year_top_five(request,data)
+
+	return render(request, template, data)
+	
+@login_required()
+def elster_meter_top_five_graph(request):
+	template = 'portal/elster_top_five_graph.html'
 
 	data = {} # Table data will go into this dictionary
 	__top_five_all_time(request, data)

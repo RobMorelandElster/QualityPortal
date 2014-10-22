@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+
+{# Load CSS and JavaScript #}
+
+{% bootstrap_css %}
+
+{% bootstrap_javascript %}
+
+{% bootstrap_messages %}
+
+{% block title %}Energy Summary{% endblock %}
+
+{% block toggle_login %}{% endblock %}
+
+{% block heading %}
+Usage Summary
+{% endblock %}
+
+{% block content %}
+	{% load breadcrumbs %}
+	{% block breadcrumbs %}
+	{% breadcrumb_style_open %}
+		{% breadcrumb_url 'Home' 'index' %}
+		{% breadcrumb_url 'Choose Elster RMA' "choose_elster_rma" %}
+		{% breadcrumb "Top Five" "#" %}
+	{% breadcrumb_style_close %}
+	{% endblock %}
+
+<!-- Navigation -->
+{% include 'navbar.html' %}
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["motionchart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data_year = new google.visualization.DataTable();
+        data_year.addColumn('string', 'Defect');
+        data_year.addColumn('date', 'Date');
+	data_year.addColumn('number', 'Total');
+        data_year.addColumn('number', 'Count');
+        data_year.addRows([
+		{% for defect in defects_through_months %}
+			{% for month_item in defect.months %}
+				['{{ defect.defect }}', new Date({{month_item.date_str}}), {{defect.total_count}},{{month_item.count}}],
+			{% endfor %}
+		{% endfor %}
+
+        ]);
+	
+        var chart_year = new google.visualization.MotionChart(document.getElementById('chart_div_year'));
+	var options_year = {};
+	options_year['state'] =
+	'{"iconKeySettings":[],"stateVersion":3,"time":"notime","xAxisOption":"_NOTHING","playDuration":15,"iconType":"BAR","showTrails":false};';
+
+	options_year['width'] = 800;
+	options_year['height'] = 400;
+        chart_year.draw(data_year, options_year);
+	
+	var data_all = new google.visualization.DataTable();
+	data_all.addColumn('string', 'Defect');
+	data_all.addColumn('date', 'Date');
+	data_all.addColumn('number', 'Total');
+	data_all.addColumn('number','Count');
+	data_all.addRows([
+		{% for defect in defects_through_years %}
+
+			{% for year_item in defect.years %}
+				['{{ defect.defect }}', new Date('{{year_item.year}},1,1'), {{defect.total_count}}, {{year_item.count}}],
+			{% endfor %}
+		{% endfor %}
+	]);
+	var chart_all = new google.visualization.MotionChart(document.getElementById('chart_div_all'));
+	var options_all = {};
+	options_all['state'] =
+	'{"iconKeySettings":[],"stateVersion":3,"time":"notime","xAxisOption":"_NOTHING","playDuration":15,"iconType":"LINE","showTrails":false};';
+
+	options_all['width'] = 800;
+	options_all['height'] = 400;
+
+        chart_all.draw(data_all, options_all);
+
+      }
+    </script>
+<div style="background-color:white;border-radius:1em;margin-bottom:1em" >
+	<div style="margin: 1em auto 1em auto; color: black; ">
+
+		<section id="summary">
+			
+		<div class="row row-padded" />
+		<div class="container">
+			<div class = "col-md-12">
+			<h1 class="text-center">Top 5 Defects for {{this_year}} <i class="fa fa-bomb fa-5x"></i> </h1>
+			</div>
+		</div>
+		<div class="container">
+			<div class = "col-md-12">
+
+			<div id="chart_div_year" style="width: 800px; height: 400px;"></div>
+			<div style="height: 1em; "></div>
+		</div>
+		</div>
+		<div class="row row-padded" />
+		<div class="container">
+			<div class = "col-md-12">
+			<h1 class="text-center">Top 5 Defects for All Time <i class="fa fa-bomb fa-5x"></i> </h1>
+			</div>
+		</div>
+		<div class="container">
+			<div class = "col-md-12">
+
+			<div id="chart_div_all" style="width: 800px; height: 400px;"></div>
+			<div style="height: 1em; "></div>
+		</div>
+		</div>
+		</section>  
+	</div>
+</div>
+{% endblock %}
