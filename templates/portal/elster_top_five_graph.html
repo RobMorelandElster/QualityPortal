@@ -50,27 +50,27 @@ Usage Summary
 	
         var chart_year = new google.visualization.MotionChart(document.getElementById('chart_div_year'));
 	var options_year = {};
-	options_year['state'] = '{"playDuration":15088.88888888889,"xZoomedDataMin":0,"uniColorForNonSelected":false,"xZoomedDataMax":5,"xAxisOption":"_ALPHABETICAL","yLambda":0,"iconKeySettings":[{"key":{"dim0":"CSB / Recall"}},{"key":{"dim0":"NPF, No Problem Found"}},{"key":{"dim0":"Firmware/Upgrades"}},{"key":{"dim0":"U6 issue"}},{"key":{"dim0":"No Evaluation Required"}}],"yZoomedDataMax":6103,"duration":{"multiplier":1,"timeUnit":"D"},"time":"2014-02-01","yZoomedDataMin":0,"dimensions":{"iconDimensions":["dim0"]},"yZoomedIn":false,"nonSelectedAlpha":0.4,"colorOption":"2","orderedByX":false,"sizeOption":"3","orderedByY":false,"yAxisOption":"3","xLambda":1,"iconType":"BUBBLE","xZoomedIn":false,"showTrails":false}'
+	options_year['state'] = '{"playDuration":15088.88888888889,"xZoomedIn":false,"xZoomedDataMax":5,"sizeOption":"_UNISIZE","duration":{"multiplier":1,"timeUnit":"D"},"yLambda":1,"yZoomedIn":false,"nonSelectedAlpha":0.4,"dimensions":{"iconDimensions":["dim0"]},"uniColorForNonSelected":false,"time":"2014-02-01","yZoomedDataMin":0,"iconKeySettings":[{"key":{"dim0":"U6 issue"}},{"key":{"dim0":"No Evaluation Required"}},{"key":{"dim0":"NPF, No Problem Found"}},{"key":{"dim0":"Firmware/Upgrades"}},{"key":{"dim0":"CSB / Recall"}}],"orderedByY":false,"colorOption":"3","orderedByX":true,"yZoomedDataMax":7000,"xZoomedDataMin":0,"yAxisOption":"3","xLambda":1,"iconType":"VBAR","showTrails":false,"xAxisOption":"_ALPHABETICAL"}'
 	options_year['width'] = 800;
 	options_year['height'] = 400;
         chart_year.draw(data_year, options_year);
 	
 	var data_all = new google.visualization.DataTable();
 	data_all.addColumn('string', 'Defect');
-	data_all.addColumn('date', 'Date');
+	data_all.addColumn('number', 'Year');
 	data_all.addColumn('number', 'Total');
 	data_all.addColumn('number','Count');
 	data_all.addRows([
 		{% for defect in defects_through_years %}
 
 			{% for year_item in defect.years %}
-				['{{ defect.defect }}', new Date('{{year_item.year}},1,1'), {{defect.total_count}}, {{year_item.count}}],
+				['{{ defect.defect }}', {{year_item.year}}, {{defect.total_count}}, {{year_item.count}}],
 			{% endfor %}
 		{% endfor %}
 	]);
 	var chart_all = new google.visualization.MotionChart(document.getElementById('chart_div_all'));
 	var options_all = {};
-	options_all['state'] ='{"playDuration":15000,"orderedByY":false,"xZoomedIn":false,"xZoomedDataMax":5,"sizeOption":"_UNISIZE","yLambda":0,"yZoomedIn":false,"duration":{"multiplier":1,"timeUnit":"D"},"time":"2014","yZoomedDataMin":0,"dimensions":{"iconDimensions":["dim0"]},"yAxisOption":"3","colorOption":"_UNIQUE_COLOR","uniColorForNonSelected":false,"iconKeySettings":[{"key":{"dim0":"Firmware"}},{"key":{"dim0":"NPF, No Problem Found"}},{"key":{"dim0":"Product/Part Failure"}},{"key":{"dim0":"CSB / Recall"}},{"key":{"dim0":"U6 issue"}}],"showTrails":false,"xZoomedDataMin":0,"orderedByX":true,"xLambda":1,"nonSelectedAlpha":0.4,"iconType":"VBAR","yZoomedDataMax":24000,"xAxisOption":"_ALPHABETICAL"}'
+	options_all['state'] ='{"duration":{"multiplier":1,"timeUnit":"Y"},"yLambda":0,"yZoomedIn":false,"orderedByX":true,"dimensions":{"iconDimensions":["dim0"]},"uniColorForNonSelected":false,"yAxisOption":"3","xZoomedDataMin":0,"time":"2013","colorOption":"3","orderedByY":false,"yZoomedDataMax":24000,"nonSelectedAlpha":0.4,"xLambda":1,"iconKeySettings":[{"key":{"dim0":"CSB / Recall"}},{"key":{"dim0":"NPF, No Problem Found"}},{"key":{"dim0":"Firmware"}},{"key":{"dim0":"U6 issue"}},{"key":{"dim0":"Product/Part Failure"}}],"iconType":"VBAR","xAxisOption":"_ALPHABETICAL","showTrails":false,"playDuration":15088.88888888889,"yZoomedDataMin":0,"xZoomedIn":false,"xZoomedDataMax":5,"sizeOption":"_UNISIZE"}'	
 	
 	options_all['width'] = 800;
 	options_all['height'] = 400;
