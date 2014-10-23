@@ -30,6 +30,7 @@ Usage Summary
 <!-- Navigation -->
 {% include 'navbar.html' %}
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['annotationchart']}]}"></script>
     <script type="text/javascript">
       google.load("visualization", "1", {packages:["motionchart"]});
       google.setOnLoadCallback(drawChart);
@@ -48,7 +49,6 @@ Usage Summary
 		{% for month in month_list %}
 			['All Others', new Date({{this_year}},{{forloop.counter}}, 1),{{ grand_totals_by_month|get_at_index:forloop.counter }},{{ totals_others_by_month|get_at_index:forloop.counter }}],
 		{% endfor %}
-
         ]);
 	
         var chart_year = new google.visualization.MotionChart(document.getElementById('chart_div_year'));
@@ -84,6 +84,30 @@ Usage Summary
 
         chart_all.draw(data_all, options_all);
 
+        var data = new google.visualization.DataTable();
+        data.addColumn('date', 'Date');
+	data.addColumn('number', 'Yearly Total');
+        data.addRows([
+		[new Date(2008,11, 31), 0],
+		{% for year in year_list %}
+			{% if year == this_year %}
+				{% for month in month_list %}
+					[new Date({{this_year}},{{forloop.counter}}, 1),{{ grand_totals_by_month|get_at_index:forloop.counter }}],
+				{% endfor %}
+			{% else %}
+				[new Date({{year}},11, 31),{{ grand_totals_by_year|get_at_index:forloop.counter }}],
+			{% endif %}
+		{% endfor %}
+        ]);
+
+        var chart = new google.visualization.AnnotationChart(document.getElementById('chart_div'));
+
+        var options = {
+          displayAnnotations: true
+        };
+
+        chart.draw(data, options);
+
       }
     </script>
 <div style="background-color:white;border-radius:1em;margin-bottom:1em" >
@@ -112,10 +136,17 @@ Usage Summary
 		</div>
 		<div class="container">
 			<div class = "col-md-12">
-
-			<div id="chart_div_all" style="width: 600px; height: 600px;"></div>
-			<div style="height: 1em; "></div>
+				<div id="chart_div_all"></div>
+				<div style="height: 1em; "></div>
+			</div>
 		</div>
+		<div class="row row-padded" />
+		<div class="container">
+			<div class = "col-md-12">
+				<h1 class="text-center">Yearly Defect Totals</h1>
+				<div id='chart_div' style='width: auto' ></div>
+				<div style="height: 1em; "></div>
+			</div>
 		</div>
 		</section>  
 	</div>
