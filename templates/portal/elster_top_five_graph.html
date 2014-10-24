@@ -92,7 +92,7 @@ Usage Summary
 		{% for year in year_list %}
 			{% if year == this_year %}
 				{% for month in month_list %}
-					[new Date({{this_year}},{{forloop.counter}}, 1),{{ grand_totals_by_month|get_at_index:forloop.counter }}],
+					[new Date({{this_year}},{{forloop.counter}}-1, 15),{{ grand_totals_by_month|get_at_index:forloop.counter }}],
 				{% endfor %}
 			{% else %}
 				[new Date({{year}},11, 31),{{ grand_totals_by_year|get_at_index:forloop.counter }}],
@@ -131,7 +131,7 @@ Usage Summary
 		<div class="row row-padded" />
 		<div class="container">
 			<div class = "col-md-12">
-			<h1 class="text-center">Top Defects for All Time <i class="fa fa-bomb fa-5x"></i> </h1>
+			<h1 class="text-center">Defect counts through time <i class="fa fa-bomb fa-5x"></i> </h1>
 			</div>
 		</div>
 		<div class="container">
