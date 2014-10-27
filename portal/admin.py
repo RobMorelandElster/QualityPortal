@@ -34,9 +34,9 @@ class ElsterMeterRmaCreateListFilter(SimpleListFilter):
 		in the right sidebar.
 		"""
 		return (
-			('1', _('in past day')),
-			('7', _('in past week')),
 			('30', _('in past month')),
+			('90', _('in past quarter')),
+			('180', _('in past six months')),
 		)
 
 	def queryset(self, request, queryset):
@@ -47,12 +47,12 @@ class ElsterMeterRmaCreateListFilter(SimpleListFilter):
 		"""
 		now = timezone.now()
 		
-		if self.value() == '1':
-			return queryset.filter(rma_create_date__gte=now-datetime.timedelta(days=1))
-		if self.value() == '7':
-			return queryset.filter(rma_create_date__gte=now-datetime.timedelta(days=7))
 		if self.value() == '30':
 			return queryset.filter(rma_create_date__gte=now-datetime.timedelta(days=30))
+		if self.value() == '90':
+			return queryset.filter(rma_create_date__gte=now-datetime.timedelta(days=90))
+		if self.value() == '180':
+			return queryset.filter(rma_create_date__gte=now-datetime.timedelta(days=180))
 
 
 def export_elster_meter_track_csv(modeladmin, request, queryset):

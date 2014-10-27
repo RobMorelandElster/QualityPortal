@@ -10,7 +10,7 @@ from portal.models import *
 	
 	
 ELSTER_METER_TRACK_CONTENT_HELP_TEXT = ' '.join(['<p>Assumes the following comma separated fields (all text fields should be double quoted):<br/>'
-		'elster_serial_number, meter_barcode, manufacture_date, rma_number, rma_create_date, rma_receive_date, rma_complete_date, defect_code, defect_code_desc, complaint, finding, action_taken<br/>'
+		'elster_serial_number, meter_style, meter_barcode, manufacture_date, rma_number, rma_create_date, rma_receive_date, rma_complete_date, defect_code, defect_code_desc, complaint, finding, action_taken<br/>'
 		'where: elster_serial_number is the elster_manufacture_serial number for the device, represented as a text field<br/>'
 		'meter_style is the elster style number for the device represented as a text field<br/>'
 		'meter_barcode is the faceplate barcode scanned from the device represented as a text field<br/>'
