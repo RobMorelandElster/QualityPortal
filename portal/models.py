@@ -73,6 +73,13 @@ class ElsterRmaDefect(models.Model):
 	description = models.CharField(max_length=300, verbose_name="Defect Code (description)",null=True, blank=True)
 	failure = models.BooleanField(default=True, verbose_name="Defect is a counted a Failure")
 
+class ElsterMeterCount(models.Model):
+	def __unicode__(self):
+		return ("%d as of %s"%(self.meter_count, self.as_of_date))
+
+	meter_count = models.PositiveIntegerField(verbose_name="Meter Count")
+	as_of_date = models.DateField(default=datetime.date.today)
+	
 class ElsterMeterTrack(models.Model):
 
 	def __unicode__(self):

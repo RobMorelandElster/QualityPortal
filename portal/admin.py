@@ -130,8 +130,12 @@ class ElsterMeterTypeAdmin(admin.ModelAdmin):
 class AccountAdmin(admin.ModelAdmin):
 	fields=[]
 	
+class ElsterMeterCountAdmin(admin.ModelAdmin):
+	fields=[]
+	
 admin.site.register(ElsterMeterTrack, ElsterMeterTrackAdmin)
 admin.site.register(CustomerMeterTrack, CustomerMeterTrackAdmin)
 admin.site.register(ElsterMeterType, ElsterMeterTypeAdmin)
 admin.site.register(ElsterRmaDefect, ElsterRmaDefectAdmin)
 admin.site.register(Account,AccountAdmin)
+admin.site.register(ElsterMeterCount, ElsterMeterCountAdmin)

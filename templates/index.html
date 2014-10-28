@@ -39,15 +39,104 @@
 	line-height: 1.45;
 }
 </style>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      
+      function drawChart() {
+        var data_overall = google.visualization.arrayToDataTable([
+          ['RMA', 'Count'],
+	  ['Devices in Service', 1004575-36523-35786],
+	  ['Non-Fail Returns',  36523],
+          ['Failures',     35786],
+        ]);
+
+        var options_overall = {
+          title: 'RMA % between 2009-2013',
+	  pieStartAngle: 5,
+	  fontName: 'Arial, Helvetica, Sans-Serif;',
+	  fontSize: '16',
+	  pieSliceText: 'label',
+	  is3D: true, 
+	  height: 300,
+        };
+	
+	/* var formatter = new google.visualization.NumberFormat({fractionDigits:2} );
+	formatter.format(data_overall, 1); */
+
+        var overall_chart = new google.visualization.PieChart(document.getElementById('overall_chart'));
+        overall_chart.draw(data_overall, options_overall);
+	
+	/* chart this year failure vs non-failure */
+	var data_this_year = google.visualization.arrayToDataTable([
+          ['RMA', 'Count'],
+	  ['Devices in Service', {{device_count}}- {{this_year_non_failure_count}}-{{this_year_failure_count}}],
+	  ['Non-Fail Returns',  {{this_year_non_failure_count}}],
+          ['Failures',     {{this_year_failure_count}}],
+        ]);
+
+        var options_this_year = {
+          title: 'RMA % for year {{this_year}} up to {{up_to}}',
+	  fontName: 'Arial, Helvetica, Sans-Serif;',
+	  fontSize: '16',
+	  is3D: true, 
+	  pieSliceText: 'label',
+	  height: 300,
+        };
+
+        var this_year_chart = new google.visualization.PieChart(document.getElementById('this_year_chart'));
+        this_year_chart.draw(data_this_year, options_this_year);
+	
+      }
+</script>
+
 	 <div style="container" style="background-color:#57A3C9;" >
 
 		<div >
+			<h1 >Elster MQ Portal</h1> 
+			<p class="primary_content">Joining information from your system to quality findings from Elster </p>
+			
 			{% if request.user.is_authenticated %}
-				<ul class="list-group">
-					<li class="list-group-item" style="color:#57A3C9;">Total Elster RMA Records: {{total_elster_records}}</li>
-					<li class="list-group-item" style="color:#57A3C9;">Total Customer Records: {{total_customer_records}}</li>
-					<li class="list-group-item" style="color:#57A3C9;">Total Open RMA Records: <span class="label label-warning">{{total_outstanding_rma}}</span></li>
-				</ul>
+			<div class="row row-padded" >
+				<div class = "col-md-12">
+					<ul class="list-group">
+						<li class="list-group-item" style="color:#57A3C9;">Total Elster RMA Records: {{total_elster_records}}</li>
+						<li class="list-group-item" style="color:#57A3C9;">Total Customer Records: {{total_customer_records}}</li>
+						<li class="list-group-item" style="color:#57A3C9;">Total Open (not completed) RMA Records: <span class="label label-warning">{{total_outstanding_rma}}</span></li>
+					</ul>
+				</div>
+			</div>
+			<div class="row row-padded" >
+				<div class = "col-md-6" >
+					<div style="background-color:white; border:1em dotted white; border-radius:1em;">
+						<div id="this_year_chart" style="width: auto;" ></div>
+						<p class="primary_content" style="color:#57A3C9;">
+							This chart displays percentages for year {{this_year}} alone.
+						</p>
+					</div>
+				</div>
+
+				<div class = "col-md-6" >
+					<div style="background-color:white; border:1em dotted white; border-radius:1em; margin-bottom: 1em;">
+					<div id="overall_chart" style="width: auto;" ></div>
+						<p class="primary_content" style="color:#57A3C9;">
+							This chart displays the percentage of devices remaining in service prior to year {{this_year}}
+							to those that were removed from service.  </br></br>
+							For those removed from service the percent of actual failed devices
+							is contrasted to those that were not RMA'd due to a non-failure condition. Ex:(
+							{% for description in non_failure_defect_list %}
+								{{description}}, 
+							{% endfor %}
+							).
+						</p>
+					</div>
+				</div>
+
+			</div>
+			<div style="height: 1em; "></div>
+			</div>
+
 				<!--
 				{% if request.user.first_name or request.user.last_name %}
 					{{ request.user.first_name }} {{ request.user.last_name }}
@@ -58,51 +147,52 @@
 				-->
 			{% else %}
 					<a href="{% url 'account_login' %}" class="btn btn-primary btn-lg" role="button">Login or Signup Now</a>
+
+					<div style="margin: 1em auto;margin-bottom:1em; display: table; ">
+					
+					<div id="carousel-elster-portal" class="carousel slide fixed-max-width-800" data-ride="carousel">
+					  <!-- Indicators -->
+					  <ol class="carousel-indicators">
+						<li data-target="#carousel-elster-portal" data-slide-to="0" class="active"></li>
+						<li data-target="#carousel-elster-portal" data-slide-to="1"></li>
+						<li data-target="#carousel-elster-portal" data-slide-to="2"></li>
+					  </ol>
+
+					  <!-- Wrapper for slides -->
+					  <div class="carousel-inner">
+						<div class="item active">
+						  <img src="{{STATIC_URL}}img/people-background1.jpg" alt="Customers">
+						  <div class="carousel-caption">
+							<h1>Portal to Meter Quality</h1>
+						  </div>
+						</div>
+						<div class="item">
+						  <img src="{{STATIC_URL}}img/gas-meters.jpg"  alt="Gas">
+						  <div class="carousel-caption">
+							<!--... -->
+						  </div>
+						</div>
+						<div class="item">
+						  <img src="{{STATIC_URL}}img/solar-panels.jpg"  alt="Solar">
+						  <div class="carousel-caption">
+							<!--... -->
+						  </div>
+					    </div>
+					  </div>
+
+					  <!-- Controls -->
+					  <a class="left carousel-control" href="#carousel-elster-portal" role="button" data-slide="prev">
+						<span class="glyphicon glyphicon-chevron-left"></span>
+					  </a>
+					  <a class="right carousel-control" href="#carousel-elster-portal" role="button" data-slide="next">
+						<span class="glyphicon glyphicon-chevron-right"></span>
+					  </a>
+					</div>		
+
 			{% endif %}
 
-			<h1 >Elster MQ Portal</h1> 
-			<p class="primary_content">Joining information from your system to quality findings from Elster </p>
+
 		</div>
-		<div style="margin: 1em auto;margin-bottom:1em; display: table; ">
-		
-		<div id="carousel-elster-portal" class="carousel slide fixed-max-width-800" data-ride="carousel">
-		  <!-- Indicators -->
-		  <ol class="carousel-indicators">
-			<li data-target="#carousel-elster-portal" data-slide-to="0" class="active"></li>
-			<li data-target="#carousel-elster-portal" data-slide-to="1"></li>
-			<li data-target="#carousel-elster-portal" data-slide-to="2"></li>
-		  </ol>
-
-		  <!-- Wrapper for slides -->
-		  <div class="carousel-inner">
-			<div class="item active">
-			  <img src="{{STATIC_URL}}img/people-background1.jpg" alt="Customers">
-			  <div class="carousel-caption">
-				<h1>Portal to Meter Quality</h1>
-			  </div>
-			</div>
-			<div class="item">
-			  <img src="{{STATIC_URL}}img/gas-meters.jpg"  alt="Gas">
-			  <div class="carousel-caption">
-				<!--... -->
-			  </div>
-			</div>
-			<div class="item">
-			  <img src="{{STATIC_URL}}img/solar-panels.jpg"  alt="Solar">
-			  <div class="carousel-caption">
-				<!--... -->
-			  </div>
-		    </div>
-		  </div>
-
-		  <!-- Controls -->
-		  <a class="left carousel-control" href="#carousel-elster-portal" role="button" data-slide="prev">
-			<span class="glyphicon glyphicon-chevron-left"></span>
-		  </a>
-		  <a class="right carousel-control" href="#carousel-elster-portal" role="button" data-slide="next">
-			<span class="glyphicon glyphicon-chevron-right"></span>
-		  </a>
-		</div>		
 
 	</div>
 	</div>

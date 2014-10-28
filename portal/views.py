@@ -19,22 +19,19 @@ ITEMS_PER_PAGE = settings.ITEMS_PER_PAGE
 
 def index(request):
 	template = 'index.html'
-	total_elster_records = None
-	total_customer_records = None
-	total_outstanding_rma = None
+	data = {}
+	
 	try:
-		total_elster_records = ElsterMeterTrack.objects.all().count()
-		total_customer_records = CustomerMeterTrack.objects.all().count()
-		total_outstanding_rma = ElsterMeterTrack.objects.filter(rma_complete_date__isnull=True).count()
+		data['total_elster_records'] = ElsterMeterTrack.objects.all().count()
+		data['total_customer_records'] = CustomerMeterTrack.objects.all().count()
+		data['total_outstanding_rma'] = ElsterMeterTrack.objects.filter(rma_complete_date__isnull=True).count()
 	except Exception as err:
 		print "oops: %s"%err
 		messages.error(request, 'Error %s determing totals'%err )
 		return HttpResponseRedirect(template)
-	data = {
-		'total_elster_records': total_elster_records, 
-		'total_customer_records': total_customer_records, 
-		'total_outstanding_rma': total_outstanding_rma,
-		}
+		
+	__this_year_failure_vs_non(request, data)
+	
 	return render(request, template, data)
 	
 def contact(request):
@@ -559,3 +556,36 @@ def edit_elster_rma(request, id=None):
 			},
 			context_instance=RequestContext(request)
 		)
+
+def __this_year_failure_vs_non(request, data):
+	'''
+		Determine the count of failure vs. non-failure 
+	'''
+	template = 'index.html'
+	now = datetime.datetime.now()
+	data['this_year'] = now.year
+	
+	
+	try:
+		failure_defects = ElsterRmaDefect.objects.filter(failure=True)
+		non_failure_defects = ElsterRmaDefect.objects.filter(failure=False)
+		data['non_failure_defect_list'] = [nf.description for nf in non_failure_defects]
+		
+		data['this_year_failure_count'] = ElsterMeterTrack.objects.filter(
+				rma_complete_date__isnull=False,
+				rma_create_date__gte=datetime.date(data['this_year'],1,1),
+				defect__in=failure_defects).count()
+		
+		data['this_year_non_failure_count'] = ElsterMeterTrack.objects.filter(
+				rma_complete_date__isnull=False,
+				rma_create_date__gte=datetime.date(data['this_year'],1,1),
+				defect__in=non_failure_defects).count()
+		data['up_to'] = ElsterMeterTrack.objects.filter( rma_complete_date__isnull=False).order_by('rma_complete_date').last().rma_create_date
+		data['device_count'] = ElsterMeterCount.objects.filter().order_by('as_of_date').last().meter_count
+	except Exception as err:
+		print "oops: %s"%err
+		messages.error(request, 'Error %s determing defect counts this year'%err )
+		return HttpResponseRedirect(template)
+	
+	
+
