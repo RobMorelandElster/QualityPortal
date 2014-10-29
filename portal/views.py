@@ -526,6 +526,62 @@ def elster_rma(request, rma_number):
 			'search_type': 'rma',
 		})
 
+@login_required()
+def elster_open_rma(request):
+	template = 'portal/elster_meter_q_list.html'
+	redirect_template = '/elster_rma_date_range'
+	redirect_template_rma = '/elster_open_rma'
+	choose_template = '/choose_elster_rma'
+
+	form = ElsterMeterTrackSearchForm(request.POST or None)
+	data = {}
+	data['form'] = form
+	form.initial={'rma_number': None,'start_date': None, 'end_date': None, }
+	
+	
+	if request.method == 'POST': # If the form has been submitted...
+		if form.is_valid(): # All validation rules pass
+
+			start_date = None
+			end_date = None
+			rma_number = None
+			start_date = form.cleaned_data['start_date']
+			end_date = form.cleaned_data['end_date']
+
+			if start_date:
+				start_date = str(start_date)
+			if end_date:
+				end_date = str(end_date)
+				
+			rma_number = form.cleaned_data['rma_number']
+			if len(rma_number):
+				return HttpResponseRedirect('%s/%s' % (redirect_template_rma, rma_number)) # Redirect after POST
+			else:
+				return HttpResponseRedirect('%s/%s/%s' % (redirect_template, start_date, end_date)) # Redirect after POST
+		else:
+			data['form'] = form
+			return render(request, template, data)
+	else:
+		try:
+			open_rma = ElsterMeterTrack.objects.filter(rma_complete_date__isnull=True)
+			rec_count = open_rma.count()
+		except Exception as err:
+			messages.error(request, 'Error %s looking up rma number: %s' %(str(err),rma_number))
+			return HttpResponseRedirect(choose_template)
+		if  len(open_rma) == 0:
+			messages.error(request, 'No open Elster RMAs', fail_silently=True)
+			return HttpResponseRedirect(choose_template)
+		
+	table = ElsterMeterTrackTable(open_rma)
+	RequestConfig(request,paginate={"per_page": ITEMS_PER_PAGE}).configure(table)
+	return render(request, template, 
+		{'table': table, 
+			'drill_down': 'Open RMAs', 
+			'rec_count':rec_count, 
+			'form': form,
+			'search_type': 'rma',
+		})
+
 def is_elster_user(user):
 	return user.groups.filter(name='Elster')
 

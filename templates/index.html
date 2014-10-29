@@ -56,7 +56,7 @@
           title: 'RMA % between 2009-2013',
 	  pieStartAngle: 5,
 	  fontName: 'Arial, Helvetica, Sans-Serif;',
-	  fontSize: '16',
+	  fontSize: '14',
 	  pieSliceText: 'label',
 	  is3D: true, 
 	  height: 300,
@@ -79,7 +79,7 @@
         var options_this_year = {
           title: 'RMA % for year {{this_year}} up to {{up_to}}',
 	  fontName: 'Arial, Helvetica, Sans-Serif;',
-	  fontSize: '16',
+	  fontSize: '14',
 	  is3D: true, 
 	  pieSliceText: 'label',
 	  height: 300,
@@ -103,11 +103,28 @@
 					<ul class="list-group">
 						<li class="list-group-item" style="color:#57A3C9;">Total Elster RMA Records: {{total_elster_records}}</li>
 						<li class="list-group-item" style="color:#57A3C9;">Total Customer Records: {{total_customer_records}}</li>
-						<li class="list-group-item" style="color:#57A3C9;">Total Open (not completed) RMA Records: <span class="label label-warning">{{total_outstanding_rma}}</span></li>
+						<li class="list-group-item" style="color:#57A3C9;"><a href="{% url 'elster_open_rma' %}">Total Open (not completed) RMA Records: <span class="label label-warning">{{total_outstanding_rma}}</span></a></li>
 					</ul>
 				</div>
 			</div>
 			<div class="row row-padded" >
+
+				<div class = "col-md-6" >
+					<div style="background-color:white; border:1em dotted white; border-radius:1em; margin-bottom: 1em;">
+					<div id="overall_chart" style="width: auto;" ></div>
+						<p class="primary_content" style="color:#57A3C9;">
+							This chart displays the percentage of devices remaining in service prior to year {{this_year}}
+							to those that were removed from service.  </br></br>
+							For those removed from service the percent of actual failed devices
+							is contrasted to those that were not RMA'd due to a non-failure condition. As follows:</br>
+							{% for description in non_failure_defect_list %}
+								{{description}}, 
+							{% endfor %}
+							
+						</p>
+					</div>
+				</div>
+
 				<div class = "col-md-6" >
 					<div style="background-color:white; border:1em dotted white; border-radius:1em;">
 						<div id="this_year_chart" style="width: auto;" ></div>
@@ -117,21 +134,6 @@
 					</div>
 				</div>
 
-				<div class = "col-md-6" >
-					<div style="background-color:white; border:1em dotted white; border-radius:1em; margin-bottom: 1em;">
-					<div id="overall_chart" style="width: auto;" ></div>
-						<p class="primary_content" style="color:#57A3C9;">
-							This chart displays the percentage of devices remaining in service prior to year {{this_year}}
-							to those that were removed from service.  </br></br>
-							For those removed from service the percent of actual failed devices
-							is contrasted to those that were not RMA'd due to a non-failure condition. Ex:(
-							{% for description in non_failure_defect_list %}
-								{{description}}, 
-							{% endfor %}
-							).
-						</p>
-					</div>
-				</div>
 
 			</div>
 			<div style="height: 1em; "></div>
