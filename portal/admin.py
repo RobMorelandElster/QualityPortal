@@ -141,19 +141,20 @@ class ElsterMeterTrackAdmin(admin.ModelAdmin):
 					('defect','complaint',),
 					('finding','action_taken',),]})
 		] 
-	list_display = ('elster_serial_number','rma_number','meter_style_description','complaint','rma_create_date','rma_complete_date','defect_id_desc',)
+	list_display = ('elster_serial_number', 'meter_barcode', 'rma_number','meter_style_description','complaint','rma_create_date','rma_complete_date','defect_id_desc',)
 	search_fields = ['elster_serial_number', 'rma_number', 'meter_barcode',]
-	list_filter = [ElsterMeterRmaCreateListFilter, ElsterMeterRmaCompleteListFilter,'defect__description']
+	list_filter = [ElsterMeterRmaCreateListFilter, ElsterMeterRmaCompleteListFilter,'defect__description', 'meter_style',]
 
 class CustomerMeterTrackAdmin(admin.ModelAdmin):
 	fieldsets = [ 
 		(None,              {'fields': [('elster_meter_serial_number', 'meter_type','meter_barcode',), 
 					('order_date','set_date','failure_date',),
 					('reason_for_removal','customer_defined_failure_code','failure_detail',),
-					('exposure','order_specs','service_status','firmware_version',),
+					('ship_date', 'tracking_number',),
+					('exposure','service_status','original_order_information',),
 					('longitude','latitude','address'),]})
 		] 
-	search_fields = ['number','order_date','failure_date','system_failure_code','customer_failure_code',]
+	search_fields = ['meter_barcode','failure_date','customer_defined_failure_code', 'tracking_number','original_order_information',]
 
 class ElsterRmaDefectAdmin(admin.ModelAdmin):
 	fields=[]

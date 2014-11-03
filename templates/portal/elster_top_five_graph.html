@@ -87,13 +87,13 @@ Usage Summary
         var data = new google.visualization.DataTable();
 
         data.addColumn('date', 'Date');
-	data.addColumn('number', 'Yearly Total');
+	data.addColumn('number', 'Totals');
         data.addRows([
 		[new Date(2008,11, 31), 0],
 		{% for year in year_list %}
 			{% if year == this_year %}
 				{% for month in month_list %}
-					[ new Date({{this_year}},{{forloop.counter0}}, 0),{{ grand_totals_by_month|get_at_index:forloop.counter }}],
+					[ new Date({{this_year}},{{forloop.counter0}}, 15),{{ grand_totals_by_month|get_at_index:forloop.counter }}],
 				{% endfor %}
 			{% else %}
 				[new Date({{year}},11, 31),{{ grand_totals_by_year|get_at_index:forloop.counter }}],
@@ -104,7 +104,9 @@ Usage Summary
         var chart = new google.visualization.AnnotationChart(document.getElementById('chart_div'));
 
         var options = {
-          displayAnnotations: true
+          displayAnnotations: true,
+	  fill: 30,
+	  displayZoomButtons: false,
         };
 
         chart.draw(data, options);

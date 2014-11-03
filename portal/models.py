@@ -143,7 +143,7 @@ class ElsterMeterTrack(models.Model):
 	
 class CustomerMeterTrack(models.Model):
 	def __unicode__(self):
-		return ("%s:%s:%s:%s"%(self.elster_meter_serial_number, str(self.order_date), str(self.failure_date), str(self.customer_defined_failure_code)))
+		return ("Serial#:%s Barcode:%s Failure_Date:%s"%(self.elster_meter_serial_number, str(self.meter_barcode), str(self.failure_date),))
 
 	# Orientation choices
 	NORTH = 'N'
@@ -214,9 +214,10 @@ class CustomerMeterTrack(models.Model):
 	customer_defined_failure_code = models.CharField(max_length=50,null=True,blank=True, verbose_name="Customer reference Defect Code")
 	failure_detail = models.TextField(max_length=2000, verbose_name="Detailed Description",null=True, blank=True)
 	exposure = models.CharField(max_length = 1, null=True,blank=True, choices = METER_EXPOSURE_CHOICES, verbose_name="Meter Facing Direction")
-	order_specs = models.CharField(max_length=100,  null=True,blank=True,verbose_name="Meter Order Specs")
+	ship_date = models.DateField(null=True, blank=True,verbose_name="Return Shipment Date")
+	tracking_number = models.CharField(max_length=25,  null=True,blank=True,verbose_name="Return Shipment Tracking Number")
 	service_status = models.CharField(max_length = 1, null=True,blank=True, choices = METER_SERVICE_CHOICES, default=IN_INVENTORY, verbose_name="Meter Service Status")
-	firmware_version = models.CharField(max_length=200,  null=True,blank=True, verbose_name="Meter Firmware Version")
+	original_order_information = models.CharField(max_length=100,null=True, blank=True,)
 	longitude = models.DecimalField(max_digits=12, decimal_places=6, null=True, blank=True,verbose_name="Meter Longitude Position")
 	latitude = models.DecimalField(max_digits=12, decimal_places=6, null=True, blank=True,verbose_name="Meter Latitude Position")
 	address = models.TextField(max_length=2000, verbose_name="Removed location address",null=True, blank=True)

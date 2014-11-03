@@ -236,7 +236,7 @@ def __this_year_top_five(request, data):
 				rma_complete_date__isnull=False,
 				defect=d).count()
 			months.append(month)
-			month['date_str'] = "%s, %s, 1"%(this_year, m)
+			month['date_str'] = "%d, %d, 1"%(this_year, m-1) # Months are zero based for Javascript Date constructor
 			month['count'] = count
 			total_count += count
 		def_for_month['months']=months
