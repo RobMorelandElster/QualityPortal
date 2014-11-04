@@ -30,6 +30,15 @@ def index(request):
 		messages.error(request, 'Error %s determing totals'%err )
 		return HttpResponseRedirect(template)
 		
+	all_time_defects = {}
+	# Top defects 'all time'
+	try:
+		for defect in ElsterRmaDefect.objects.all():
+			all_time_defects[defect] = ElsterMeterTrack.objects.filter(rma_complete_date__isnull=False,defect=defect).count()
+	except ObjectDoesNotExist:
+		pass
+	data['defect_counts'] = all_time_defects
+		
 	__this_year_failure_vs_non(request, data)
 	
 	return render(request, template, data)
@@ -520,7 +529,7 @@ def elster_rma(request, rma_number):
 	RequestConfig(request,paginate={"per_page": ITEMS_PER_PAGE}).configure(table)
 	return render(request, template, 
 		{'table': table, 
-			'drill_down': rma_number, 
+			'drill_down': 'for RMA %s*'%rma_number, 
 			'rec_count':rec_count, 
 			'form': form,
 			'search_type': 'rma',
@@ -581,6 +590,65 @@ def elster_open_rma(request):
 			'form': form,
 			'search_type': 'rma',
 		})
+		
+@login_required()
+def elster_rma_by_defect(request, defect_id):
+	template = 'portal/elster_meter_q_list.html'
+	redirect_template = '/elster_rma_date_range'
+	redirect_template_rma = '/elster_rma_by_defect'
+	choose_template = '/choose_elster_rma'
+
+	form = ElsterMeterTrackSearchForm(request.POST or None)
+	data = {}
+	data['form'] = form
+	form.initial={'rma_number': None,'start_date': None, 'end_date': None, }
+	defect_description = ''
+	
+	
+	if request.method == 'POST': # If the form has been submitted...
+		if form.is_valid(): # All validation rules pass
+
+			start_date = None
+			end_date = None
+			rma_number = None
+			start_date = form.cleaned_data['start_date']
+			end_date = form.cleaned_data['end_date']
+
+			if start_date:
+				start_date = str(start_date)
+			if end_date:
+				end_date = str(end_date)
+				
+			rma_number = form.cleaned_data['rma_number']
+			if len(rma_number):
+				return HttpResponseRedirect('%s/%s' % (redirect_template_rma, rma_number)) # Redirect after POST
+			else:
+				return HttpResponseRedirect('%s/%s/%s' % (redirect_template, start_date, end_date)) # Redirect after POST
+		else:
+			data['form'] = form
+			return render(request, template, data)
+	else:
+		try:
+			rma = ElsterMeterTrack.objects.filter(defect__defect_id=defect_id)
+			defect_description = ElsterRmaDefect.objects.get(defect_id=defect_id).description
+			rec_count = rma.count()
+		except Exception as err:
+			messages.error(request, 'Error %s looking up rma number: %s' %(str(err),rma_number))
+			return HttpResponseRedirect(choose_template)
+		if  len(rma) == 0:
+			messages.error(request, 'No records for elster defect#: %s' %defect_id, fail_silently=True)
+			return HttpResponseRedirect(choose_template)
+		
+	table = ElsterMeterTrackTable(rma)
+	RequestConfig(request,paginate={"per_page": ITEMS_PER_PAGE}).configure(table)
+	return render(request, template, 
+		{'table': table, 
+			'drill_down': 'for %s'%defect_description, 
+			'rec_count':rec_count, 
+			'form': form,
+			'search_type': 'rma',
+		})
+
 
 def is_elster_user(user):
 	return user.groups.filter(name='Elster')

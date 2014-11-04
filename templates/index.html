@@ -27,6 +27,8 @@
 <script src="{{STATIC_URL}}js/jquery.min.js" type="text/javascript"></script>
 
 <link href="{{ STATIC_URL }}css/signin.css" rel="stylesheet">
+<link href="{{ STATIC_URL }}css/tc.css"  rel="stylesheet"/>
+ 
 <style class="text/css">
 .img-responsive {
 	display: block;
@@ -113,32 +115,41 @@
 					<div style="background-color:white; border:1em dotted white; border-radius:1em; margin-bottom: 1em;">
 					<div id="overall_chart" style="width: auto;" ></div>
 						<p class="primary_content" style="color:#57A3C9;">
-							This chart displays the percentage of devices remaining in service prior to year {{this_year}}
-							to those that were removed from service.  </br></br>
-							For those removed from service the percent of actual failed devices
-							is contrasted to those that were not RMA'd due to a non-failure condition. As follows:</br>
+							Failure vs Non-Failure RMA, inclusive prior to year {{this_year}}
+							</br>
+							Non-Failure determined in: 
 							{% for description in non_failure_defect_list %}
 								{{description}}, 
 							{% endfor %}
-							
 						</p>
 					</div>
 				</div>
+
 
 				<div class = "col-md-6" >
 					<div style="background-color:white; border:1em dotted white; border-radius:1em;">
 						<div id="this_year_chart" style="width: auto;" ></div>
 						<p class="primary_content" style="color:#57A3C9;">
-							This chart displays percentages for year {{this_year}} alone.
+							Failure vs Non-Failure RMA for year {{this_year}} alone.
+							</br>
+							Non-Failure determined in: 
+							{% for description in non_failure_defect_list %}
+								{{description}}, 
+							{% endfor %}
 						</p>
 					</div>
 				</div>
-
-
+			</div>
+			<div class="row row-padded" >
+				<div class = "col-md-12" >
+					<div style="background-color:white; border:1em dotted white; border-radius:1em;">
+						<div id="tcdiv" style="background-color:white; border-radius:1em; "></div>
+					</div>
+				</div>
 			</div>
 			<div style="height: 1em; "></div>
 			</div>
-
+			
 				<!--
 				{% if request.user.first_name or request.user.last_name %}
 					{{ request.user.first_name }} {{ request.user.last_name }}
@@ -201,5 +212,23 @@
 	  <footer>
 		<p> &copy; Elster Solutions 2014</p>
 	  </footer>
-
+  
+	<script type="text/javascript" src="http://visapi-gadgets.googlecode.com/svn/trunk/termcloud/tc.js"></script>
+	<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+	<script type="text/javascript">
+	      google.load("visualization", "1");
+	      google.setOnLoadCallback(drawTermCloud);
+	      function drawTermCloud() {
+	      
+		var data = google.visualization.arrayToDataTable([
+		  ['Defect', 'Count', 'Link'],
+			{% for key, value in defect_counts.items %}
+				['{{key.description}}', {{value}}, 'elster_rma_by_defect/{{key.defect_id|safe}}/'],
+			{% endfor %}
+		]); 
+		var outputDiv = document.getElementById('tcdiv');
+		var tc = new TermCloud(outputDiv);
+		tc.draw(data, null);
+	      }
+	</script>
 {% endblock %}
