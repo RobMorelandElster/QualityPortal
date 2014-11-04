@@ -31,13 +31,17 @@ def index(request):
 		return HttpResponseRedirect(template)
 		
 	all_time_defects = {}
+	top_10_defects = {}
 	# Top defects 'all time'
 	try:
 		for defect in ElsterRmaDefect.objects.all():
 			all_time_defects[defect] = ElsterMeterTrack.objects.filter(rma_complete_date__isnull=False,defect=defect).count()
+		top_10_all_time = sorted(all_time_defects,key=all_time_defects.get,reverse=True)[:10]
+		for d in top_10_all_time:
+			top_10_defects[d]=all_time_defects[d]
 	except ObjectDoesNotExist:
 		pass
-	data['defect_counts'] = all_time_defects
+	data['defect_counts'] = top_10_defects
 		
 	__this_year_failure_vs_non(request, data)
 	

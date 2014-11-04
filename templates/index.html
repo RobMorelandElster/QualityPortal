@@ -15,12 +15,6 @@
 {% endblock %}
 
 {% block content %}
-	{% load breadcrumbs %}
-	{% block breadcrumbs %}
-	{% breadcrumb_style_open %}	
-		{% breadcrumb_url 'Home' 'index' %}
-	{% breadcrumb_style_close %}		
-	{% endblock %}
 	
 {# Display django.contrib.messages as Bootstrap alerts #}
 {% bootstrap_messages %}
@@ -56,12 +50,14 @@
 
         var options_overall = {
           title: 'RMA % between 2009-2013',
+	  titleTextStyle: {fontSize: '1.3em;', },
 	  pieStartAngle: 5,
 	  fontName: 'Arial, Helvetica, Sans-Serif;',
-	  fontSize: '14',
+	  fontSize: '1.3em;',
 	  pieSliceText: 'label',
 	  is3D: true, 
 	  height: 300,
+	  chartArea: {left: 5, width: '90%'},
         };
 	
 	/* var formatter = new google.visualization.NumberFormat({fractionDigits:2} );
@@ -81,11 +77,12 @@
         var options_this_year = {
           title: 'RMA % for year {{this_year}} up to {{up_to}}',
 	  fontName: 'Arial, Helvetica, Sans-Serif;',
-	  fontSize: '14',
+	  fontSize: '1.3em;',
 	  is3D: true, 
 	  pieSliceText: 'label',
 	  height: 300,
-        };
+	  chartArea: {left: 5, width: '90%'},
+	};
 
         var this_year_chart = new google.visualization.PieChart(document.getElementById('this_year_chart'));
         this_year_chart.draw(data_this_year, options_this_year);
@@ -100,19 +97,41 @@
 			<p class="primary_content">Joining information from your system to quality findings from Elster </p>
 			
 			{% if request.user.is_authenticated %}
-			<div class="row row-padded" >
-				<div class = "col-md-12">
-					<ul class="list-group">
-						<li class="list-group-item" style="color:#57A3C9;">Total Elster RMA Records: {{total_elster_records}}</li>
-						<li class="list-group-item" style="color:#57A3C9;">Total Customer Records: {{total_customer_records}}</li>
-						<li class="list-group-item" style="color:#57A3C9;"><a href="{% url 'elster_open_rma' %}">Total Open (not completed) RMA Records: <span class="label label-warning">{{total_outstanding_rma}}</span></a></li>
-					</ul>
+				<div style="background-color:white; border:1em dotted white; border-radius:5px; margin-bottom: 1em;">
+					<div class="row row-padded" >
+						<div class = "col-md-6">
+							<ul class="list-group">
+								<li class="list-group-item" style="color:#57A3C9;">
+									<a href="{% url 'elster_meter_q_list' %}"><i class="fa fa-list fa-3x"></i></a>
+									&nbsp;&nbsp;&nbsp;&nbsp;Total Elster RMA Records: {{total_elster_records}}</li>
+								<li class="list-group-item" style="color:#57A3C9;">
+									<a href="{% url 'cust_meter_q_list' %}"><i class="fa fa-barcode fa-3x"></i></a>
+									&nbsp;&nbsp;&nbsp;&nbsp;Total Customer Records: {{total_customer_records}}</li>
+								<li class="list-group-item" style="color:#57A3C9;">
+									<a href="{% url 'elster_open_rma' %}"><i class="fa fa-folder-open fa-3x"></i></a>
+									&nbsp;&nbsp;&nbsp;&nbsp;Total Open (not completed) RMA Records: </a>
+									<span class="label label-warning">{{total_outstanding_rma}}</span> </li>
+							</ul>
+						</div>
+						<div class = "col-md-6">
+							<ul class="list-group">
+								<li class="list-group-item" style="color:#57A3C9;">
+									<a href="{% url 'choose_elster_rma' %}"><i class="fa fa-search fa-3x"></i></a>
+									&nbsp;&nbsp;&nbsp;&nbsp;Search Elster RMA Records:</li>
+								<li class="list-group-item" style="color:#57A3C9;">
+									<a href="{% url 'elster_top_five' %}"><i class="fa fa-sort-amount-desc fa-3x"></i></a>
+									&nbsp;&nbsp;&nbsp;&nbsp;Top 5 Defects</li>
+								<li class="list-group-item" style="color:#57A3C9;">
+									<a href="{% url 'elster_top_five_graph' %}"><i class="fa fa-cog fa-spin fa-3x"></i></a>
+									&nbsp;&nbsp;&nbsp;&nbsp;Defect Analysis</li>
+							</ul>
+						</div>
+					</div>
 				</div>
-			</div>
 			<div class="row row-padded" >
 
 				<div class = "col-md-6" >
-					<div style="background-color:white; border:1em dotted white; border-radius:1em; margin-bottom: 1em;">
+					<div style="background-color:white; border:1em dotted white; border-radius:5px; margin-bottom: 1em;">
 					<div id="overall_chart" style="width: auto;" ></div>
 						<p class="chart_description">
 							Failure vs Non-Failure RMA, inclusive prior to year {{this_year}}
@@ -128,7 +147,7 @@
 
 
 				<div class = "col-md-6" >
-					<div style="background-color:white; border:1em dotted white; border-radius:1em;">
+					<div style="background-color:white; border:1em dotted white; border-radius:5px;">
 						<div id="this_year_chart" style="width: auto;" ></div>
 						<p class="chart_description">
 							Failure vs Non-Failure RMA for year {{this_year}} alone.
@@ -143,16 +162,20 @@
 				</div>
 			</div>
 			<div style="height: 1em; "></div>
-			<div class="row row-padded" >
-				<div class = "col-md-12" >
-					<div style="background-color:white; border:1em dotted white; border-radius:1em;">
-						<div id="tcdiv" style="background-color:white; border-radius:1em; "></div>
+			<div style="background-color:white; border:1em dotted white; border-radius:5px; margin-bottom: 1em;color:#57A3C9;">
+				<div class="row row-padded" >
+					<div class = "col-md-2">
+						<i class="fa fa-line-chart fa-5x"></i></br>Defects Trending
+					</div>
+					<div class = "col-md-10">
+						<div style="background-color:white; border:1em dotted white; border-radius:5px;">
+							<div id="tcdiv" style="background-color:white; border-radius:5px; "></div>
+						</div>
 					</div>
 				</div>
 			</div>
-			<div style="height: 1em; "></div>
-			</div>
-			
+			<!--div style="height: 1em; "></div-->
+			</div>			
 				<!--
 				{% if request.user.first_name or request.user.last_name %}
 					{{ request.user.first_name }} {{ request.user.last_name }}
@@ -225,7 +248,7 @@
 		var data = google.visualization.arrayToDataTable([
 		  ['Defect', 'Count', 'Link'],
 			{% for key, value in defect_counts.items %}
-				['{{key.description}}', {{value}}, 'elster_rma_by_defect/{{key.defect_id|safe}}/'],
+				['{{key.description|safe}}', {{value}}, 'elster_rma_by_defect/{{key.defect_id|safe}}/'],
 			{% endfor %}
 		]); 
 		var outputDiv = document.getElementById('tcdiv');
