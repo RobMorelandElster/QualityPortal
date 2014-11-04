@@ -34,6 +34,28 @@ input {
     border:1px solid #666;
 }
 
+.img-responsive {
+	display: block;
+	height: auto;
+	max-width: 100%;
+}
+.primary_content {
+	font-size: 1.3em;
+	margin: .5em 0;
+	line-height: 1.45;
+}
+
+.chart_description {
+	color:black;
+    font-family:Arial;
+}
+
+.chart_description_bold {
+	color:black;
+	font-size: 1.1em;
+    font-family:Arial;
+}
+
 .concat div { 
 	overflow: hidden; 
 	-ms-text-overflow: ellipsis; 
