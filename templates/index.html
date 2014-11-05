@@ -50,13 +50,13 @@
 
         var options_overall = {
           title: 'RMA % between 2009-2013',
-	  titleTextStyle: {fontSize: '16', fontName: 'Verdana, Geneva, sans-serif;', color: '#57A3C9'},
+	  titleTextStyle: {fontSize: '18', fontName: 'Arial, sans-serif', color: '#57A3C9'},
 	  pieStartAngle: 5,
 	  fontSize: '12',
 	  pieSliceText: 'label',
 	  is3D: true, 
 	  height: 300,
-	  chartArea: {left: 5, width: '90%'},
+	  chartArea: {left: 10, width: '95%', height: '75%'},
         };
 	
 	/* var formatter = new google.visualization.NumberFormat({fractionDigits:2} );
@@ -75,12 +75,12 @@
 
         var options_this_year = {
           title: 'RMA % for year {{this_year}} up to {{up_to}}',
-	  titleTextStyle: {fontSize: '16', fontName: 'Verdana, Geneva, sans-serif;', color: '#57A3C9'},
+	  titleTextStyle: {fontSize: '18', fontName: 'Arial, sans-serif', color: '#57A3C9'},
 	  fontSize: '12',
 	  is3D: true, 
 	  pieSliceText: 'label',
 	  height: 300,
-	  chartArea: {left: 5, width: '90%'},
+	  chartArea: {left: 10, width: '95%', height: '75%'},
 	};
 
         var this_year_chart = new google.visualization.PieChart(document.getElementById('this_year_chart'));
@@ -103,15 +103,15 @@
 								<li class="list-group-item" style="color:#57A3C9;">
 									<a href="{% url 'elster_meter_q_list' %}"><i class="fa fa-list fa-3x"></i></a>
 									&nbsp;&nbsp;&nbsp;&nbsp;Elster RMA Records&nbsp;&nbsp;
-									<span class="label label-info" >{{total_elster_records}}</span></li>
+									<b>{{total_elster_records}}</b></li>
 								<li class="list-group-item" style="color:#57A3C9;">
 									<a href="{% url 'cust_meter_q_list' %}"><i class="fa fa-barcode fa-3x"></i></a>
 									&nbsp;&nbsp;&nbsp;&nbsp;Customer Records&nbsp;&nbsp;
-									<span class="label label-info">{{total_customer_records}}</span></li>
+									<b>{{total_customer_records}}</b></li>
 								<li class="list-group-item" style="color:#57A3C9;">
 									<a href="{% url 'elster_open_rma' %}"><i class="fa fa-folder-open fa-3x"></i></a>
 									&nbsp;&nbsp;&nbsp;&nbsp;Open RMA Records&nbsp;&nbsp;
-									<span class="label label-warning">{{total_outstanding_rma}}</span> </li>
+									<b>{{total_outstanding_rma}}</b></li>
 							</ul>
 						</div>
 						<div class = "col-md-6">
@@ -130,7 +130,6 @@
 					</div>
 				</div>
 			<div class="row row-padded" >
-
 				<div class = "col-md-6" >
 					<div style="background-color:white; border:1em dotted white; border-radius:5px; margin-bottom: 1em;">
 					<div id="overall_chart" style="width: auto;" ></div>
@@ -139,7 +138,11 @@
 							<p class="chart_description_bold">
 								Non-Failure causes defined as: 
 								{% for description in non_failure_defect_list %}
-									{{description}}, 
+									{% if forloop.last %}
+										{{description}}
+									{% else %}
+										{{description}},
+									{% endif %}
 								{% endfor %}
 							</p>
 						</p>
@@ -155,7 +158,11 @@
 							<p class="chart_description_bold">
 								Non-Failure causes defined as:  
 								{% for description in non_failure_defect_list %}
-									{{description}}, 
+									{% if forloop.last %}
+										{{description}}
+									{% else %}
+										{{description}},
+									{% endif %}
 								{% endfor %}
 							</p>
 						</p>

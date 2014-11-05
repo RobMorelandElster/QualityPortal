@@ -25,8 +25,8 @@
 	{# Display django.contrib.messages as Bootstrap alerts #}
 	{% bootstrap_messages %}
 		<div class="container"  style="margin:1em; ">
-			<h1>Elster Meter Quality Items 
-				{% if drill_down %}<span class="label label-info"> {{drill_down}}</span>{% endif %}
+			<h1>Elster Meter Quality Items&nbsp;
+				{% if drill_down %}<span class="label label-info">{{drill_down}}</span>{% endif %} 
 				{% if rec_count %} <span class="label label-info">{{rec_count}}</span> {% endif %}</h1>
 			{% if form.errors %}
 			<div class="alert alert-warning alert-dismissible" role="alert">
@@ -36,7 +36,7 @@
 			{% endif %}
 		</div>
 		{% include "portal/elster_rma_display_form.html" %}
-		  <div style="max-width: 968px; overflow-x:scroll; border-radius:1em;">
+		  <div style="max-width: auto; overflow-x:scroll; border-radius:1em;">
 			{% render_table table %}
 		  </div>
 	{% endblock %}
