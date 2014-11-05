@@ -25,6 +25,14 @@ div.fixed-max-width-800 {
     color:    #666;
 }
 
+div.chart-bordered {
+	background-color:white; 
+	border:1em dotted white; 
+	border-radius:5px; 
+	margin-bottom: 1em;
+	color:#57A3C9;
+}
+
 input {
     color:black;
     background:white;    

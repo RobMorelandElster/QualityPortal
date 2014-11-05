@@ -96,7 +96,7 @@
 			<p class="primary_content">Joining information from your system to quality findings from Elster </p>
 			
 			{% if request.user.is_authenticated %}
-				<div style="background-color:white; border:1em dotted white; border-radius:5px; margin-bottom: 1em;">
+				<div class="chart-bordered"-->
 					<div class="row row-padded" >
 						<div class = "col-md-6">
 							<ul class="list-group">
@@ -131,7 +131,7 @@
 				</div>
 			<div class="row row-padded" >
 				<div class = "col-md-6" >
-					<div style="background-color:white; border:1em dotted white; border-radius:5px; margin-bottom: 1em;">
+					<div class="chart-bordered">
 					<div id="overall_chart" style="width: auto;" ></div>
 						<p class="chart_description">
 							Failure vs Non-Failure RMA, inclusive prior to year {{this_year}}
@@ -151,7 +151,7 @@
 
 
 				<div class = "col-md-6" >
-					<div style="background-color:white; border:1em dotted white; border-radius:5px;">
+					<div class="chart-bordered">
 						<div id="this_year_chart" style="width: auto;" ></div>
 						<p class="chart_description">
 							Failure vs Non-Failure RMA for year {{this_year}} alone.
@@ -169,8 +169,8 @@
 					</div>
 				</div>
 			</div>
-			<div style="height: 1em; "></div>
-			<div style="background-color:white; border:1em dotted white; border-radius:5px; margin-bottom: 1em;color:#57A3C9;">
+			<!--div style="height: 1em; "></div-->
+			<div class="chart-bordered">
 				<div class="row row-padded" >
 					<div class = "col-md-2">
 						<i class="fa fa-line-chart fa-5x"></i></br>Root Cause Trending
@@ -235,16 +235,14 @@
 						<span class="glyphicon glyphicon-chevron-right"></span>
 					  </a>
 					</div>		
-
 			{% endif %}
-
-
 		</div>
-
 	</div>
-	</div>
+	
 	  <footer>
-		<p> &copy; Elster Solutions 2014</p>
+		<div class="container">
+			&copy; Elster Solutions 2014
+		</div>
 	  </footer>
   
 	<script src="{{STATIC_URL}}js/tc.js" type="text/javascript"></script>

@@ -40,7 +40,7 @@ Usage Summary
 			<h1 class="text-center">Top 5 RMA Root Causes </h1>
 			</div>
 		</div>
-		<div class="container">
+		<div class="container" width="auto;">
 			<div class = "col-md-12">
 				<a href="{% url 'top_five_monthly_to_csv' %}" >
 					<button type="button" class="btn btn-default pull-right">
@@ -48,7 +48,7 @@ Usage Summary
 					</button>
 				</a>
 				<h2>Top 5 RMA Root Causes for {{this_year}}</h2>
-				<table class="table table-striped table-hover">
+				<table class="table table-striped table-hover" >
 				  <tr  class="success">
 					<th >Defect Description</th>
 					{% for month in month_list %}
@@ -85,7 +85,7 @@ Usage Summary
 			<hr/>
 			</div>
 			</div>
-		<div class="container">
+		<div  class="container" style="max-width: auto;">
 			<div class = "col-md-12">
 				<a href="{% url 'top_five_all_time_to_csv' %}" >
 					<button type="button" class="btn btn-default pull-right">
