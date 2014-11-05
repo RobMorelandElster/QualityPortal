@@ -46,13 +46,15 @@ input {
 }
 
 .chart_description {
-	color:black;
+	color:#57A3C9;
+	font-weight: 800;
     font-family:Arial;
 }
 
 .chart_description_bold {
-	color:black;
-	font-size: 1.1em;
+	color:#57A3C9;
+	font-weight: 800;
+	font-size: 1.3em;
     font-family:Arial;
 }
 
@@ -74,4 +76,35 @@ div.long_text_column {
 	-ms-text-overflow: ellipsis; 
 	-o-text-overflow: ellipsis; 
 	text-overflow: ellipsis; 
+}
+
+body {
+	font-family: 'Source Sans Pro', sans-serif;
+	font-weight: 800
+	font-size: 1.2em;
+	padding: 3em 0;
+	padding-top: 70px;
+	/* background-image: url({{STATIC_URL}}img/big-people-background1.jpg);  */
+	background-position: 0% 25%;
+	background-size: auto;
+	background-color: #57A3C9; 
+	background-repeat: no-repeat;
+	/* text-shadow: black 0.3em 0.3em 0.3em; */
+	color: white; 
+}
+@media (max-width: 768px) {
+  body {
+	padding-top: 70px;
+  }
+}
+	
+.btn {
+	border: .5px solid;
+}
+
+.primary_content {
+	font-size: 1.3em;
+	margin: .5em 0;
+	line-height: 1.45;
+	margin-bottom: 0px;
 }

@@ -36,7 +36,7 @@ Usage Summary
       google.setOnLoadCallback(drawChart);
       function drawChart() {
         var data_year = new google.visualization.DataTable();
-        data_year.addColumn('string', 'Defect');
+        data_year.addColumn('string', 'Root Cause');
         data_year.addColumn('date', 'Date');
 	data_year.addColumn('number', 'Total');
         data_year.addColumn('number', 'Count');
@@ -59,7 +59,7 @@ Usage Summary
         chart_year.draw(data_year, options_year);
 	
 	var data_all = new google.visualization.DataTable();
-	data_all.addColumn('string', 'Defect');
+	data_all.addColumn('string', 'Root Cause');
 	data_all.addColumn('number', 'Year');
 	data_all.addColumn('number', 'Total');
 	data_all.addColumn('number','Count');
@@ -121,7 +121,7 @@ Usage Summary
 		<div class="row row-padded" />
 		<div class="container">
 			<div class = "col-md-12">
-			<h1 class="text-center">Top Defects for {{this_year}}</h1>
+			<h1 class="text-center">Top RMA root causes for {{this_year}}</h1>
 			</div>
 		</div>
 		<div class="container">
@@ -134,7 +134,7 @@ Usage Summary
 		<div class="row row-padded" />
 		<div class="container">
 			<div class = "col-md-12">
-			<h1 class="text-center">Defect counts through time</h1>
+			<h1 class="text-center">RMA root cause counts through time</h1>
 			</div>
 		</div>
 		<div class="container">
@@ -146,7 +146,7 @@ Usage Summary
 		<div class="row row-padded" />
 		<div class="container">
 			<div class = "col-md-12">
-				<h1 class="text-center">Yearly Defect Totals</h1>
+				<h1 class="text-center">Yearly RMA Totals</h1>
 				<div id='chart_div' style='width: auto' ></div>
 				<div style="height: 1em; "></div>
 			</div>

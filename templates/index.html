@@ -50,9 +50,8 @@
 
         var options_overall = {
           title: 'RMA % between 2009-2013',
-	  titleTextStyle: {fontSize: '1.3em;', },
+	  titleTextStyle: {fontSize: '18', fontName: 'Verdana, Geneva, sans-serif;', color: '#57A3C9'},
 	  pieStartAngle: 5,
-	  fontName: 'Arial, Helvetica, Sans-Serif;',
 	  fontSize: '1.3em;',
 	  pieSliceText: 'label',
 	  is3D: true, 
@@ -76,7 +75,7 @@
 
         var options_this_year = {
           title: 'RMA % for year {{this_year}} up to {{up_to}}',
-	  fontName: 'Arial, Helvetica, Sans-Serif;',
+	  titleTextStyle: {fontSize: '18', fontName: 'Verdana, Geneva, sans-serif;', color: '#57A3C9'},
 	  fontSize: '1.3em;',
 	  is3D: true, 
 	  pieSliceText: 'label',
@@ -103,13 +102,15 @@
 							<ul class="list-group">
 								<li class="list-group-item" style="color:#57A3C9;">
 									<a href="{% url 'elster_meter_q_list' %}"><i class="fa fa-list fa-3x"></i></a>
-									&nbsp;&nbsp;&nbsp;&nbsp;Total Elster RMA Records: {{total_elster_records}}</li>
+									&nbsp;&nbsp;&nbsp;&nbsp;Elster RMA Records&nbsp;&nbsp;
+									<span class="label label-info" >{{total_elster_records}}</span></li>
 								<li class="list-group-item" style="color:#57A3C9;">
 									<a href="{% url 'cust_meter_q_list' %}"><i class="fa fa-barcode fa-3x"></i></a>
-									&nbsp;&nbsp;&nbsp;&nbsp;Total Customer Records: {{total_customer_records}}</li>
+									&nbsp;&nbsp;&nbsp;&nbsp;Customer Records&nbsp;&nbsp;
+									<span class="label label-info">{{total_customer_records}}</span></li>
 								<li class="list-group-item" style="color:#57A3C9;">
 									<a href="{% url 'elster_open_rma' %}"><i class="fa fa-folder-open fa-3x"></i></a>
-									&nbsp;&nbsp;&nbsp;&nbsp;Total Open (not completed) RMA Records: </a>
+									&nbsp;&nbsp;&nbsp;&nbsp;Open RMA Records&nbsp;&nbsp;
 									<span class="label label-warning">{{total_outstanding_rma}}</span> </li>
 							</ul>
 						</div>
@@ -120,10 +121,10 @@
 									&nbsp;&nbsp;&nbsp;&nbsp;Search Elster RMA Records:</li>
 								<li class="list-group-item" style="color:#57A3C9;">
 									<a href="{% url 'elster_top_five' %}"><i class="fa fa-sort-amount-desc fa-3x"></i></a>
-									&nbsp;&nbsp;&nbsp;&nbsp;Top 5 Defects</li>
+									&nbsp;&nbsp;&nbsp;&nbsp;Top 5 RMA Root Causes</li>
 								<li class="list-group-item" style="color:#57A3C9;">
 									<a href="{% url 'elster_top_five_graph' %}"><i class="fa fa-cog fa-spin fa-3x"></i></a>
-									&nbsp;&nbsp;&nbsp;&nbsp;Defect Analysis</li>
+									&nbsp;&nbsp;&nbsp;&nbsp;Root Cause Analysis</li>
 							</ul>
 						</div>
 					</div>
@@ -136,7 +137,7 @@
 						<p class="chart_description">
 							Failure vs Non-Failure RMA, inclusive prior to year {{this_year}}
 							<p class="chart_description_bold">
-								Non-Failure determined in: 
+								Non-Failure causes defined as: 
 								{% for description in non_failure_defect_list %}
 									{{description}}, 
 								{% endfor %}
@@ -152,7 +153,7 @@
 						<p class="chart_description">
 							Failure vs Non-Failure RMA for year {{this_year}} alone.
 							<p class="chart_description_bold">
-								Non-Failure determined in: 
+								Non-Failure causes defined as:  
 								{% for description in non_failure_defect_list %}
 									{{description}}, 
 								{% endfor %}
@@ -165,7 +166,7 @@
 			<div style="background-color:white; border:1em dotted white; border-radius:5px; margin-bottom: 1em;color:#57A3C9;">
 				<div class="row row-padded" >
 					<div class = "col-md-2">
-						<i class="fa fa-line-chart fa-5x"></i></br>Defects Trending
+						<i class="fa fa-line-chart fa-5x"></i></br>Root Cause Trending
 					</div>
 					<div class = "col-md-10">
 						<div style="background-color:white; border:1em dotted white; border-radius:5px;">
@@ -246,7 +247,7 @@
 	      function drawTermCloud() {
 	      
 		var data = google.visualization.arrayToDataTable([
-		  ['Defect', 'Count', 'Link'],
+		  ['Root Cause', 'Count', 'Link'],
 			{% for key, value in defect_counts.items %}
 				['{{key.description|safe}}', {{value}}, 'elster_rma_by_defect/{{key.defect_id|safe}}/'],
 			{% endfor %}
