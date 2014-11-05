@@ -47,13 +47,13 @@ input {
 
 .chart_description {
 	color:#57A3C9;
-	font-weight: 800;
+	font-weight: 600;
     font-family:Arial;
 }
 
 .chart_description_bold {
 	color:#57A3C9;
-	font-weight: 800;
+	font-weight: 600;
 	font-size: 1.3em;
     font-family:Arial;
 }
