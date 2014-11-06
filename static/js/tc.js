@@ -52,6 +52,7 @@ TermCloud.prototype.draw = function(data, options) {
   var maxFreq = 0;
   for (var rowInd = 0; rowInd < data.getNumberOfRows(); rowInd++) {
     var f = data.getValue(rowInd, 1);
+    f = Math.abs(f)
     if (f > 0) {
       minFreq = Math.min(minFreq, f);
       maxFreq = Math.max(maxFreq, f);
@@ -72,10 +73,12 @@ TermCloud.prototype.draw = function(data, options) {
   html.push('<div class="term-cloud">');
   for (var rowInd = 0; rowInd < data.getNumberOfRows(); rowInd++) {
     var f = data.getValue(rowInd, 1);
-    if (f > 0) {
+    if (Math.abs(f) > 0) {
       var text = data.getValue(rowInd, 0);
       var link = cols == 3 ? data.getValue(rowInd, 2) : null;
       var freq = data.getValue(rowInd, 1);
+      var o_freq = freq
+      freq = Math.abs(freq)
       var size = TermCloud.MIN_UNIT_SIZE +
            Math.round((freq - minFreq) / range * TermCloud.RANGE_UNIT_SIZE);
       html.push('<a class="term-cloud-link" href="', (link || '#'), '" id="_tc_', id, '_', rowInd , '"');
@@ -84,7 +87,16 @@ TermCloud.prototype.draw = function(data, options) {
       }
       html.push('>');
       html.push('<span class="term-cloud-', size, '">');
+       if (o_freq < 0) {
+	        html.push('<i class="fa fa-arrow-circle-down">&nbsp;');
+		html.push('<abbr title="Three month moving average of '+ (o_freq.toFixed(2)).toString() +'%">');
+       } else {
+		html.push('<i class="fa fa-arrow-circle-up">&nbsp;');
+		html.push('<abbr title="Three month moving average of '+ (o_freq.toFixed(2)).toString() +'%">');
+       }
       html.push(this.escapeHtml(text).replace(/ /g, '&nbsp;'));
+      html.push('</abbr>');
+      html.push('</i>');
       html.push('</span>');
       html.push('</a>');
       html.push(' ');

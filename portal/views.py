@@ -2,6 +2,7 @@ from django.template import RequestContext
 from django.shortcuts import render, get_object_or_404, render_to_response, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django_tables2   import RequestConfig
+from django.db.models import Count
 from django.core.exceptions import ObjectDoesNotExist
 import settings
 from portal.models import *
@@ -30,23 +31,57 @@ def index(request):
 		messages.error(request, 'Error %s determing totals'%err )
 		return HttpResponseRedirect(template)
 		
-	all_time_defects = {}
-	top_10_defects = {}
-	# Top defects 'all time'
-	try:
-		for defect in ElsterRmaDefect.objects.all():
-			all_time_defects[defect] = ElsterMeterTrack.objects.filter(rma_complete_date__isnull=False,defect=defect).count()
-		top_10_all_time = sorted(all_time_defects,key=all_time_defects.get,reverse=True)[:10]
-		for d in top_10_all_time:
-			top_10_defects[d]=all_time_defects[d]
-	except ObjectDoesNotExist:
-		pass
-	data['defect_counts'] = top_10_defects
-		
+	__elster_defect_trending(request, data)
 	__this_year_failure_vs_non(request, data)
 	
 	return render(request, template, data)
-	
+
+def moving_av(l, n):
+    """Take a list, l, and return the average of its last n elements.
+    """
+    observations = len(l[-n:])
+    return sum(l[-n:]) / float(observations)
+    
+def __elster_defect_trending(request, data):
+	new_defects = {}
+	t_defects = {}
+	# Top defects 'all time'
+	try:
+		# Find latest defects for the past six months
+		one_year = 56 #weeks
+		month = 4 #weeks
+		
+		last_date = ElsterMeterTrack.objects.all().order_by('rma_create_date').last().rma_create_date
+		beginning_date =  last_date - datetime.timedelta(weeks=one_year)
+		date_index = beginning_date
+		for w in range(month, one_year, month):
+			from_date = date_index
+			to_date = beginning_date + datetime.timedelta(weeks=w)
+			defects = ElsterRmaDefect.objects.filter(
+				elstermetertrack__rma_create_date__range=(from_date, to_date), 
+				failure=True).annotate(Count('elstermetertrack'))
+			for d in defects:
+				try:
+					l = new_defects[d]
+					l.append(d.elstermetertrack__count)
+					new_defects[d]=l
+				except KeyError:
+					new_defects[d]=[d.elstermetertrack__count]
+			date_index = to_date
+			
+		defect_scores = {}
+		for defect, counts in new_defects.iteritems():
+			d6_moving_av = moving_av(counts, int(len(new_defects)/4))
+			d12_moving_av = moving_av(counts, len(new_defects))
+			defect_scores[defect] = ((d6_moving_av - d12_moving_av) / d12_moving_av) * 100 #make it percentage
+			
+		t_six_months = defect_scores
+		for d in t_six_months:
+			t_defects[d]=defect_scores[d]
+	except ObjectDoesNotExist:
+		pass
+	data['defect_counts'] = t_defects
+
 def contact(request):
 	return render(request,'contact.html')
 
@@ -633,7 +668,7 @@ def elster_rma_by_defect(request, defect_id):
 			return render(request, template, data)
 	else:
 		try:
-			rma = ElsterMeterTrack.objects.filter(defect__defect_id=defect_id)
+			rma = ElsterMeterTrack.objects.filter(defect__defect_id=defect_id).order_by('-rma_create_date')
 			defect_description = ElsterRmaDefect.objects.get(defect_id=defect_id).description
 			rec_count = rma.count()
 		except Exception as err:

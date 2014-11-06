@@ -47,11 +47,6 @@ input {
 	height: auto;
 	max-width: 100%;
 }
-.primary_content {
-	font-size: 1.3em;
-	margin: .5em 0;
-	line-height: 1.45;
-}
 
 .chart_description {
 	color:#57A3C9;
@@ -100,7 +95,7 @@ body {
 	/* text-shadow: black 0.3em 0.3em 0.3em; */
 	color: white; 
 }
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   body {
 	padding-top: 70px;
   }
