@@ -5,8 +5,10 @@ from django.contrib import admin
 
 # Register your models here.
 from models import *
+from forms import ElsterMeterTrackForm
 
 from django import forms
+from django.forms import TextInput, Textarea
 
 from datetime import date
 
@@ -37,6 +39,7 @@ class ElsterMeterRmaCreateListFilter(SimpleListFilter):
 			('30', _('in past month')),
 			('90', _('in past quarter')),
 			('180', _('in past six months')),
+			('365', _('in past year')),
 		)
 
 	def queryset(self, request, queryset):
@@ -53,6 +56,8 @@ class ElsterMeterRmaCreateListFilter(SimpleListFilter):
 			return queryset.filter(rma_create_date__gte=now-datetime.timedelta(days=90))
 		if self.value() == '180':
 			return queryset.filter(rma_create_date__gte=now-datetime.timedelta(days=180))
+		if self.value() == '365':
+			return queryset.filter(rma_create_date__gte=now-datetime.timedelta(days=365))
 
 class ElsterMeterRmaCompleteListFilter(SimpleListFilter):
 	# Human-readable title which will be displayed in the
@@ -110,50 +115,52 @@ def export_elster_meter_track_csv(modeladmin, request, queryset):
 		smart_str(u'finding'),
 		smart_str(u'action_taken'),
 		])
+	error_msgs = []
+	error_count = 0
 	for obj in queryset:
-		
-		writer.writerow([
-			smart_str(obj.elster_serial_number),
-			smart_str(obj.meter_style.description),
-			smart_str(obj.meter_barcode),
-			smart_str(obj.manufacture_date),
-			smart_str(obj.rma_number),
-			smart_str(obj.rma_create_date),
-			smart_str(obj.rma_receive_date),
-			smart_str(obj.rma_complete_date),
-			smart_str(obj.defect.description),
-			smart_str(obj.complaint),
-			smart_str(obj.finding),
-			smart_str(obj.action_taken),
-		])
+		try:
+			if obj.defect:
+				defect_description = obj.defect.description
+			else:
+				defect_description = 'None'
+			writer.writerow([
+				smart_str(obj.elster_serial_number),
+				smart_str(obj.meter_style.description),
+				smart_str(obj.meter_barcode),
+				smart_str(obj.manufacture_date),
+				smart_str(obj.rma_number),
+				smart_str(obj.rma_create_date),
+				smart_str(obj.rma_receive_date),
+				smart_str(obj.rma_complete_date),
+				smart_str(defect_description),
+				smart_str(obj.complaint),
+				smart_str(obj.finding),
+				smart_str(obj.action_taken),
+			])
+		except Exception as inst:
+			error_msgs.append('export Error: %s for record#: %s' % (str(inst), str(obj)))
+			error_count += 1
+			if (error_count > 20):
+				break
+			else:
+				pass
+	if len(error_msgs):
+		print '\n'.join(error_msgs)
+		modeladmin.message_user(request, 'Error(s) exporting:\n'.join(error_msgs))
 	return response
 export_elster_meter_track_csv.short_description = u"Export Elster Meters CSV"
 
 
 class ElsterMeterTrackAdmin(admin.ModelAdmin):
-	#form = autocomplete_light.modelform_factory(ElsterMeterTrack)
-	#fields = []
+	form = ElsterMeterTrackForm
 	actions = [export_elster_meter_track_csv]
 
-	fieldsets = [ 
-		(None,              {'fields': [('elster_serial_number', 'meter_style','meter_barcode','manufacture_date',), 
-					('rma_number','rma_create_date','rma_receive_date','rma_complete_date',),
-					('defect','complaint',),
-					('finding','action_taken',),]})
-		] 
 	list_display = ('elster_serial_number', 'meter_barcode', 'rma_number','meter_style_description','complaint','rma_create_date','rma_complete_date','defect_id_desc',)
 	search_fields = ['elster_serial_number', 'rma_number', 'meter_barcode',]
 	list_filter = [ElsterMeterRmaCreateListFilter, ElsterMeterRmaCompleteListFilter,'defect__description', 'meter_style',]
 
+
 class CustomerMeterTrackAdmin(admin.ModelAdmin):
-	fieldsets = [ 
-		(None,              {'fields': [('elster_meter_serial_number', 'meter_type','meter_barcode',), 
-					('order_date','set_date','failure_date',),
-					('reason_for_removal','customer_defined_failure_code','failure_detail',),
-					('ship_date', 'tracking_number',),
-					('exposure','service_status','original_order_information',),
-					('longitude','latitude','address'),]})
-		] 
 	search_fields = ['meter_barcode','failure_date','customer_defined_failure_code', 'tracking_number','original_order_information',]
 
 class ElsterRmaDefectAdmin(admin.ModelAdmin):
