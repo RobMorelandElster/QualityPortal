@@ -11,7 +11,7 @@
     <link href="{% static "bootstrap/css/bootstrap.min.css" %}" rel="stylesheet"/>
     <style type="text/css">
       body {
-        padding-top: 90px;
+        padding-top: 70px;
         padding-bottom: 40px;
       }
     </style>
@@ -55,12 +55,13 @@
         <div class="navbar-inner">
             <div class="container">
                 <div class="navbar-header">
+		<img  class="navbar-brand" src="{{STATIC_URL}}img/elster-logo.png" alt="" /> 
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    {% block branding %}{% endblock %}
+                    <a  class="navbar-brand" href="/">&nbsp;&nbsp;elster <small>MQ</small> admin</a> 
                 </div>
                 <div class="navbar-collapse collapse navbar-{% if LANGUAGE_BIDI %}left{% else %}right{% endif %}">
                     <ul class="nav navbar-nav">
