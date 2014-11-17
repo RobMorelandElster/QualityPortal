@@ -449,11 +449,11 @@ def __handle_search_type_redirect(request, form, data):
 			serial_barcode = form.cleaned_data['meter_track_record']
 			if serial_barcode == None:
 				messages.error(request, 'Serial/Barcode required for search')
-			if len(serial_barcode) == 0 :
+			elif len(serial_barcode) == 0 :
 				messages.error(request, 'Serial/Barcode required for search')
-			if len(serial_barcode.split('/')) != 2 :
-				messages.error(request, 'Serial/Barcode required for search')
-			else:
+			elif len(serial_barcode.split('/')) == 1 :
+				return HttpResponseRedirect('%s/%s' % (redirect_template_serial_barcode, serial_barcode.split('/')[0])) # Redirect after POST
+			elif len(serial_barcode.split('/')) == 2 :
 				return HttpResponseRedirect('%s/%s/%s' % (redirect_template_serial_barcode, serial_barcode.split('/')[0], serial_barcode.split('/')[1])) # Redirect after POST
 	form.initial={ 'search_type': 'record' }
 	data['form'] = form
@@ -492,7 +492,7 @@ def elster_rma_date_range(request, byear, bmonth, bday, eyear, emonth, eday):
 	form = ElsterMeterTrackSearchForm(request.POST or None)
 	data = {}
 	data['form'] = form
-	form.initial={'start_date': from_date, 'end_date': to_date, 'rma_number': '', 'search_type': 'date_range'}
+	form.initial={'start_date': from_date, 'end_date': to_date, 'search_type': 'date_range'}
 
 	if request.method == 'POST': # If the form has been submitted...
 		response = __handle_search_type_redirect(request, form, data)
@@ -528,7 +528,7 @@ def elster_rma(request, rma_number):
 	form = ElsterMeterTrackSearchForm(request.POST or None)
 	data = {}
 	data['form'] = form
-	form.initial={'rma_number': rma_number,'start_date': None, 'end_date': None, 'search_type': 'rma_number'}
+	form.initial={'rma_number': rma_number,'search_type': 'rma_number'}
 	
 	
 	if request.method == 'POST': # If the form has been submitted...
@@ -556,7 +556,7 @@ def elster_rma(request, rma_number):
 		})
 
 @login_required()
-def elster_rma_serial_barcode(request, serial, barcode):
+def elster_rma_serial_barcode(request, serial, barcode=None):
 	template = 'portal/elster_meter_q_list.html'
 	redirect_template = '/elster_rma_date_range'
 	redirect_template_rma = '/elster_rma'
@@ -565,7 +565,10 @@ def elster_rma_serial_barcode(request, serial, barcode):
 	form = ElsterMeterTrackSearchForm(request.POST or None)
 	data = {}
 	data['form'] = form
-	form.initial={'meter_track_record': serial+'/'+barcode,'rma_number': None,'start_date': None, 'end_date': None, 'search_type': 'record'}
+	if barcode:
+		form.initial={'meter_track_record': serial+'/'+barcode, 'search_type': 'record'}
+	else:
+		form.initial={'meter_track_record': serial, 'search_type': 'record'}
 	
 	
 	if request.method == 'POST': # If the form has been submitted...
@@ -573,7 +576,10 @@ def elster_rma_serial_barcode(request, serial, barcode):
 		return response
 	else:
 		try:
-			rma = ElsterMeterTrack.objects.filter(elster_serial_number=serial, meter_barcode=barcode)
+			if barcode:
+				rma = ElsterMeterTrack.objects.filter(elster_serial_number=serial, meter_barcode=barcode)
+			else:
+				rma = ElsterMeterTrack.objects.filter(elster_serial_number=serial)
 			rec_count = rma.count()
 		except Exception as err:
 			messages.error(request, 'Error %s looking up record for: serial#:%s and barcode#:%s' %(str(err),serial,barcode))
@@ -658,7 +664,7 @@ def elster_rma_by_defect(request, defect_id):
 	form = ElsterMeterTrackSearchForm(request.POST or None)
 	data = {}
 	data['form'] = form
-	form.initial={'rma_number': None,'start_date': None, 'end_date': None, }
+	form.initial={'rma_number': None,'start_date': None, 'end_date': None,   'search_type': 'rma_number',}
 	defect_description = ''
 	
 	
