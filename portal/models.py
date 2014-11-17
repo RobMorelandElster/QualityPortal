@@ -83,7 +83,7 @@ class ElsterMeterCount(models.Model):
 class ElsterMeterTrack(models.Model):
 
 	def __unicode__(self):
-		return ("%s:RMA-%s:Receipt-%s:Complete-%s"%(self.elster_serial_number, str(self.rma_number), str(self.rma_receive_date), str(self.rma_complete_date)))
+		return ("%s/%s"%(self.elster_serial_number, self.meter_barcode))
 
 	elster_serial_number = models.CharField(max_length=100, )
 	meter_style = models.ForeignKey(ElsterMeterType, null=True, blank=True,verbose_name="Elster Meter Type")

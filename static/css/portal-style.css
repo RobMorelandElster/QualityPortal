@@ -33,11 +33,21 @@ div.chart-bordered {
 	color:#57A3C9;
 }
 
+.autocomplete-light-text-widget {
+	color:black;
+    background:white;    
+	width: 20em;
+    padding:3px;
+    margin:3px;
+    font-family:Arial;
+    border:1px solid #666;
+}
+
 input {
     color:black;
     background:white;    
     padding:3px;
-    margin:5px;
+    margin:3px;
     font-family:Arial;
     border:1px solid #666;
 }
