@@ -54,6 +54,8 @@ class ElsterMeterTrackSearchForm(forms.Form):
 								help_text="Enter RMA or leave blank",)
 								
 	meter_track_record =  forms.CharField(required=False,
+								label="Serial/Barcode",
+								help_text = "Choose Record by Serial or Barcode",
 								widget=autocomplete_light.TextWidget('ElsterMeterTrackAutocomplete'))
 
 	def clean_start_date(self):
