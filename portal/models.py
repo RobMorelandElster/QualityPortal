@@ -139,8 +139,16 @@ class ElsterMeterTrack(models.Model):
 		# validate defect entry
 		if self.rma_complete_date is not None and self.defect is None:
 			raise ValidationError('Defect Code may not be empty when RMA Complete Date is entered')
-				
-	
+
+class Shipment(models.Model):
+	def __unicode__(self):
+		return (self.reference_id)
+
+	reference_id = models.CharField(max_length=25,null=False, unique=True, verbose_name="Reference identifier for Shipment")
+	ship_date = models.DateField(null=True, blank=True,verbose_name="Return Shipment Date")
+	tracking_number = models.CharField(max_length=25,  null=True,blank=True,verbose_name="Return Shipment Tracking Number")
+	pallet_number = models.CharField(max_length=25,  null=True,blank=True,)
+
 class CustomerMeterTrack(models.Model):
 	def __unicode__(self):
 		return ("Serial#:%s Barcode:%s Failure_Date:%s"%(self.elster_meter_serial_number, str(self.meter_barcode), str(self.failure_date),))
@@ -198,7 +206,7 @@ class CustomerMeterTrack(models.Model):
 		(GRX, 'GREX'),
 		(GAS, 'Gas module'),
 		(WAT, 'Water module'),
-		(MGK, 'Gatekeeper (metered)'),
+		(MGK, 'A3 or Gatekeeper (metered)'),
 		(NMG, 'Gatekeeper (non-metered)'),
 		(RPT, 'Repeater'),
 		(OTHER_M, 'Other'),
@@ -207,16 +215,14 @@ class CustomerMeterTrack(models.Model):
 	elster_meter_serial_number = models.CharField(max_length=100,  verbose_name="Meter Number")
 	meter_type = models.CharField(max_length = 15, null=True, blank=True, choices = METER_TYPE_CHOICES, default=REX,  verbose_name="Meter Type")
 	meter_barcode = models.CharField(max_length=100,null=True, blank=True)
-	order_date = models.DateField(null=True, blank=True,verbose_name="Meter Order Date")
+	order_date = models.DateField(null=True, blank=True,verbose_name="Meter Order, Purchase or Reciept Date")
 	set_date = models.DateField(null=True, blank=True,verbose_name="Meter Set Date")
 	failure_date = models.DateField(null=True, blank=True,verbose_name="Meter Remove Date")
-	reason_for_removal = models.CharField(max_length=50,null=True,blank=True, choices = REMOVAL_REASON_CHOICES, default=OTHER_D)
+	reason_for_removal = models.CharField(max_length=50,null=True,blank=True, choices = REMOVAL_REASON_CHOICES, default=OTHER_D, verbose_name="Complaint")
 	customer_defined_failure_code = models.CharField(max_length=50,null=True,blank=True, verbose_name="Customer reference Defect Code")
 	failure_detail = models.TextField(max_length=2000, verbose_name="Detailed Description",null=True, blank=True)
 	exposure = models.CharField(max_length = 1, null=True,blank=True, choices = METER_EXPOSURE_CHOICES, verbose_name="Meter Facing Direction")
-	ship_date = models.DateField(null=True, blank=True,verbose_name="Return Shipment Date")
-	tracking_number = models.CharField(max_length=25,  null=True,blank=True,verbose_name="Return Shipment Tracking Number")
-	service_status = models.CharField(max_length = 1, null=True,blank=True, choices = METER_SERVICE_CHOICES, default=IN_INVENTORY, verbose_name="Meter Service Status")
+	shipment = models.ForeignKey(Shipment, null=True, blank=True, verbose_name="Shipment reference")
 	original_order_information = models.CharField(max_length=100,null=True, blank=True,)
 	longitude = models.DecimalField(max_digits=12, decimal_places=6, null=True, blank=True,verbose_name="Meter Longitude Position")
 	latitude = models.DecimalField(max_digits=12, decimal_places=6, null=True, blank=True,verbose_name="Meter Latitude Position")
@@ -225,7 +231,6 @@ class CustomerMeterTrack(models.Model):
 	class Meta:
 		unique_together = (("elster_meter_serial_number","meter_barcode","failure_date"),)
 		ordering = ["failure_date"]
-		
 		
 class UserProfile(models.Model):
 	user = models.OneToOneField(User, related_name='profile')

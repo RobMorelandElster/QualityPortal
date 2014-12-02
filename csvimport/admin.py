@@ -98,7 +98,6 @@ CUSTOMER_METER_TRACK_CONTENT_HELP_TEXT = ' '.join(['<p>Assumes the following com
 		'exposure is the compass direction the meter is facing (single character N, S, E or W)<br/>'
 		'ship_date is the date of meter returned to Elster represented as YYYY-MM-DD<br/>'
 		'tracking_number is the shipper tracking number for the return represented as a text field<br/>'
-		'service_status is a single character representing whether the meter is in Service (S) or in Inventory (I)<br/>'
 		'original_order_information is contains any original meter order information you may wish to track for the device represented as a text field (max 100 characters)<br/>'
 		'longitude is the longitude of the field location for the device (12 digits 6 decimal places)<br/>'
 		'latitude is the latitude of the field location for the device (12 digits 6 decimal places)<br/>'

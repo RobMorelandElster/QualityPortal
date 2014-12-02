@@ -92,11 +92,10 @@ class Command(LabelCommand):
 			'EXPOSURE':9,
 			'SHIP_DATE':10,
 			'TRACKING_NUMBER':11,
-			'SERVICE_STATUS':12,
-			'ORIGINAL_ORDER_INFORMATION':13,
-			'LONGITUDE':14,
-			'LATITUDE':15,
-			'ADDRESS':16,
+			'ORIGINAL_ORDER_INFORMATION':12,
+			'LONGITUDE':13,
+			'LATITUDE':14,
+			'ADDRESS':15,
 			}
 
 		self.default_user = None

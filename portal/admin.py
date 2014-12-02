@@ -8,13 +8,17 @@ from models import *
 from forms import ElsterMeterTrackForm
 
 from django import forms
-from django.forms import TextInput, Textarea
+from django.template import RequestContext
+
+from django.forms import TextInput, Textarea, ChoiceField
+from django.template import Template, Context
+from django.shortcuts import render
 
 from datetime import date
 
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.admin import SimpleListFilter
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 
 import csv
 from django.utils.encoding import smart_str
@@ -150,7 +154,6 @@ def export_elster_meter_track_csv(modeladmin, request, queryset):
 	return response
 export_elster_meter_track_csv.short_description = u"Export Elster Meters CSV"
 
-
 class ElsterMeterTrackAdmin(admin.ModelAdmin):
 	form = ElsterMeterTrackForm
 	actions = [export_elster_meter_track_csv]
@@ -159,9 +162,50 @@ class ElsterMeterTrackAdmin(admin.ModelAdmin):
 	search_fields = ['elster_serial_number', 'rma_number', 'meter_barcode',]
 	list_filter = [ElsterMeterRmaCreateListFilter, ElsterMeterRmaCompleteListFilter,'defect__description', 'meter_style',]
 
+class ShipmentAdmin(admin.ModelAdmin):
+	fields=[]
+	list_display = ('reference_id', 'ship_date', 'tracking_number', 'pallet_number',)
 
+class ChooseShipmentForm(forms.Form):
+	_selected_action = forms.CharField(widget=forms.MultipleHiddenInput)
+	shipment = forms.ModelChoiceField(queryset=Shipment.objects.all(), required=True)
+	
+def set_shipment(modeladmin, request, queryset):
+	opts = modeladmin.model._meta
+	app_label = opts.app_label
+
+	form = None
+	if 'cancel' in request.POST:
+		modeladmin.message_user(request, 'Canceled link shipment')
+		return
+	elif 'post' in request.POST:
+		# update shipment
+		form = ChooseShipmentForm(request.POST)
+		if form.is_valid():
+			shipment = form.cleaned_data['shipment']
+			for record in queryset:
+				record.shipment = shipment
+				record.save()
+			modeladmin.message_user(request, "Successuflly updated %d records"% queryset.count(), )
+			return HttpResponseRedirect(request.get_full_path())
+
+	if not form:
+		form = ChooseShipmentForm(initial={'_selected_action': request.POST.getlist(admin.ACTION_CHECKBOX_NAME)})
+
+	context = {
+		'queryset': queryset,
+		'records': queryset,
+		'form': form,
+		'path':request.get_full_path(),
+		'app_label': app_label,
+	}
+	return render(request, 'admin/set_shipment.html', context)
+set_shipment.short_description = 'Set shipment information'
+	
 class CustomerMeterTrackAdmin(admin.ModelAdmin):
-	search_fields = ['meter_barcode','failure_date','customer_defined_failure_code', 'tracking_number','original_order_information',]
+	search_fields = ['elster_meter_serial_number','meter_barcode','failure_date','customer_defined_failure_code', 'shipment__reference_id',]
+	list_display = ['elster_meter_serial_number','meter_barcode', 'failure_date','customer_defined_failure_code','shipment',]
+	actions = [set_shipment]
 
 class ElsterRmaDefectAdmin(admin.ModelAdmin):
 	fields=[]
@@ -183,3 +227,4 @@ admin.site.register(ElsterMeterType, ElsterMeterTypeAdmin)
 admin.site.register(ElsterRmaDefect, ElsterRmaDefectAdmin)
 admin.site.register(Account,AccountAdmin)
 admin.site.register(ElsterMeterCount, ElsterMeterCountAdmin)
+admin.site.register(Shipment, ShipmentAdmin)

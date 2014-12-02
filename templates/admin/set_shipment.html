@@ -1,0 +1,35 @@
+{% extends "admin/base_site.html" %}
+{% load i18n l10n admin_urls %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+&rsaquo; <a href="{% url 'admin:app_list' app_label=app_label %}">{{ app_label|capfirst|escape }}</a>
+&rsaquo; {% trans 'set shipment on records' %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="inset-wide">
+
+<h1>Assign to Shipment</h1>
+
+		<p>Choose the shipment for the selected record{{ records|pluralize }}:</p>
+
+		<form action="" method="post">{% csrf_token %}
+			{{ form }}
+			<p>
+				<input type="hidden" name="action" value="set_shipment" />
+				<input type="submit" name="cancel" value="Cancel" />
+				<input type="submit" name="post" value="Update" />
+			</p>
+		</form>
+
+		<h2>This shipment assignment will affect the following:</h2>
+		<ul>
+			{% for record in records %}
+				<li>{{ record}}</li>
+			{% endfor %}
+		</ul>
+</div>		
+{% endblock %}
