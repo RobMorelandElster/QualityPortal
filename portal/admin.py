@@ -164,6 +164,7 @@ class ElsterMeterTrackAdmin(admin.ModelAdmin):
 
 class ShipmentAdmin(admin.ModelAdmin):
 	fields=[]
+	search_fields = ['reference_id', 'ship_date', 'tracking_number', 'pallet_number',]
 	list_display = ('reference_id', 'ship_date', 'tracking_number', 'pallet_number',)
 
 class ChooseShipmentForm(forms.Form):

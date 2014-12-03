@@ -90,12 +90,11 @@ class Command(LabelCommand):
 			'CUSTOMER_DEFINED_FAILURE_CODE':7,
 			'FAILURE_DETAIL':8,
 			'EXPOSURE':9,
-			'SHIP_DATE':10,
-			'TRACKING_NUMBER':11,
-			'ORIGINAL_ORDER_INFORMATION':12,
-			'LONGITUDE':13,
-			'LATITUDE':14,
-			'ADDRESS':15,
+			'SHIPMENT_REFERENCE':10,
+			'ORIGINAL_ORDER_INFORMATION':11,
+			'LONGITUDE':12,
+			'LATITUDE':13,
+			'ADDRESS':14,
 			}
 
 		self.default_user = None
@@ -184,6 +183,20 @@ class Command(LabelCommand):
 						continue
 				meter_barcode = self.eval_for_null(row[self.columns['METER_BARCODE']])
 				
+				shipment_reference  =self.eval_for_null(row[self.columns['SHIPMENT_REFERENCE']])
+				shipment = None
+				if shipment_reference:
+					try:
+						shipment = Shipment.objects.get(reference_id = shipment_reference)
+					except ObjectDoesNotExist:
+						exception_count += 1
+						loglist.append('Invalid shipment reference %s -- file line %d' %(shipment_reference, counter))
+						if (exception_count > MAX_EXCEPTIONS):
+							loglist.append('Exceeded MAX_EXCEPTIONS: %d at file line: %d' % (exception_count,counter))
+							break 
+						else:
+							continue
+						
 				# Pull the date fields
 				ds = row[self.columns['SET_DATE']]
 				set_date = None
@@ -203,16 +216,6 @@ class Command(LabelCommand):
 						failure_date = datetime.date(int(ds_split[0]),int(ds_split[1]),int(ds_split[2]))
 					except IndexError:
 						loglist.append('Invalid Failure Date %s -- file line %d' %(ds, counter))
-						continue
-
-				ds = row[self.columns['SHIP_DATE']]
-				ship_date = None
-				if len(ds) and ds != 'NULL':
-					try:
-						ds_split = ds.split(DATE_FIELD_SEPARATOR)
-						ship_date = datetime.date(int(ds_split[0]),int(ds_split[1]),int(ds_split[2]))
-					except IndexError:
-						loglist.append('Invalid ShipDate %s -- file line %d' %(ds, counter))
 						continue
 
 				ds = row[self.columns['ORDER_DATE']]
@@ -238,8 +241,7 @@ class Command(LabelCommand):
 					cMeterTrack.customer_defined_failure_code = self.eval_for_null(row[self.columns['CUSTOMER_DEFINED_FAILURE_CODE']])
 					cMeterTrack.failure_detail = self.eval_for_null(row[self.columns['FAILURE_DETAIL']])
 					cMeterTrack.exposure = self.eval_for_null(row[self.columns['EXPOSURE']])
-					cMeterTrack.ship_date = ship_date
-					cMeterTrack.tracking_number = self.eval_for_null(row[self.columns['TRACKING_NUMBER']])
+					cMeterTrack.shipment = shipment
 					cMeterTrack.service_status = self.eval_for_null(row[self.columns['SERVICE_STATUS']])
 					cMeterTrack.original_order_information = self.eval_for_null(row[self.columns['ORIGINAL_ORDER_INFORMATION']])
 					cMeterTrack.longitude = self.eval_for_null(row[self.columns['LONGITUDE']])
@@ -258,8 +260,7 @@ class Command(LabelCommand):
 						customer_defined_failure_code = self.eval_for_null(row[self.columns['CUSTOMER_DEFINED_FAILURE_CODE']]),
 						failure_detail = self.eval_for_null(row[self.columns['FAILURE_DETAIL']]),
 						exposure = self.eval_for_null(row[self.columns['EXPOSURE']]),
-						ship_date = ship_date,
-						tracking_number = self.eval_for_null(row[self.columns['TRACKING_NUMBER']]),
+						shipment = shipment,
 						service_status = self.eval_for_null(row[self.columns['SERVICE_STATUS']]),
 						original_order_information = self.eval_for_null(row[self.columns['ORIGINAL_ORDER_INFORMATION']]),
 						longitude = self.eval_for_null(row[self.columns['LONGITUDE']]),
