@@ -83,18 +83,19 @@ class Command(LabelCommand):
 			'ELSTER_METER_SERIAL_NUMBER':0,
 			'METER_TYPE':1,
 			'METER_BARCODE':2,
-			'ORDER_DATE':3,
-			'SET_DATE':4,
-			'FAILURE_DATE':5,
-			'REASON_FOR_REMOVAL':6,
-			'CUSTOMER_DEFINED_FAILURE_CODE':7,
-			'FAILURE_DETAIL':8,
-			'EXPOSURE':9,
-			'SHIPMENT_REFERENCE':10,
-			'ORIGINAL_ORDER_INFORMATION':11,
-			'LONGITUDE':12,
-			'LATITUDE':13,
-			'ADDRESS':14,
+			'RMA_NUMBER':3,
+			'ORDER_DATE':4,
+			'SET_DATE':5,
+			'FAILURE_DATE':6,
+			'REASON_FOR_REMOVAL':7,
+			'CUSTOMER_DEFINED_FAILURE_CODE':8,
+			'FAILURE_DETAIL':9,
+			'EXPOSURE':10,
+			'SHIPMENT_REFERENCE':11,
+			'ORIGINAL_ORDER_INFORMATION':12,
+			'LONGITUDE':13,
+			'LATITUDE':14,
+			'ADDRESS':15,
 			}
 
 		self.default_user = None
@@ -182,6 +183,7 @@ class Command(LabelCommand):
 					else:
 						continue
 				meter_barcode = self.eval_for_null(row[self.columns['METER_BARCODE']])
+				rma_number = self.eval_for_null(row[self.columns['RMA_NUMBER']])
 				
 				shipment_reference  =self.eval_for_null(row[self.columns['SHIPMENT_REFERENCE']])
 				shipment = None
@@ -231,10 +233,11 @@ class Command(LabelCommand):
 			
 				cMeterTrack = None
 				try: # See if there is an existing record to update
-					cMeterTrack = CustomerMeterTrack.objects.get(elster_meter_serial_number = elster_meter_serial_number, meter_barcode=meter_barcode, failure_date=failure_date)
+					cMeterTrack = CustomerMeterTrack.objects.get(elster_meter_serial_number = elster_meter_serial_number, meter_barcode=meter_barcode, rma_number=rma_number)
 					# Update ElsterMeterTrack
 					cMeterTrack.meter_type = self.eval_for_null(row[self.columns['METER_TYPE']])
 					cMeterTrack.meter_barcode = meter_barcode
+					cMeterTrack.rma_number = rma_number
 					cMeterTrack.order_date = order_date
 					cMeterTrack.set_date = set_date
 					cMeterTrack.reason_for_removal = self.eval_for_null(row[self.columns['REASON_FOR_REMOVAL']])
@@ -252,6 +255,7 @@ class Command(LabelCommand):
 					cMeterTrack = CustomerMeterTrack(
 						elster_meter_serial_number = elster_meter_serial_number,
 						meter_barcode = meter_barcode,
+						rma_number = rma_number,
 						meter_type = self.eval_for_null(row[self.columns['METER_TYPE']]),
 						order_date = order_date,
 						set_date = set_date,

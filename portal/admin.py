@@ -204,8 +204,8 @@ def set_shipment(modeladmin, request, queryset):
 set_shipment.short_description = 'Set shipment information'
 	
 class CustomerMeterTrackAdmin(admin.ModelAdmin):
-	search_fields = ['elster_meter_serial_number','meter_barcode','failure_date','customer_defined_failure_code', 'shipment__reference_id',]
-	list_display = ['elster_meter_serial_number','meter_barcode', 'failure_date','customer_defined_failure_code','shipment',]
+	search_fields = ['elster_meter_serial_number','meter_barcode','failure_date','rma_number', 'shipment__reference_id',]
+	list_display = ['elster_meter_serial_number','meter_barcode', 'failure_date','rma_number','shipment',]
 	actions = [set_shipment]
 
 class ElsterRmaDefectAdmin(admin.ModelAdmin):

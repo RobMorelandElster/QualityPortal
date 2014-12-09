@@ -214,7 +214,8 @@ class CustomerMeterTrack(models.Model):
 	
 	elster_meter_serial_number = models.CharField(max_length=100,  verbose_name="Meter Number")
 	meter_type = models.CharField(max_length = 15, null=True, blank=True, choices = METER_TYPE_CHOICES, default=REX,  verbose_name="Meter Type")
-	meter_barcode = models.CharField(max_length=100,null=True, blank=True)
+	meter_barcode = models.CharField(max_length=100)
+	rma_number = models.CharField(max_length=100, verbose_name="Assigned RMA Number")
 	order_date = models.DateField(null=True, blank=True,verbose_name="Meter Order, Purchase or Reciept Date")
 	set_date = models.DateField(null=True, blank=True,verbose_name="Meter Set Date")
 	failure_date = models.DateField(null=True, blank=True,verbose_name="Meter Remove Date")
@@ -229,8 +230,8 @@ class CustomerMeterTrack(models.Model):
 	address = models.TextField(max_length=2000, verbose_name="Removed location address",null=True, blank=True)
 	
 	class Meta:
-		unique_together = (("elster_meter_serial_number","meter_barcode","failure_date"),)
-		ordering = ["failure_date"]
+		unique_together = (("elster_meter_serial_number","meter_barcode","rma_number"),)
+		ordering = ["meter_barcode"]
 		
 class UserProfile(models.Model):
 	user = models.OneToOneField(User, related_name='profile')

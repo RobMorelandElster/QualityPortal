@@ -89,6 +89,7 @@ CUSTOMER_METER_TRACK_CONTENT_HELP_TEXT = ' '.join(['<p>Assumes the following com
 		'where: elster_meter_serial_number is the elster_manufacture_serial number for the device, represented as a text field<br/>'
 		'meter_type is the elster style number for the device represented as a text field<br/>'
 		'meter_barcode is the faceplate barcode scanned from the device represented as a text field<br/>'
+		'rma_number is the RMA Number represented as a text field<br/>'
 		'order_date is the date of order or receipt by customer represented as YYYY-MM-DD<br/>'
 		'set_date is the date of field deployment represented as YYYY-MM-DD<br/>'
 		'failure_date is the date of recognized failure or removal represented as YYYY-MM-DD<br/>'		
