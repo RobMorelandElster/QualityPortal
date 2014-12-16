@@ -1,3 +1,5 @@
+#!/bin/bash
+
 export DJANGO_DEBUG=1
 export DATABASE_URL="postgres://elsterdev:elsterdev123@localhost/elster_qp"
 export SENDGRID_PASSWORD="ignore"
