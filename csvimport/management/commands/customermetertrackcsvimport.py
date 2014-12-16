@@ -92,10 +92,11 @@ class Command(LabelCommand):
 			'FAILURE_DETAIL':9,
 			'EXPOSURE':10,
 			'SHIPMENT_REFERENCE':11,
-			'ORIGINAL_ORDER_INFORMATION':12,
-			'LONGITUDE':13,
-			'LATITUDE':14,
-			'ADDRESS':15,
+			'SERVICE_STATUS':12,
+			'ORIGINAL_ORDER_INFORMATION':13,
+			'LONGITUDE':14,
+			'LATITUDE':15,
+			'ADDRESS':16,
 			}
 
 		self.default_user = None
@@ -138,10 +139,12 @@ class Command(LabelCommand):
 			raise Exception('Filename must be supplied')
 
 	def eval_for_null(self, value):
-		if value:
+		if value != None:
 			if len(value):
 				if value == NONE_VALUE:
 					return None
+			elif len(value) == 0:
+				return None
 		return value
 		
 	def run(self, logid=0):
@@ -164,9 +167,9 @@ class Command(LabelCommand):
 				row.append(item.strip(' "\'\t\r\n'))
 
 			try:
-				if (len(row) > len(self.columns)):
+				if (len(row) != len(self.columns)):
 					exception_count += 1
-					loglist.append('Import Error:Too many columns -- file line %d' % counter)
+					loglist.append('Import Error:Incorrect number of columns %d. Should be %d-- file line %d' % (len(row), len(self.columns), counter))
 					if (exception_count > MAX_EXCEPTIONS):
 						loglist.append('Exceeded MAX_EXCEPTIONS: %d at file line: %d' % (exception_count,counter))
 						break 
@@ -191,13 +194,10 @@ class Command(LabelCommand):
 					try:
 						shipment = Shipment.objects.get(reference_id = shipment_reference)
 					except ObjectDoesNotExist:
-						exception_count += 1
-						loglist.append('Invalid shipment reference %s -- file line %d' %(shipment_reference, counter))
-						if (exception_count > MAX_EXCEPTIONS):
-							loglist.append('Exceeded MAX_EXCEPTIONS: %d at file line: %d' % (exception_count,counter))
-							break 
-						else:
-							continue
+						shipment = Shipment(reference_id = shipment_reference, pallet_number = shipment_reference)
+						with transaction.atomic():
+							shipment.save()
+						loglist.append('Created shipment reference %s -- file line %d' %(shipment_reference, counter))
 						
 				# Pull the date fields
 				ds = row[self.columns['SET_DATE']]
@@ -269,7 +269,6 @@ class Command(LabelCommand):
 						original_order_information = self.eval_for_null(row[self.columns['ORIGINAL_ORDER_INFORMATION']]),
 						longitude = self.eval_for_null(row[self.columns['LONGITUDE']]),
 						latitude = self.eval_for_null(row[self.columns['LATITUDE']]),
-						
 						address = self.eval_for_null(row[self.columns['ADDRESS']]),
 						)
 				try:
@@ -293,7 +292,7 @@ class Command(LabelCommand):
 				loglist.append('Import Error: %s at file line: %d' % (str(inst),counter))
 				if (exception_count > MAX_EXCEPTIONS):
 					loglist.append('Exceeded MAX_EXCEPTIONS: %d at file line: %d' % (exception_count,counter))
-					break 
+					break
 
 			if CSVIMPORT_LOG == 'logger':
 				for line in loglist:

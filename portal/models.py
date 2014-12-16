@@ -225,6 +225,7 @@ class CustomerMeterTrack(models.Model):
 	exposure = models.CharField(max_length = 1, null=True,blank=True, choices = METER_EXPOSURE_CHOICES, verbose_name="Meter Facing Direction")
 	shipment = models.ForeignKey(Shipment, null=True, blank=True, verbose_name="Shipment reference")
 	original_order_information = models.CharField(max_length=100,null=True, blank=True,)
+	service_status = models.CharField(max_length=1,null=True,blank=True, choices = METER_SERVICE_CHOICES, default=IN_INVENTORY)
 	longitude = models.DecimalField(max_digits=12, decimal_places=6, null=True, blank=True,verbose_name="Meter Longitude Position")
 	latitude = models.DecimalField(max_digits=12, decimal_places=6, null=True, blank=True,verbose_name="Meter Latitude Position")
 	address = models.TextField(max_length=2000, verbose_name="Removed location address",null=True, blank=True)
