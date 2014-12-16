@@ -10,9 +10,9 @@ export AWS_STORAGE_BUCKET_NAME="elster-qp"
 export DJANGO_SITE_ID=1
 
 virtualenv venv
-source venv/bin/activate
-pip install -r requirements.txt
-python manage.py collectstatic --noinput
-python manage.py validate
-python manage.py test
+source ./venv/bin/activate
+pip install -r ./requirements.txt
+python ./manage.py collectstatic --noinput
+python ./manage.py validate
+python ./manage.py test
 deactivate
