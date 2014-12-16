@@ -207,6 +207,7 @@ class CustomerMeterTrackAdmin(admin.ModelAdmin):
 	search_fields = ['elster_meter_serial_number','meter_barcode','failure_date','rma_number', 'shipment__reference_id',]
 	list_display = ['elster_meter_serial_number','meter_barcode', 'failure_date','rma_number','shipment',]
 	actions = [set_shipment]
+	list_filter = ['shipment','reason_for_removal',]
 
 class ElsterRmaDefectAdmin(admin.ModelAdmin):
 	fields=[]
