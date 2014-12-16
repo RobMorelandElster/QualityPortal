@@ -161,9 +161,9 @@ class Command(LabelCommand):
 				row.append(item.strip(' "\'\t\r\n'))
 
 			try:
-				if (len(row) > len(self.columns)):
+				if (len(row) != len(self.columns)):
 					exception_count += 1
-					loglist.append('Import Error:Too many columns -- file line %d' % counter)
+					loglist.append('Import Error:Incorrect number of columns %d. Should be %d-- file line %d' % (len(row), len(self.columns), counter))
 					if (exception_count > MAX_EXCEPTIONS):
 						loglist.append('Exceeded MAX_EXCEPTIONS: %d at file line: %d' % (exception_count,counter))
 						break 
@@ -302,7 +302,7 @@ class Command(LabelCommand):
 					pass
 			except Exception as inst:
 				exception_count += 1
-				loglist.append('Import Error: %s at file line: %d' % (str(inst),counter))
+				loglist.append('Import Error: %s at file line: %d DATA:%s' % (str(inst),counter), str(raw_row))
 				if (exception_count > MAX_EXCEPTIONS):
 					loglist.append('Exceeded MAX_EXCEPTIONS: %d at file line: %d' % (exception_count,counter))
 					break 
