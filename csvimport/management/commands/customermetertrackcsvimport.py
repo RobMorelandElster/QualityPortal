@@ -40,21 +40,23 @@ NONE_VALUE = 'NULL'
 
 def save_csvimport(props=None, instance=None):
 	""" To avoid circular imports do saves here """
+	print "save_csvimport"
 	try:
-		if not instance:
-			from csvimport.models import CSVImport
-			csvimp = CSVImport()
+		if not instance.csvimp:
+			from csvimport.models import CSVImportCustomerMeterTrack
+			instance.csvimp = CSVImportCustomerMeterTrack()
 		if props:
 			for key, value in props.items():
-				setattr(csvimp, key, value)
-		csvimp.save()
-		return csvimp.id
-	except:
+				print "%s:%s"%(key, value)
+				setattr(instance.csvimp, key, value)
+		instance.csvimp.save()
+		return instance.csvimp.id
+	except Exception as inst:
 		# Running as command line
 		print '###############################\n'
+		print 'Import Error: %s' % str(inst)
 		for line in instance.loglist:
 				print line
-
 
 class Command(LabelCommand):
 	"""
@@ -75,6 +77,7 @@ class Command(LabelCommand):
 		super(Command, self).__init__()
 		self.props = {}
 		self.debug = False
+		self.csvimp = None
 		self.errors = []
 		self.loglist = []
 		self.defaults = []
@@ -113,17 +116,20 @@ class Command(LabelCommand):
 		charset = options.get('charset', '')
 		org = options.get('org', '')
 		# show_traceback = options.get('traceback', True)
-		self.setup(org, charset, filename)
+		self.setup(charset, filename)
+
 		errors = self.run()
-		if self.props:
-			save_csvimport(self.props, self)
+		self.props = {'file_name':filename,
+			  'import_user':'cron',
+			  'upload_method':'cronjob',
+			  'error_log':'\n'.join(errors),
+			  'import_date':datetime.datetime.now()}
+		save_csvimport(self.props, self)
 		self.loglist.extend(errors)
 		return
 
-	def setup(self, defaults='',
-			  uploaded=None, deduplicate=True):
+	def setup(self, defaults='', uploaded=None):
 		""" Setup up the attributes for running the import """
-		self.deduplicate = deduplicate
 		if self.default_user == None:
 			try:
 				self.default_user = UserProfile.objects.filter(user__first_name__icontains='default')[0]
