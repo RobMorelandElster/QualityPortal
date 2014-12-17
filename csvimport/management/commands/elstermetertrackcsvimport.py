@@ -56,7 +56,7 @@ def save_csvimport(props=None, instance=None):
 		print '###############################\n'
 		print 'Import Error: %s' % str(inst)
 		for line in instance.loglist:
-				print line
+			print line
 
 
 class Command(LabelCommand):

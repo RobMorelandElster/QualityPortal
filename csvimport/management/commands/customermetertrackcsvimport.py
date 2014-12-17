@@ -56,7 +56,7 @@ def save_csvimport(props=None, instance=None):
 		print '###############################\n'
 		print 'Import Error: %s' % str(inst)
 		for line in instance.loglist:
-				print line
+			print line
 
 class Command(LabelCommand):
 	"""
@@ -284,6 +284,7 @@ class Command(LabelCommand):
 					try:
 						error_number, error_message = err
 					except:
+						exception_count += 1
 						error_message = err
 						error_number = 0
 					# Catch duplicate key error.

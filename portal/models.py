@@ -219,7 +219,7 @@ class CustomerMeterTrack(models.Model):
 	order_date = models.DateField(null=True, blank=True,verbose_name="Meter Order, Purchase or Reciept Date")
 	set_date = models.DateField(null=True, blank=True,verbose_name="Meter Set Date")
 	failure_date = models.DateField(null=True, blank=True,verbose_name="Meter Remove Date")
-	reason_for_removal = models.CharField(max_length=50,null=True,blank=True, choices = REMOVAL_REASON_CHOICES, default=OTHER_D, verbose_name="Complaint")
+	reason_for_removal = models.CharField(max_length=500,null=True,blank=True, choices = REMOVAL_REASON_CHOICES, default=OTHER_D, verbose_name="Complaint")
 	customer_defined_failure_code = models.CharField(max_length=50,null=True,blank=True, verbose_name="Customer reference Defect Code")
 	failure_detail = models.TextField(max_length=2000, verbose_name="Detailed Description",null=True, blank=True)
 	exposure = models.CharField(max_length = 1, null=True,blank=True, choices = METER_EXPOSURE_CHOICES, verbose_name="Meter Facing Direction")
