@@ -109,17 +109,15 @@ class Command(LabelCommand):
 		charset = options.get('charset', '')
 		org = options.get('org', '')
 		# show_traceback = options.get('traceback', True)
-		self.setup(org, charset, filename)
+		self.setup(charset, filename)
 		errors = self.run()
 		if self.props:
 			save_csvimport(self.props, self)
 		self.loglist.extend(errors)
 		return
 
-	def setup(self, defaults='',
-			  uploaded=None, deduplicate=True):
+	def setup(self, defaults='', uploaded=None):
 		""" Setup up the attributes for running the import """
-		self.deduplicate = deduplicate
 		if self.default_user == None:
 			try:
 				self.default_user = UserProfile.objects.filter(user__first_name__icontains='default')[0]
