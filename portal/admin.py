@@ -63,6 +63,46 @@ class ElsterMeterRmaCreateListFilter(SimpleListFilter):
 		if self.value() == '365':
 			return queryset.filter(rma_create_date__gte=now-datetime.timedelta(days=365))
 
+class CustomerMeterRmaFailureListFilter(SimpleListFilter):
+	# Human-readable title which will be displayed in the
+	# right admin sidebar just above the filter options.
+	title = _('rma_failure_date')
+
+	# Parameter for the filter that will be used in the URL query.
+	parameter_name = 'failure_date'
+
+	def lookups(self, request, model_admin):
+		"""
+		Returns a list of tuples. The first element in each
+		tuple is the coded value for the option that will
+		appear in the URL query. The second element is the
+		human-readable name for the option that will appear
+		in the right sidebar.
+		"""
+		return (
+			('30', _('in past month')),
+			('90', _('in past quarter')),
+			('180', _('in past six months')),
+			('365', _('in past year')),
+		)
+
+	def queryset(self, request, queryset):
+		"""
+		Returns the filtered queryset based on the value
+		provided in the query string and retrievable via
+		`self.value()`.
+		"""
+		now = timezone.now()
+		
+		if self.value() == '30':
+			return queryset.filter(failure_date__gte=now-datetime.timedelta(days=30))
+		if self.value() == '90':
+			return queryset.filter(failure_date__gte=now-datetime.timedelta(days=90))
+		if self.value() == '180':
+			return queryset.filter(failure_date__gte=now-datetime.timedelta(days=180))
+		if self.value() == '365':
+			return queryset.filter(failure_date__gte=now-datetime.timedelta(days=365))
+
 class ElsterMeterRmaCompleteListFilter(SimpleListFilter):
 	# Human-readable title which will be displayed in the
 	# right admin sidebar just above the filter options.
@@ -204,10 +244,10 @@ def set_shipment(modeladmin, request, queryset):
 set_shipment.short_description = 'Set shipment information'
 	
 class CustomerMeterTrackAdmin(admin.ModelAdmin):
-	search_fields = ['elster_meter_serial_number','meter_barcode','failure_date','rma_number', 'shipment__reference_id',]
-	list_display = ['elster_meter_serial_number','meter_barcode', 'failure_date','rma_number','shipment',]
+	search_fields = ['elster_meter_serial_number','meter_barcode','failure_date','rma_number', 'shipment__reference_id', 'reason_for_removal',]
+	list_display = ['elster_meter_serial_number','meter_barcode', 'failure_date','rma_number','shipment',  'reason_for_removal',]
 	actions = [set_shipment]
-	list_filter = ['shipment','reason_for_removal',]
+	list_filter = [ CustomerMeterRmaFailureListFilter,'shipment','reason_for_removal',]
 
 class ElsterRmaDefectAdmin(admin.ModelAdmin):
 	fields=[]

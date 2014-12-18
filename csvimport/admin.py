@@ -94,7 +94,7 @@ CUSTOMER_METER_TRACK_CONTENT_HELP_TEXT = ' '.join(['<p>Assumes the following com
 		'set_date is the date of field deployment represented as YYYY-MM-DD<br/>'
 		'failure_date is the date of recognized failure or removal represented as YYYY-MM-DD<br/>'		
 		'reason_for_removal is a short description for removal represented as a text field<br/>'
-		'customer_defined_failure_code is customer defined failure code represented as a text field (max 50 characters)<br/>'
+		'customer_defined_failure_code is customer defined failure code represented as a text field (max 500 characters)<br/>'
 		'failure_detail is a place to record more detail than the abbreviated failure (max 2000 characters)<br/>'
 		'exposure is the compass direction the meter is facing (single character N, S, E or W)<br/>'
 		'shipment_reference is the reference number for the shipment meter returned to Elster represented as a text field (max 25 characters)<br/>'
