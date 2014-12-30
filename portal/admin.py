@@ -194,6 +194,78 @@ def export_elster_meter_track_csv(modeladmin, request, queryset):
 	return response
 export_elster_meter_track_csv.short_description = u"Export Elster Meters CSV"
 
+def export_customer_meter_track_csv(modeladmin, request, queryset):
+	response = HttpResponse(mimetype='text/csv')
+	response['Content-Disposition'] = 'attachment; filename=elster_meter_track.csv'
+	writer = csv.writer(response, csv.excel)
+	response.write(u'\ufeff'.encode('utf8')) # BOM (optional...Excel needs it to open UTF-8 file properly)
+	writer.writerow([
+		smart_str(u'elster_meter_serial_number'), 
+		smart_str(u'meter_type'),
+		smart_str(u'meter_barcode'), 
+		smart_str(u'rma_number'), 
+		smart_str(u'order_date'),
+		smart_str(u'set_date'),
+		smart_str(u'failure_date'), 
+		smart_str(u'reason_for_removal'), 		
+		smart_str(u'customer_defined_failure_code'),
+		smart_str(u'failure_detail'),
+		smart_str(u'exposure'),
+		smart_str(u'ship_date'),
+		smart_str(u'tracking_number'),
+		smart_str(u'pallet_number'),
+		smart_str(u'original_order_information'),
+		smart_str(u'service_status'),
+		smart_str(u'longitude'),
+		smart_str(u'latitude'),
+		smart_str(u'address'),
+		])
+	error_msgs = []
+	error_count = 0
+	for obj in queryset:
+		try:
+			ship_date = 'None'
+			tracking_number = 'None'
+			pallet_number = 'None'
+			if obj.shipment:
+				ship_date = obj.shipment.ship_date
+				tracking_number = obj.shipment.tracking_number
+				pallet_number = obj.shipment.pallet_number
+				
+			writer.writerow([
+				smart_str(obj.elster_meter_serial_number),
+				smart_str(obj.meter_type),
+				smart_str(obj.meter_barcode),
+				smart_str(obj.rma_number),
+				smart_str(obj.order_date),
+				smart_str(obj.set_date),
+				smart_str(obj.failure_date),
+				smart_str(obj.reason_for_removal),
+				smart_str(obj.customer_defined_failure_code),
+				smart_str(obj.failure_detail),
+				smart_str(obj.exposure),
+				smart_str(ship_date),
+				smart_str(tracking_number),
+				smart_str(pallet_number),
+				smart_str(obj.original_order_information),
+				smart_str(obj.service_status),
+				smart_str(obj.longitude),
+				smart_str(obj.latitude),
+				smart_str(obj.address),
+			])
+		except Exception as inst:
+			error_msgs.append('export Error: %s for record#: %s' % (str(inst), str(obj)))
+			error_count += 1
+			if (error_count > 20):
+				break
+			else:
+				pass
+	if len(error_msgs):
+		print '\n'.join(error_msgs)
+		modeladmin.message_user(request, 'Error(s) exporting:\n'.join(error_msgs))
+	return response
+export_customer_meter_track_csv.short_description = u"Export Customer Meter Tracks CSV"
+
 class ElsterMeterTrackAdmin(admin.ModelAdmin):
 	form = ElsterMeterTrackForm
 	actions = [export_elster_meter_track_csv]
@@ -246,7 +318,7 @@ set_shipment.short_description = 'Set shipment information'
 class CustomerMeterTrackAdmin(admin.ModelAdmin):
 	search_fields = ['elster_meter_serial_number','meter_barcode','failure_date','rma_number', 'shipment__reference_id', 'reason_for_removal',]
 	list_display = ['elster_meter_serial_number','meter_barcode', 'failure_date','rma_number','shipment',  'reason_for_removal',]
-	actions = [set_shipment]
+	actions = [set_shipment, export_customer_meter_track_csv,]
 	list_filter = [ CustomerMeterRmaFailureListFilter,'shipment','reason_for_removal',]
 
 class ElsterRmaDefectAdmin(admin.ModelAdmin):
