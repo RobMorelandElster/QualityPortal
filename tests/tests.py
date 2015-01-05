@@ -79,6 +79,35 @@ class TestTopFiveReport(TestCase):
 			rma_complete_date=datetime.date(2014,1,1)+relativedelta(months=4),
 			defect = self.defect_5,
 			)
+		ElsterMeterTrack.objects.create(
+			elster_serial_number='6',
+			meter_style=m_type,
+			rma_create_date=datetime.date(datetime.date.today().year,1,1)+relativedelta(months=2),
+			rma_complete_date=datetime.date(datetime.date.today().year,1,1)+relativedelta(months=3),
+			defect = self.defect_3,
+			)
+		ElsterMeterTrack.objects.create(
+			elster_serial_number='7',
+			meter_style=m_type,
+			rma_create_date=datetime.date(datetime.date.today().year,1,1)+relativedelta(months=3),
+			rma_complete_date=datetime.date(datetime.date.today().year,1,1)+relativedelta(months=4),
+			defect = self.defect_5,
+			)
+		ElsterMeterTrack.objects.create(
+			elster_serial_number='8',
+			meter_style=m_type,
+			rma_create_date=datetime.date(datetime.date.today().year,1,1)+relativedelta(months=2),
+			rma_complete_date=datetime.date(datetime.date.today().year,1,1)+relativedelta(months=3),
+			defect = self.defect_1,
+			)
+		ElsterMeterTrack.objects.create(
+			elster_serial_number='9',
+			meter_style=m_type,
+			rma_create_date=datetime.date(datetime.date.today().year,1,1),
+			rma_complete_date=datetime.date(datetime.date.today().year,1,1)+relativedelta(months=1),
+			defect = self.defect_3,
+			)
+			
 		#start_datetime = datetime.datetime.today()
 		
 	def test_deny_anonymous(self):
@@ -108,10 +137,10 @@ class TestTopFiveReport(TestCase):
 		self.assertEquals(response.context[-1]['totals_by_year'][1],2) # for year 1
 		self.assertEquals(response.context[-1]['totals_by_year'][2],3) # for year 2
 		
-		self.assertEquals(response.context[-1]['top_five_all_time'][0], self.defect_1)
-		self.assertEquals(response.context[-1]['top_five_all_time'][1], self.defect_3)
+		self.assertEquals(response.context[-1]['top_five_all_time'][0], self.defect_3)
+		self.assertEquals(response.context[-1]['top_five_all_time'][1], self.defect_1)
 		self.assertEquals(response.context[-1]['top_five_all_time'][2], self.defect_5)
 		
 		self.assertEquals(response.context[-1]['top_five_this_year'][0], self.defect_3)
-		self.assertEquals(response.context[-1]['top_five_this_year'][1], self.defect_5)
+		self.assertEquals(response.context[-1]['top_five_this_year'][1], self.defect_1)
 
