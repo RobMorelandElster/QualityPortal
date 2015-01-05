@@ -56,6 +56,7 @@ INSTALLED_APPS = (
 	#'allauth.socialaccount.providers.facebook',
 	'sendgrid',
 	'storages',
+	'south',
 	'bootstrap3',
 	'csvimport',
 	'django_tables2',
