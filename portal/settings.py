@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
@@ -56,6 +57,7 @@ INSTALLED_APPS = (
 	#'allauth.socialaccount.providers.facebook',
 	'sendgrid',
 	'storages',
+	'djcelery',
 	'south',
 	'bootstrap3',
 	'csvimport',
@@ -141,6 +143,12 @@ FILE_UPLOAD_HANDLERS = (
 	"django.core.files.uploadhandler.MemoryFileUploadHandler",
 	"django.core.files.uploadhandler.TemporaryFileUploadHandler",
 )
+
+# Celery configuration
+#CELERY_RESULT_BACKEND = 'amqp://'
+CELERY_RESULT_BACKEND =  os.environ['CELERY_RESULT_BACKEND']
+#BROKER_URL = "amqp://guest:guest@localhost:5672//"
+BROKER_URL = os.environ['BROKER_URL']
 
 AUTHENTICATION_BACKENDS = (
 	# Needed to login by username in Django admin, regardless of `allauth`

@@ -14,10 +14,13 @@ import uuid
 import os
 
 def get_file_path(instance, filename):
-	ext = filename.split('.')[-1]
-	base =filename.split('.')[-2] 
-	filename = "%s-%s.%s" % (base, uuid.uuid4(), ext)
-	return os.path.join('csv', filename)
+	try:
+		ext = filename.split('.')[-1]
+		base =filename.split('.')[-2] 
+		filename = "%s-%s.%s" % (base, uuid.uuid4(), ext)
+		return os.path.join('csv', filename)
+	except:
+		return filename
 		   
 class CSVImportElsterMeterTrack(models.Model):
 	""" For importing portal.ElsterMeterTrack """
@@ -31,14 +34,13 @@ class CSVImportElsterMeterTrack(models.Model):
 	import_date = models.DateField(auto_now=True)
 	import_user = models.CharField(max_length=255, default='anonymous',
 								   help_text='User id as text', blank=True)
-	
-		
 	def error_log_html(self):
 		return re.sub('\n', '<br/>', self.error_log)
 	error_log_html.allow_tags = True
 	
 	def __unicode__(self):
-		return self.upload_file.name
+		return "id:%d-file:"%self.id + str(self.upload_file.name)
+
 
 class CSVImportCustomerMeterTrack(models.Model):
 	""" For importing portal.CustomerMeterTrack """
@@ -53,7 +55,6 @@ class CSVImportCustomerMeterTrack(models.Model):
 	import_user = models.CharField(max_length=255, default='anonymous',
 								   help_text='User id as text', blank=True)
 	
-		
 	def error_log_html(self):
 		return re.sub('\n', '<br/>', self.error_log)
 	error_log_html.allow_tags = True

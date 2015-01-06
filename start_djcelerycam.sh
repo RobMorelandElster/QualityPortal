@@ -1,0 +1,2 @@
+#sh
+./manage.py celerycam
