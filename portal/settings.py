@@ -106,7 +106,8 @@ USE_TZ = True
 
 
 # S3 Storage configuration
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+#DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+DEFAULT_FILE_STORAGE = os.environ.get('DEFAULT_FILE_STORAGE','django.core.files.storage.FileSystemStorage')
 AWS_S3_SECURE_URLS = False       # use http instead of https
 AWS_QUERYSTRING_AUTH = False     # don't add complex authentication-related query parameters for requests
 AWS_S3_ACCESS_KEY_ID = os.environ['AWS_S3_ACCESS_KEY_ID']     # enter your access key id
@@ -145,10 +146,9 @@ FILE_UPLOAD_HANDLERS = (
 )
 
 # Celery configuration
-#CELERY_RESULT_BACKEND = 'amqp://'
-CELERY_RESULT_BACKEND =  os.environ['CELERY_RESULT_BACKEND']
-#BROKER_URL = "amqp://guest:guest@localhost:5672//"
-BROKER_URL = os.environ['BROKER_URL']
+CELERY_RESULT_BACKEND =  os.environ.get('CELERY_RESULT_BACKEND','amqp://')
+BROKER_URL = os.environ.get('BROKER_URL', "amqp://guest:guest@localhost:5672//")
+BROKER_POOL_LIMIT = 1
 
 AUTHENTICATION_BACKENDS = (
 	# Needed to login by username in Django admin, regardless of `allauth`
