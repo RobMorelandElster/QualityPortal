@@ -13,9 +13,11 @@ from django.core.urlresolvers import reverse
 from decimal import Decimal
 
 from django.utils import timezone
+from csvimport.models import CSVImportElsterMeterTrack
+from django.test.utils import override_settings
 
-
-class TestTopFiveReport(TestCase):
+@override_settings(DEFAULT_FILE_STORAGE='django.core.files.storage.FileSystemStorage')
+class TestPortal(TestCase):
 	"""	
 	Test the top 5 report 
 	"""
@@ -144,3 +146,12 @@ class TestTopFiveReport(TestCase):
 		self.assertEquals(response.context[-1]['top_five_this_year'][0], self.defect_3)
 		self.assertEquals(response.context[-1]['top_five_this_year'][1], self.defect_1)
 
+	def test_import_elster_csv(self):
+		from csvimport.management.commands.elstermetertrackcsvimport import Command
+		cmd = Command()
+		cmd.setup( uploaded = 'test_files/elster_csv_good.csv', defaults = 'utf-8')
+		errors = cmd.run(logid = 1)
+		self.assertFalse("Error" in str(errors))
+		cmd.setup( uploaded = 'test_files/elster_csv_short.csv', defaults = 'utf-8')
+		errors = cmd.run(logid = 2)
+		self.assertTrue("Incorrect number of columns 12. Should be 13" in str(errors))

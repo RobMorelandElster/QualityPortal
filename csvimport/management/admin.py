@@ -7,9 +7,7 @@ from django.contrib.admin import ModelAdmin
 import os
 from csvimport.models import *
 from portal.models import *
-from portal.tasks import processElsterMeterTrackImportFile, processCustomerMeterTrackImportFile
-
-import time
+	
 	
 ELSTER_METER_TRACK_CONTENT_HELP_TEXT = ' '.join(['<p>Assumes the following comma separated fields (all text fields should be double quoted):<br/>'
 		'elster_serial_number, meter_style, meter_barcode, manufacture_date, rma_number, rma_create_date, rma_receive_date, rma_complete_date, defect_code, defect_code_desc, complaint, finding, action_taken<br/>'
@@ -55,17 +53,26 @@ class CSVImportElsterMeterTrackAdmin(ModelAdmin):
 	search_fields = ['import_user', 'file_name']
 
 	def save_model(self, request, obj, form, change):
+		""" Do save and process command - cant commit False
+			since then file wont be found for reopening via right charset
+		"""
 		form.save()
-		obj.file_name = str(obj.upload_file)
-		with transaction.atomic():
-			obj.save()
-		
-		result = processElsterMeterTrackImportFile.delay('utf-8', obj, request.user)
-		task_id = result.id
-		if result.traceback:
-			obj.error_log = obj.error_log + ('\nTask ID:%s Error:%s'%(task_id, result.traceback))
+		from csvimport.management.commands.elstermetertrackcsvimport import Command
+		cmd = Command()
+		if obj.upload_file:
+			obj.file_name = str(obj.upload_file)
+			#obj.encoding = ''
+			defaults = 'utf-8'
+			cmd.setup( # org = obj.organization_name,
+					uploaded = obj.file_name,
+					defaults = defaults)
+		errors = cmd.run(logid = obj.id)
+		if errors:
+			obj.error_log = '\n'.join(errors)
+		obj.import_user = str(request.user)
+		obj.import_date = datetime.datetime.now()
 		obj.save()
-		
+
 	def filename_defaults(self, filename):
 		""" Override this method to supply filename based data """
 		defaults = []
@@ -75,6 +82,12 @@ class CSVImportElsterMeterTrackAdmin(ModelAdmin):
 			if filename.find(splitter)>-1:
 				filename = filename.split(splitter)[index]
 		return defaults
+
+app = Celery('tasks', broker='amqp://guest@localhost//')
+
+@app.task
+def elstermetertrackcsvimport(x, y):
+        return x + y
 
 	
 CUSTOMER_METER_TRACK_CONTENT_HELP_TEXT = ' '.join(['<p>Assumes the following comma separated fields (all text fields should be double quoted):<br/>'
@@ -124,17 +137,25 @@ class CSVImportCustomerMeterTrackAdmin(ModelAdmin):
 	search_fields = ['import_user', 'file_name']
 
 	def save_model(self, request, obj, form, change):
+		""" Do save and process command - cant commit False
+			since then file wont be found for reopening via right charset
+		"""
 		form.save()
-		obj.file_name = str(obj.upload_file)
-		with transaction.atomic():
-			obj.save()
-		
-		result = processCustomerMeterTrackImportFile.delay('utf-8', obj, request.user)
-		task_id = result.id
-		if result.traceback:
-			obj.error_log = obj.error_log + ('\nTask ID:%s Error:%s'%(task_id, result.traceback))
+		from csvimport.management.commands.customermetertrackcsvimport import Command
+		cmd = Command()
+		if obj.upload_file:
+			obj.file_name = str(obj.upload_file)
+			#obj.encoding = ''
+			defaults = 'utf-8'
+			cmd.setup( # org = obj.organization_name,
+					uploaded = obj.file_name,
+					defaults = defaults)
+		errors = cmd.run(logid = obj.id)
+		if errors:
+			obj.error_log = '\n'.join(errors)
+		obj.import_user = str(request.user)
+		obj.import_date = datetime.datetime.now()
 		obj.save()
-
 
 	def filename_defaults(self, filename):
 		""" Override this method to supply filename based data """

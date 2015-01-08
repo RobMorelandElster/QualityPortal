@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
@@ -56,6 +57,7 @@ INSTALLED_APPS = (
 	#'allauth.socialaccount.providers.facebook',
 	'sendgrid',
 	'storages',
+	'djcelery',
 	'south',
 	'bootstrap3',
 	'csvimport',
@@ -104,7 +106,8 @@ USE_TZ = True
 
 
 # S3 Storage configuration
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+#DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+DEFAULT_FILE_STORAGE = os.environ.get('DEFAULT_FILE_STORAGE','django.core.files.storage.FileSystemStorage')
 AWS_S3_SECURE_URLS = False       # use http instead of https
 AWS_QUERYSTRING_AUTH = False     # don't add complex authentication-related query parameters for requests
 AWS_S3_ACCESS_KEY_ID = os.environ['AWS_S3_ACCESS_KEY_ID']     # enter your access key id
@@ -141,6 +144,11 @@ FILE_UPLOAD_HANDLERS = (
 	"django.core.files.uploadhandler.MemoryFileUploadHandler",
 	"django.core.files.uploadhandler.TemporaryFileUploadHandler",
 )
+
+# Celery configuration
+CELERY_RESULT_BACKEND =  os.environ.get('CELERY_RESULT_BACKEND','amqp://')
+BROKER_URL = os.environ.get('BROKER_URL', "amqp://guest:guest@localhost:5672//")
+BROKER_POOL_LIMIT = 1
 
 AUTHENTICATION_BACKENDS = (
 	# Needed to login by username in Django admin, regardless of `allauth`
