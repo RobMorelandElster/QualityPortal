@@ -148,6 +148,7 @@ FILE_UPLOAD_HANDLERS = (
 # Celery configuration
 CELERY_RESULT_BACKEND =  os.environ.get('CELERY_RESULT_BACKEND','amqp://')
 BROKER_URL = os.environ.get('BROKER_URL', "amqp://guest:guest@localhost:5672//")
+CELERY_TASK_SERIALIZER = 'json'
 BROKER_POOL_LIMIT = 1
 
 AUTHENTICATION_BACKENDS = (

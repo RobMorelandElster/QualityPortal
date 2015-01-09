@@ -6,4 +6,5 @@ local
 .Python
 *.pyc
 csv
+celerybeat-schedule
 staticfiles
