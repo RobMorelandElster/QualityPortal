@@ -246,6 +246,7 @@ class Command(LabelCommand):
 					cMeterTrack.rma_number = rma_number
 					cMeterTrack.order_date = order_date
 					cMeterTrack.set_date = set_date
+					cMeterTrack.failure_date = failure_date
 					cMeterTrack.reason_for_removal = self.eval_for_null(row[self.columns['REASON_FOR_REMOVAL']])
 					cMeterTrack.customer_defined_failure_code = self.eval_for_null(row[self.columns['CUSTOMER_DEFINED_FAILURE_CODE']])
 					cMeterTrack.failure_detail = self.eval_for_null(row[self.columns['FAILURE_DETAIL']])
