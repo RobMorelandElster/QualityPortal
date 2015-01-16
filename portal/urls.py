@@ -50,3 +50,20 @@ urlpatterns += patterns('',
 urlpatterns += patterns('',
     url(r'^autocomplete/', include('autocomplete_light.urls')),
 )
+
+from rest_framework import routers
+
+router = routers.DefaultRouter()
+router.register(r'users', views.UserViewSet)
+router.register(r'groups', views.GroupViewSet)
+router.register(r'meter_count', views.ElsterMeterCountViewSet)
+router.register(r'defect_types', views.ElsterRmaDefectViewSet)
+router.register(r'elster_rmas', views.ElsterMeterTrackViewSet)
+
+
+# Wire up our API using automatic URL routing.
+# Additionally, we include login URLs for the browsable API.
+urlpatterns += patterns('',
+    url(r'^', include(router.urls)),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+)

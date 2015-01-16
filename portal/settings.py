@@ -63,6 +63,7 @@ INSTALLED_APPS = (
 	'csvimport',
 	'django_tables2',
 	'portal',
+	'rest_framework',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -196,3 +197,8 @@ if (DEBUG):
 	EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 ITEMS_PER_PAGE = 10
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAdminUser',),
+    'PAGINATE_BY': 10
+}

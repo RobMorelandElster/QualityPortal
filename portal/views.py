@@ -20,6 +20,10 @@ import csv
 from django.utils.encoding import smart_str
 from django.http import HttpResponse
 
+from django.contrib.auth.models import User, Group
+from rest_framework import viewsets
+from portal.serializers import *
+
 ITEMS_PER_PAGE = settings.ITEMS_PER_PAGE
 
 def index(request):
@@ -775,4 +779,38 @@ def __this_year_failure_vs_non(request, data):
 		return HttpResponseRedirect(template)
 	
 	
+class UserViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
+
+class GroupViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
+    
+class ElsterMeterCountViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = ElsterMeterCount.objects.all()
+    serializer_class = ElsterMeterCountSerializer
+
+class ElsterRmaDefectViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = ElsterRmaDefect.objects.all()
+    serializer_class = ElsterRmaDefectSerializer
+
+class ElsterMeterTrackViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = ElsterMeterTrack.objects.all()
+    serializer_class = ElsterMeterTrackSerializer
