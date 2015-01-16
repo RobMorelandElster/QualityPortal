@@ -8,3 +8,5 @@ local
 csv
 celerybeat-schedule
 staticfiles
+.DS_Store
+celerybeat-schedule.db
