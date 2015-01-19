@@ -3,6 +3,7 @@ from django.utils.safestring import mark_safe
 from django.core.urlresolvers import reverse
 import itertools
 from portal.models import *
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 
 counter = itertools.count()
 
@@ -35,6 +36,9 @@ class ElsterMeterTrackTable(tables.Table):
 class CustomerMeterTrackTable(tables.Table):
 	#name = tables.TemplateColumn('<a href="/inventory/{{record.id}}">{{record.name}}</a>')
 	#edit = tables.TemplateColumn('<a href="/inventory/part/edit/{{record.id}}"><i class="glyphicon glyphicon-edit"></i></a>',verbose_name = ("Action"), orderable=False)
+	meter_barcode = tables.Column(accessor = 'meter_barcode')
+	elster_meter_serial_number = tables.Column(accessor = 'elster_meter_serial_number', verbose_name='Meter Number')
+	rma_number = tables.Column(accessor = 'rma_number')
 	class Meta:
 		model = CustomerMeterTrack
 		# add class="paleblue" to <table> tag
@@ -43,7 +47,33 @@ class CustomerMeterTrackTable(tables.Table):
 		attrs = {"class": "table table-striped"}
 		template = ('table.html')
 		
-
+	def render_meter_barcode(self, record):
+		try:
+			er = ElsterMeterTrack.objects.get(meter_barcode = record.meter_barcode)
+			return mark_safe('''<a href="/elster_rma_edit/%s">%s</a>''' % (er.id, record.meter_barcode))
+		except MultipleObjectsReturned:
+			er = ElsterMeterTrack.objects.filter(meter_barcode = record.meter_barcode)[0]
+			return mark_safe('''<a href="/elster_rma_serial_barcode/%s/%s/">%s</a>''' % (er.elster_serial_number, er.meter_barcode, record.meter_barcode))
+		except ObjectDoesNotExist:
+			return mark_safe('%s' % record.meter_barcode)
+	def render_elster_meter_serial_number(self, record):
+		try:
+			er = ElsterMeterTrack.objects.get(elster_serial_number = record.elster_meter_serial_number)
+			return mark_safe('''<a href="/elster_rma_edit/%s">%s</a>''' % (er.id, record.elster_meter_serial_number))
+		except MultipleObjectsReturned:
+			er = ElsterMeterTrack.objects.filter(meter_barcode = record.meter_barcode)[0]
+			return mark_safe('''<a href="/elster_rma_serial_barcode/%s/%s/">%s</a>''' % (er.elster_serial_number, er.meter_barcode, record.meter_barcode))
+		except ObjectDoesNotExist:
+			return mark_safe('%s' % record.elster_meter_serial_number)
+	def render_rma_number(self, record):
+		try:
+			rmas = ElsterMeterTrack.objects.filter(rma_number = record.rma_number)
+			if rmas:
+				return mark_safe('''<a href="/elster_rma/%s">%s</a>''' % (record.rma_number, record.rma_number))
+			else:
+				return mark_safe('%s' % record.rma_number)
+		except (ObjectDoesNotExist, MultipleObjectsReturned) as e:
+			return mark_safe('%s' % record.rma_number)
 """
 class BinPartTable(tables.Table):
 	#part_name = tables.TemplateColumn('<a href="/inventory/{{record.part_type.id}}">{{record.part_type.name}}</a>')

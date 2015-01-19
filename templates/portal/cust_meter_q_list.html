@@ -23,7 +23,8 @@
 		{# Display django.contrib.messages as Bootstrap alerts #}
 		{% bootstrap_messages %}
 		<h1>Customer Meter Quality Items</h1>
-		<div style="max-width: 968px; overflow-x:scroll; border-radius:1em;">
+		<div style="max-width: auto; overflow-x:scroll; border-radius:1em;">
+
 			{% render_table table %}
 		</div>
 		{% endblock %}
