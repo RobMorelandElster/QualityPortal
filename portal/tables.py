@@ -51,13 +51,19 @@ class CustomerMeterTrackTable(tables.Table):
 		try:
 			er = ElsterMeterTrack.objects.get(meter_barcode = record.meter_barcode)
 			return mark_safe('''<a href="/elster_rma_edit/%s">%s</a>''' % (er.id, record.meter_barcode))
-		except (ObjectDoesNotExist, MultipleObjectsReturned) as e:
+		except MultipleObjectsReturned:
+			er = ElsterMeterTrack.objects.filter(meter_barcode = record.meter_barcode)[0]
+			return mark_safe('''<a href="/elster_rma_serial_barcode/%s/%s/">%s</a>''' % (er.elster_serial_number, er.meter_barcode, record.meter_barcode))
+		except ObjectDoesNotExist:
 			return mark_safe('%s' % record.meter_barcode)
 	def render_elster_meter_serial_number(self, record):
 		try:
 			er = ElsterMeterTrack.objects.get(elster_serial_number = record.elster_meter_serial_number)
 			return mark_safe('''<a href="/elster_rma_edit/%s">%s</a>''' % (er.id, record.elster_meter_serial_number))
-		except (ObjectDoesNotExist, MultipleObjectsReturned) as e:
+		except MultipleObjectsReturned:
+			er = ElsterMeterTrack.objects.filter(meter_barcode = record.meter_barcode)[0]
+			return mark_safe('''<a href="/elster_rma_serial_barcode/%s/%s/">%s</a>''' % (er.elster_serial_number, er.meter_barcode, record.meter_barcode))
+		except ObjectDoesNotExist:
 			return mark_safe('%s' % record.elster_meter_serial_number)
 	def render_rma_number(self, record):
 		try:
