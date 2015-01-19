@@ -51,13 +51,13 @@ class CustomerMeterTrackTable(tables.Table):
 		try:
 			er = ElsterMeterTrack.objects.get(meter_barcode = record.meter_barcode)
 			return mark_safe('''<a href="/elster_rma_edit/%s">%s</a>''' % (er.id, record.meter_barcode))
-		except ObjectDoesNotExist, MultipleObjectsReturned:
+		except (ObjectDoesNotExist, MultipleObjectsReturned) as e:
 			return mark_safe('%s' % record.meter_barcode)
 	def render_elster_meter_serial_number(self, record):
 		try:
 			er = ElsterMeterTrack.objects.get(elster_serial_number = record.elster_meter_serial_number)
 			return mark_safe('''<a href="/elster_rma_edit/%s">%s</a>''' % (er.id, record.elster_meter_serial_number))
-		except ObjectDoesNotExist, MultipleObjectsReturned:
+		except (ObjectDoesNotExist, MultipleObjectsReturned) as e:
 			return mark_safe('%s' % record.elster_meter_serial_number)
 	def render_rma_number(self, record):
 		try:
@@ -66,7 +66,7 @@ class CustomerMeterTrackTable(tables.Table):
 				return mark_safe('''<a href="/elster_rma/%s">%s</a>''' % (record.rma_number, record.rma_number))
 			else:
 				return mark_safe('%s' % record.rma_number)
-		except ObjectDoesNotExist, MultipleObjectsReturned:
+		except (ObjectDoesNotExist, MultipleObjectsReturned) as e:
 			return mark_safe('%s' % record.rma_number)
 """
 class BinPartTable(tables.Table):
