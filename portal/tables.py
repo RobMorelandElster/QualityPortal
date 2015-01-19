@@ -3,7 +3,7 @@ from django.utils.safestring import mark_safe
 from django.core.urlresolvers import reverse
 import itertools
 from portal.models import *
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 
 counter = itertools.count()
 
