@@ -13,12 +13,13 @@ django-admin-bootstrapped==2.1.1
 django-allauth==0.17.0
 django-appconf==0.6
 django-autocomplete-light==2.0.1
-django-bootstrap3==4.8.2
+django-bootstrap3==5.1.1
 django-celery==3.1.16
 django-sendgrid==1.0.1
 django-storages==1.1.8
 django-tables2==0.15.0
 django-toolbelt==0.0.1
+djangorestframework==3.0.3
 gunicorn==19.1.0
 kombu==3.0.24
 oauthlib==0.6.3
