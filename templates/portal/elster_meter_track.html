@@ -18,7 +18,7 @@
 
 <div class="container">
 	<div class="row">
-		<div class="col-md-6">
+		<div class="col-md-12">
 			<h1>Elster Meter Track {{ emt }}</h1>
 			{% if messages %}
 				{% for message in messages %}
@@ -37,14 +37,10 @@
 				{% endfor %}
 			{% endif %}
 
-			<form class="form-horizontal" method="post" action="">
+			<form method="post" action="">
 				{% csrf_token %}
-					{% bootstrap_form elster_meter_track_form %}
-					{% buttons %}
-					<button type="submit" class="btn btn-primary">
-					<span class="glyphicon glyphicon-floppy-save">Submit</span>
-					</button>
-					{% endbuttons %}
+				{% bootstrap_form elster_meter_track_form layout='horizontal' size='lg' %}
+				{% buttons submit='Submit' reset='Cancel' layout='horizontal' %}{% endbuttons %}
 			</form>
 		</div>
 	</div>

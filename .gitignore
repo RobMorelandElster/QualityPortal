@@ -7,6 +7,7 @@ local
 *.pyc
 csv
 celerybeat-schedule
+celeryev.pid
 staticfiles
 .DS_Store
 celerybeat-schedule.db

@@ -758,15 +758,34 @@ def __this_year_failure_vs_non(request, data):
 	
 	
 	try:
+		try:
+			data['first_defect_year'] = ElsterMeterTrack.objects.all().order_by('rma_create_date').first().rma_create_date.year
+		except:
+			data['first_defect_year'] = now.year
+			
+		try:
+			data['devices_in_service'] = ElsterMeterCount.objects.all().last().meter_count
+		except:
+			data['devices_in_service'] = 0
+
 		failure_defects = ElsterRmaDefect.objects.filter(failure=True)
 		non_failure_defects = ElsterRmaDefect.objects.filter(failure=False)
 		data['non_failure_defect_list'] = [nf.description for nf in non_failure_defects]
 		
+		data['all_time_failure_count'] = ElsterMeterTrack.objects.filter(
+				rma_complete_date__isnull=False,
+				rma_create_date__gte=datetime.date(data['first_defect_year'],1,1),
+				defect__in=failure_defects).count()		
 		data['this_year_failure_count'] = ElsterMeterTrack.objects.filter(
 				rma_complete_date__isnull=False,
 				rma_create_date__gte=datetime.date(data['this_year'],1,1),
 				defect__in=failure_defects).count()
-		
+
+		data['all_time_non_failure_count'] = ElsterMeterTrack.objects.filter(
+				rma_complete_date__isnull=False,
+				rma_create_date__gte=datetime.date(data['first_defect_year'],1,1),
+				defect__in=non_failure_defects).count()
+
 		data['this_year_non_failure_count'] = ElsterMeterTrack.objects.filter(
 				rma_complete_date__isnull=False,
 				rma_create_date__gte=datetime.date(data['this_year'],1,1),

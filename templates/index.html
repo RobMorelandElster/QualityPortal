@@ -30,13 +30,13 @@
       function drawChart() {
         var data_overall = google.visualization.arrayToDataTable([
           ['RMA', 'Count'],
-	  ['Devices in Service', 1004575-36523-35786],
-	  ['Non-Fail Returns',  36523],
-          ['Failures',     35786],
+	  ['Devices in Service', {{devices_in_service}}],
+	  ['Non-Fail Returns',  {{all_time_non_failure_count}}],
+          ['Failures',     {{all_time_failure_count}}],
         ]);
 
         var options_overall = {
-          title: 'RMA % between 2009-2013',
+          title: 'RMA % from {{first_defect_year}} through {{this_year}}',
 	  titleTextStyle: {fontSize: '18', fontName: 'Arial, sans-serif', color: '#57A3C9'},
 	  pieStartAngle: 5,
 	  fontSize: '12',
