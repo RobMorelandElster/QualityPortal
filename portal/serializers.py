@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User, Group
 from portal.models import ElsterMeterCount, ElsterRmaDefect, ElsterMeterTrack
+from csvimport.models import CSVImportCustomerMeterTrack
 from rest_framework import serializers
 
 
@@ -32,3 +33,7 @@ class ElsterMeterTrackSerializer(serializers.ModelSerializer):
 		fields = ('url', 'elster_serial_number', 'meter_style',
 			'meter_barcode', 'rma_number', 'rma_create_date',
 			'rma_receive_date', 'defect', 'complaint', 'finding', 'action_taken')
+
+class CSVImportCustomerMeterTrackSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = CSVImportCustomerMeterTrack

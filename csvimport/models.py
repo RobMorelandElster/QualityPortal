@@ -3,6 +3,7 @@ from copy import deepcopy
 from django.core.files.base import ContentFile
 from django.core.cache import cache
 #from django.core.files.storage import FileSystemStorage
+from django.core.files.storage import default_storage
 import re
 
 from portal.models import *
@@ -61,3 +62,21 @@ class CSVImportCustomerMeterTrack(models.Model):
 	
 	def __unicode__(self):
 		return self.upload_file.name
+
+# Receive the pre_delete signal and delete the file associated with the model instance.
+from django.db.models.signals import pre_delete
+from django.dispatch.dispatcher import receiver
+
+@receiver(pre_delete, sender=CSVImportCustomerMeterTrack)
+def mymodel_delete_customer_file(sender, instance, **kwargs):
+    print "delete %s"% instance.upload_file
+    default_storage.delete(instance.file_name)
+    # Pass false so FileField doesn't save the model.
+    instance.upload_file.delete(False)
+    
+@receiver(pre_delete, sender=CSVImportElsterMeterTrack)
+def mymodel_delete_elster_file(sender, instance, **kwargs):
+    print "delete %s"% instance.upload_file
+    default_storage.delete(instance.file_name)
+    # Pass false so FileField doesn't save the model.
+    instance.upload_file.delete(False)
