@@ -9,7 +9,7 @@ import re
 from portal.models import *
 
 #fs = FileSystemStorage(location=settings.MEDIA_ROOT)
-CHOICES = (('manual', 'manual'), ('cronjob', 'cronjob'))
+CHOICES = (('manual', 'manual'), ('cronjob', 'cronjob'), ('rest-api', 'rest-api'),)
 
 import uuid
 import os
