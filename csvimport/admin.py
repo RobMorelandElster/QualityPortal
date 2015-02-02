@@ -76,9 +76,9 @@ class CSVImportElsterMeterTrackAdmin(ModelAdmin):
 				filename = filename.split(splitter)[index]
 		return defaults
 
-	
+			
 CUSTOMER_METER_TRACK_CONTENT_HELP_TEXT = ' '.join(['<p>Assumes the following comma separated fields (all text fields should be double quoted):<br/>'
-		'elster_meter_serial_number, meter_type, meter_barcode, order_date, set_date, failure_date, reason_for_removal, customer_defined_failure_code, failure_detail, exposure, ship_date, tracking_number, service_status, original_order_information,longitude, latitude, address<br/>'
+		'elster_meter_serial_number, meter_type, meter_barcode, rma_number, order_date, set_date, failure_date, reason_for_removal, customer_defined_failure_code, failure_detail, exposure, ship_date, tracking_number, service_status, original_order_information,longitude,latitude, address<br/>'
 		'where: elster_meter_serial_number is the elster_manufacture_serial number for the device, represented as a text field<br/>'
 		'meter_type is the elster style number for the device represented as a text field<br/>'
 		'meter_barcode is the faceplate barcode scanned from the device represented as a text field<br/>'
@@ -86,8 +86,8 @@ CUSTOMER_METER_TRACK_CONTENT_HELP_TEXT = ' '.join(['<p>Assumes the following com
 		'order_date is the date of order or receipt by customer represented as YYYY-MM-DD<br/>'
 		'set_date is the date of field deployment represented as YYYY-MM-DD<br/>'
 		'failure_date is the date of recognized failure or removal represented as YYYY-MM-DD<br/>'		
-		'reason_for_removal is a short description for removal represented as a text field<br/>'
-		'customer_defined_failure_code is customer defined failure code represented as a text field (max 500 characters)<br/>'
+		'reason_for_removal is a short description for removal represented as a text field (max 500 characters)<br/>'
+		'customer_defined_failure_code is customer defined failure code represented as a text field (max 50 characters)<br/>'
 		'failure_detail is a place to record more detail than the abbreviated failure (max 2000 characters)<br/>'
 		'exposure is the compass direction the meter is facing (single character N, S, E or W)<br/>'
 		'shipment_reference is the reference number for the shipment meter returned to Elster represented as a text field (max 25 characters)<br/>'
