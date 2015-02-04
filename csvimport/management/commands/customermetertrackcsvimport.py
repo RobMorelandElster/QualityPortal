@@ -100,6 +100,7 @@ class Command(LabelCommand):
 			'LONGITUDE':14,
 			'LATITUDE':15,
 			'ADDRESS':16,
+			'COMMENTS':17,
 			}
 
 		self.default_user = None
@@ -257,6 +258,7 @@ class Command(LabelCommand):
 					cMeterTrack.longitude = self.eval_for_null(row[self.columns['LONGITUDE']])
 					cMeterTrack.latitude = self.eval_for_null(row[self.columns['LATITUDE']])
 					cMeterTrack.address = self.eval_for_null(row[self.columns['ADDRESS']])
+					cMeterTrack.comments = self.eval_for_null(row[self.columns['COMMENTS']])
 				except ObjectDoesNotExist:                    
 					# New CustomerMeterTrack
 					cMeterTrack = CustomerMeterTrack(
@@ -277,6 +279,7 @@ class Command(LabelCommand):
 						longitude = self.eval_for_null(row[self.columns['LONGITUDE']]),
 						latitude = self.eval_for_null(row[self.columns['LATITUDE']]),
 						address = self.eval_for_null(row[self.columns['ADDRESS']]),
+						comments = self.eval_for_null(row[self.columns['COMMENTS']]),
 						)
 				try:
 					with transaction.atomic():

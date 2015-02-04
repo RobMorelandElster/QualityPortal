@@ -210,6 +210,7 @@ def export_customer_meter_track_csv(modeladmin, request, queryset):
 		smart_str(u'reason_for_removal'), 		
 		smart_str(u'customer_defined_failure_code'),
 		smart_str(u'failure_detail'),
+		smart_str(u'comments'),
 		smart_str(u'exposure'),
 		smart_str(u'ship_date'),
 		smart_str(u'tracking_number'),
@@ -243,6 +244,7 @@ def export_customer_meter_track_csv(modeladmin, request, queryset):
 				smart_str(obj.reason_for_removal),
 				smart_str(obj.customer_defined_failure_code),
 				smart_str(obj.failure_detail),
+				smart_str(obj.comments),
 				smart_str(obj.exposure),
 				smart_str(ship_date),
 				smart_str(tracking_number),
@@ -316,7 +318,7 @@ def set_shipment(modeladmin, request, queryset):
 set_shipment.short_description = 'Set shipment information'
 	
 class CustomerMeterTrackAdmin(admin.ModelAdmin):
-	search_fields = ['elster_meter_serial_number','meter_barcode','failure_date','rma_number', 'shipment__reference_id', 'reason_for_removal',]
+	search_fields = ['elster_meter_serial_number','meter_barcode','failure_date','rma_number', 'shipment__reference_id', 'reason_for_removal', 'comments',]
 	list_display = ['elster_meter_serial_number','meter_barcode', 'failure_date','rma_number','shipment',  'reason_for_removal',]
 	actions = [set_shipment, export_customer_meter_track_csv,]
 	list_filter = [ CustomerMeterRmaFailureListFilter,'shipment','reason_for_removal',]

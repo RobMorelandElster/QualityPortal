@@ -78,7 +78,7 @@ class CSVImportElsterMeterTrackAdmin(ModelAdmin):
 
 			
 CUSTOMER_METER_TRACK_CONTENT_HELP_TEXT = ' '.join(['<p>Assumes the following comma separated fields (all text fields should be double quoted):<br/>'
-		'elster_meter_serial_number, meter_type, meter_barcode, rma_number, order_date, set_date, failure_date, reason_for_removal, customer_defined_failure_code, failure_detail, exposure, ship_date, tracking_number, service_status, original_order_information,longitude,latitude, address<br/>'
+		'elster_meter_serial_number, meter_type, meter_barcode, rma_number, order_date, set_date, failure_date, reason_for_removal, customer_defined_failure_code, failure_detail, exposure, ship_date, tracking_number, service_status, original_order_information,longitude,latitude, address, comments<br/>'
 		'where: elster_meter_serial_number is the elster_manufacture_serial number for the device, represented as a text field<br/>'
 		'meter_type is the elster style number for the device represented as a text field<br/>'
 		'meter_barcode is the faceplate barcode scanned from the device represented as a text field<br/>'
@@ -94,7 +94,8 @@ CUSTOMER_METER_TRACK_CONTENT_HELP_TEXT = ' '.join(['<p>Assumes the following com
 		'original_order_information is contains any original meter order information you may wish to track for the device represented as a text field (max 100 characters)<br/>'
 		'longitude is the longitude of the field location for the device (12 digits 6 decimal places)<br/>'
 		'latitude is the latitude of the field location for the device (12 digits 6 decimal places)<br/>'
-		'address is the full address (if allowed) represented as a text field (max 2000 characters)<br/>',])
+		'address is the full address (if allowed) represented as a text field (max 2000 characters)<br/>'
+		'comments is a text field to hold additional comments (max 2000 characters)<br/>',])
 
 class CSVImportCustomerMeterTrackAdmin(ModelAdmin):
 	#change_form_template = 'progressbarupload/change_form.html'

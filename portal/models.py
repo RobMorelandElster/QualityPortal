@@ -224,6 +224,7 @@ class CustomerMeterTrack(models.Model):
     #reason_for_removal = models.CharField(max_length=500,null=True,blank=True, choices = REMOVAL_REASON_CHOICES, default=OTHER_D, verbose_name="Complaint")
     reason_for_removal = models.CharField(max_length=500,null=True,blank=True,  verbose_name="Complaint")
     customer_defined_failure_code = models.CharField(max_length=50,null=True,blank=True, verbose_name="Customer reference Defect Code")
+    comments = models.TextField(max_length=2000, null=True, blank=True)
     failure_detail = models.TextField(max_length=2000, verbose_name="Detailed Description",null=True, blank=True)
     exposure = models.CharField(max_length = 1, null=True,blank=True, choices = METER_EXPOSURE_CHOICES, verbose_name="Meter Facing Direction")
     shipment = models.ForeignKey(Shipment, null=True, blank=True, verbose_name="Shipment reference")
