@@ -20,10 +20,13 @@ def customer_csv_import_file(request, format=None):
             upload_file = request.FILES['upload_file']
             file_name = get_file_path(None, request.DATA['file_name'])
             
+            print("Processing customer_csv_import_file upload_file:%s, file_name:%s"%(upload_file, file_name))
             with default_storage.open(file_name, 'wb+') as temp_file:
+                print("About to upload file chunks")
                 for chunk in upload_file.chunks():
+                    print("Uploading chunk")
                     temp_file.write(chunk)
-                
+            print("Finished uploading file: %s"%file_name)    
             cmti = CSVImportCustomerMeterTrack.objects.create(upload_file=file_name, 
                 file_name=file_name,
                 import_user=request.user,
