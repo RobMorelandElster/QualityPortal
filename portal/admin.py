@@ -273,7 +273,7 @@ class ElsterMeterTrackAdmin(admin.ModelAdmin):
 	actions = [export_elster_meter_track_csv]
 
 	list_display = ('elster_serial_number', 'meter_barcode', 'rma_number','meter_style_description','complaint','rma_create_date','rma_complete_date','defect_id_desc',)
-	search_fields = ['elster_serial_number', 'rma_number', 'meter_barcode',]
+	search_fields = ['elster_serial_number', 'rma_number', 'meter_barcode', 'defect__description']
 	list_filter = [ElsterMeterRmaCreateListFilter, ElsterMeterRmaCompleteListFilter,'defect__description', 'meter_style',]
 
 class ShipmentAdmin(admin.ModelAdmin):
