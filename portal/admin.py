@@ -142,7 +142,7 @@ class ElsterMeterRmaCompleteListFilter(SimpleListFilter):
 
 def export_elster_meter_track_csv(modeladmin, request, queryset):
 	response = HttpResponse(mimetype='text/csv')
-	response['Content-Disposition'] = 'attachment; filename=elster_meter_track.csv'
+	response['Content-Disposition'] = 'attachment; filename=elster_rma_records.csv'
 	writer = csv.writer(response, csv.excel)
 	response.write(u'\ufeff'.encode('utf8')) # BOM (optional...Excel needs it to open UTF-8 file properly)
 	writer.writerow([
@@ -196,7 +196,7 @@ export_elster_meter_track_csv.short_description = u"Export Elster Meters CSV"
 
 def export_customer_meter_track_csv(modeladmin, request, queryset):
 	response = HttpResponse(mimetype='text/csv')
-	response['Content-Disposition'] = 'attachment; filename=elster_meter_track.csv'
+	response['Content-Disposition'] = 'attachment; filename=customer_rma_records.csv'
 	writer = csv.writer(response, csv.excel)
 	response.write(u'\ufeff'.encode('utf8')) # BOM (optional...Excel needs it to open UTF-8 file properly)
 	writer.writerow([

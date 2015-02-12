@@ -1,5 +1,3 @@
-/* Some customisation for the Photologue demo site. */
-
 div.row img.thumbnail {
 	margin-bottom: 5px;
 	display: inline-block;
@@ -19,4 +17,3 @@ td {
 	margin-top: 20px;
 	margin-bottom: 20px;
 }
-

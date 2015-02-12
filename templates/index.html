@@ -30,13 +30,13 @@
       function drawChart() {
         var data_overall = google.visualization.arrayToDataTable([
           ['RMA', 'Count'],
-	  ['Devices in Service', {{devices_in_service}}],
-	  ['Non-Fail Returns',  {{all_time_non_failure_count}}],
-          ['Failures',     {{all_time_failure_count}}],
+	  ['Meters in Service', {{devices_in_service}}],
+	  ['Non-Failure Meter Returns',  {{all_time_non_failure_count}}],
+          ['Meter Failures',     {{all_time_failure_count}}],
         ]);
 
         var options_overall = {
-          title: 'RMA % from {{first_defect_year}} through {{this_year}}',
+          title: "Percent Devices RMA'd from {{first_defect_year}} through {{this_year}}",
 	  titleTextStyle: {fontSize: '18', fontName: 'Arial, sans-serif', color: '#57A3C9'},
 	  pieStartAngle: 5,
 	  fontSize: '12',
@@ -55,13 +55,13 @@
 	/* chart this year failure vs non-failure */
 	var data_this_year = google.visualization.arrayToDataTable([
           ['RMA', 'Count'],
-	  ['Devices in Service', {{device_count}}- {{this_year_non_failure_count}}-{{this_year_failure_count}}],
-	  ['Non-Fail Returns',  {{this_year_non_failure_count}}],
-          ['Failures',     {{this_year_failure_count}}],
+	  ['Meters in Service', {{device_count}}- {{this_year_non_failure_count}}-{{this_year_failure_count}}],
+	  ['Non-Failure Meter Returns',  {{this_year_non_failure_count}}],
+          ['Meter Failures',     {{this_year_failure_count}}],
         ]);
 
         var options_this_year = {
-          title: 'RMA % for year {{this_year}} up to {{up_to}}',
+          title: "Percent Devices RMA'd for year {{this_year}} up to {{up_to}}",
 	  titleTextStyle: {fontSize: '18', fontName: 'Arial, sans-serif', color: '#57A3C9'},
 	  fontSize: '12',
 	  is3D: true, 
@@ -120,9 +120,11 @@
 					<div class="chart-bordered">
 					<div id="overall_chart" style="width: auto;" ></div>
 						<p class="chart_description">
-							Failure vs Non-Failure RMA, inclusive prior to year {{this_year}}
+							&#42; Failure vs Non-Failure RMA, inclusive prior to year {{this_year}}
+							<p>Elster RMA Requests all time {{all_time_failure_count}}</p>
+							<p>Customer RMA Requests all time {{customer_all_time_failure_count}}</p>
 							<p class="chart_description_bold">
-								Non-Failure causes defined as: 
+								Non-Failure defined as: 
 								{% for description in non_failure_defect_list %}
 									{% if forloop.last %}
 										{{description}}
@@ -139,9 +141,11 @@
 					<div class="chart-bordered">
 						<div id="this_year_chart" style="width: auto;" ></div>
 						<p class="chart_description">
-							Failure vs Non-Failure RMA for year {{this_year}} alone.
+							&#42; Failure vs Non-Failure RMA for year {{this_year}} alone.
+							<p>Elster RMA Requests for this year {{this_year_failure_count}}</p>
+							<p>Customer RMA Requests for this year {{customer_this_year_failure_count}}</p>
 							<p class="chart_description_bold">
-								Non-Failure causes defined as:  
+								Non-Failure defined as:  
 								{% for description in non_failure_defect_list %}
 									{% if forloop.last %}
 										{{description}}
