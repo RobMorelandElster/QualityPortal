@@ -4,6 +4,7 @@ from celery import shared_task
 from datetime import datetime
 import datetime
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import IntegrityError
 import time
 
 from csvimport.models import CSVImportElsterMeterTrack, CSVImportCustomerMeterTrack
@@ -40,8 +41,14 @@ def processCustomerMeterTrackImportFile(self, defaults, obj, user):
 			obj.error_log = obj.error_log +'\n'.join(errors)
 		obj.import_user = str(user)
 		obj.import_date = datetime.datetime.now()
-		obj.save()
+		try:
+		    obj.save()
+		except IntegrityError:
+		    obj.update()
 	except Exception as inst:
 		obj.error_log = obj.error_log + '\nImport Error in background task: %s'% str(inst)
-		obj.save()
+		try:
+		    obj.save()
+		except IntegrityError:
+		    obj.update()
 	return obj.error_log

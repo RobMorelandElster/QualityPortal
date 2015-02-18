@@ -58,7 +58,11 @@ def __elster_defect_trending(request, data):
         one_year = 56 #weeks
         month = 4 #weeks
         
-        last_date = ElsterMeterTrack.objects.all().order_by('rma_create_date').last().rma_create_date
+        latest = ElsterMeterTrack.objects.all().order_by('rma_create_date').last()
+        if latest:
+        	last_date = latest.rma_create_date
+        else:
+        	last_date = datetime.datetime.now()
         beginning_date =  last_date - datetime.timedelta(weeks=one_year)
         date_index = beginning_date
         for w in range(month, one_year, month):
