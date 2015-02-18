@@ -38,7 +38,7 @@ class CustomerMeterTrackTable(tables.Table):
 	#edit = tables.TemplateColumn('<a href="/inventory/part/edit/{{record.id}}"><i class="glyphicon glyphicon-edit"></i></a>',verbose_name = ("Action"), orderable=False)
 	meter_barcode = tables.Column(accessor = 'meter_barcode')
 	elster_meter_serial_number = tables.Column(accessor = 'elster_meter_serial_number', verbose_name='Meter Number')
-	rma_number = tables.Column(accessor = 'rma_number')
+	rma_number = tables.Column(accessor = 'rma__number')
 	class Meta:
 		model = CustomerMeterTrack
 		# add class="paleblue" to <table> tag
@@ -49,7 +49,7 @@ class CustomerMeterTrackTable(tables.Table):
 		
 	def render_meter_barcode(self, record):
 		try:
-			er = ElsterMeterTrack.objects.get(meter_barcode = record.meter_barcode)
+			er = ElsterMeterTrack.objects.get(meter_barcode = record.meter_barcode, rma = record.rma)
 			return mark_safe('''<a href="/elster_rma_edit/%s">%s</a>''' % (er.id, record.meter_barcode))
 		except MultipleObjectsReturned:
 			er = ElsterMeterTrack.objects.filter(meter_barcode = record.meter_barcode)[0]
@@ -67,13 +67,13 @@ class CustomerMeterTrackTable(tables.Table):
 			return mark_safe('%s' % record.elster_meter_serial_number)
 	def render_rma_number(self, record):
 		try:
-			rmas = ElsterMeterTrack.objects.filter(rma_number = record.rma_number)
+			rmas = ElsterMeterTrack.objects.filter(rma = record.rma)
 			if rmas:
-				return mark_safe('''<a href="/elster_rma/%s">%s</a>''' % (record.rma_number, record.rma_number))
+				return mark_safe('''<a href="/elster_rma/%s">%s</a>''' % (record.rma.number, record.rma.number))
 			else:
-				return mark_safe('%s' % record.rma_number)
+				return mark_safe('%s' % record.rma.number)
 		except (ObjectDoesNotExist, MultipleObjectsReturned) as e:
-			return mark_safe('%s' % record.rma_number)
+			return mark_safe('%s' % record.rma.number)
 """
 class BinPartTable(tables.Table):
 	#part_name = tables.TemplateColumn('<a href="/inventory/{{record.part_type.id}}">{{record.part_type.name}}</a>')

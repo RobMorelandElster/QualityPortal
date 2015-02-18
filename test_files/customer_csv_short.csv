@@ -1,0 +1,3 @@
+"elster_meter_serial_number","meter_type","meter_barcode","rma_number","order_date","set_date","failure_date","reason_for_removal","customer_defined_failure_code","failure_detail","exposure","pallet_info","service_status","original_order_information","longitude","latitude","address","comments"
+"14545151",,"CF5969","20150115-008","2015-01-13","2013-07-26","2014-12-16","Other-U6-Dead Blank",,,"S",,,,,,"85374",
+"18188342",,"FD7404","20150115-009","2015-01-13",,,"Replacement",,,,,,,,,"1 meter from new PO failed Bar X"

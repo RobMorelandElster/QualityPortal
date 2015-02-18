@@ -32,7 +32,7 @@ def index(request):
     try:
         data['total_elster_records'] = ElsterMeterTrack.objects.all().count()
         data['total_customer_records'] = CustomerMeterTrack.objects.all().count()
-        data['total_outstanding_rma'] = ElsterMeterTrack.objects.filter(rma_complete_date__isnull=True).count()
+        data['total_outstanding_rma'] = ElsterMeterTrack.objects.filter(rma__complete_date__isnull=True).count()
     except Exception as err:
         print "oops: %s"%err
         messages.error(request, 'Error %s determing totals'%err )
@@ -58,9 +58,9 @@ def __elster_defect_trending(request, data):
         one_year = 56 #weeks
         month = 4 #weeks
         
-        latest = ElsterMeterTrack.objects.all().order_by('rma_create_date').last()
+        latest = ElsterMeterTrack.objects.all().order_by('rma__create_date').last()
         if latest:
-        	last_date = latest.rma_create_date
+        	last_date = latest.rma.create_date
         else:
         	last_date = datetime.datetime.now()
         beginning_date =  last_date - datetime.timedelta(weeks=one_year)
@@ -69,7 +69,7 @@ def __elster_defect_trending(request, data):
             from_date = date_index
             to_date = beginning_date + datetime.timedelta(weeks=w)
             defects = ElsterRmaDefect.objects.filter(
-                elstermetertrack__rma_create_date__range=(from_date, to_date), 
+                elstermetertrack__rma__create_date__range=(from_date, to_date), 
                 failure=True).annotate(Count('elstermetertrack'))
             for d in defects:
                 try:
@@ -104,13 +104,13 @@ def elster_meter_q_list(request):
     choose_template = '/choose_elster_rma'
     
     # Retrieve 
-    meters = ElsterMeterTrack.objects.all().order_by('rma_create_date')
+    meters = ElsterMeterTrack.objects.all().order_by('rma__create_date')
     rec_count = meters.count()
     table = ElsterMeterTrackTable(meters)
     
     start_date = None
     if rec_count:
-        start_date = meters[0].rma_create_date
+        start_date = meters[0].rma.create_date
         
     form = ElsterMeterTrackSearchForm(request.POST or None)
     data = {}
@@ -168,7 +168,7 @@ def __top_five_all_time(request, data):
     
     # Top defects 'all time'
     for defect in ElsterRmaDefect.objects.all():
-        all_time_defects[defect] = ElsterMeterTrack.objects.filter(rma_complete_date__isnull=False,defect=defect).count()
+        all_time_defects[defect] = ElsterMeterTrack.objects.filter(rma__complete_date__isnull=False,defect=defect).count()
     try:
         no_eval_defect = ElsterRmaDefect.objects.get(defect_id=397)
         del all_time_defects[no_eval_defect] # this one doesn't count in the total
@@ -181,7 +181,11 @@ def __top_five_all_time(request, data):
     # Collect counts for all-time-top-5 by year
     from_year = this_year
     try:
-        d = ElsterMeterTrack.objects.all().order_by('rma_create_date').first().rma_create_date
+    	first = ElsterMeterTrack.objects.all().order_by('rma__create_date').first()
+    	if first:
+        	d = first.rma.create_date
+        else:
+        	d = None
     except ObjectDoesNotExist:
         d = None
     if d:
@@ -198,9 +202,9 @@ def __top_five_all_time(request, data):
             year={}
             year['year'] = y
             count = ElsterMeterTrack.objects.filter(
-                rma_create_date__gte=datetime.date(y,1,1),
-                rma_create_date__lte=datetime.date(y,12,31),
-                rma_complete_date__isnull=False,
+                rma__create_date__gte=datetime.date(y,1,1),
+                rma__create_date__lte=datetime.date(y,12,31),
+                rma__complete_date__isnull=False,
                 defect=d).count()
             years.append(year)
             year['count'] = count
@@ -218,9 +222,9 @@ def __top_five_all_time(request, data):
         total = 0
         for d in top_five_all_time: 
             count = ElsterMeterTrack.objects.filter(
-                    rma_create_date__gte=datetime.date(y,1,1),
-                    rma_create_date__lte=datetime.date(y,12,31),
-                    rma_complete_date__isnull=False,
+                    rma__create_date__gte=datetime.date(y,1,1),
+                    rma__create_date__lte=datetime.date(y,12,31),
+                    rma__complete_date__isnull=False,
                     defect=d).count()
             total += count
         totals_by_year.append(total)
@@ -232,9 +236,9 @@ def __top_five_all_time(request, data):
     grand_total = 0
     for y in range(from_year, this_year+1):
         total = ElsterMeterTrack.objects.filter(
-                rma_create_date__gte=datetime.date(y,1,1),
-                rma_create_date__lte=datetime.date(y,12,31),
-                rma_complete_date__isnull=False).exclude(defect__in=top_five_all_time).count()
+                rma__create_date__gte=datetime.date(y,1,1),
+                rma__create_date__lte=datetime.date(y,12,31),
+                rma__complete_date__isnull=False).exclude(defect__in=top_five_all_time).count()
         totals_others_by_year.append(total)
         grand_total += total
     totals_others_by_year.append(grand_total)
@@ -266,8 +270,8 @@ def __this_year_top_five(request, data):
     # Top defects 'all time'
     for defect in ElsterRmaDefect.objects.all():
         all_time_defects[defect] = ElsterMeterTrack.objects.filter(
-            rma_complete_date__isnull=False,
-            rma_create_date__gte=datetime.date(this_year,1,1),
+            rma__complete_date__isnull=False,
+            rma__create_date__gte=datetime.date(this_year,1,1),
             defect=defect).count()
             
     '''  They eliminate defect_id 397 for all time but apparently not this year ??
@@ -290,9 +294,9 @@ def __this_year_top_five(request, data):
             month = {}
             month['month'] = datetime.date(this_year,m,1).strftime("%b")
             count = ElsterMeterTrack.objects.filter(
-                rma_create_date__gte=datetime.date(this_year,m,1),
-                rma_create_date__lte=datetime.date(this_year,m,calendar.monthrange(this_year,m)[1]),
-                rma_complete_date__isnull=False,
+                rma__create_date__gte=datetime.date(this_year,m,1),
+                rma__create_date__lte=datetime.date(this_year,m,calendar.monthrange(this_year,m)[1]),
+                rma__complete_date__isnull=False,
                 defect=d).count()
             months.append(month)
             month['date_str'] = "%d, %d, 1"%(this_year, m-1) # Months are zero based for Javascript Date constructor
@@ -311,9 +315,9 @@ def __this_year_top_five(request, data):
         total = 0
         for d in top_five_this_year: 
             count = ElsterMeterTrack.objects.filter(
-                    rma_create_date__gte=datetime.date(this_year,m,1),
-                    rma_create_date__lte=datetime.date(this_year,m,calendar.monthrange(this_year,m)[1]),
-                    rma_complete_date__isnull=False,
+                    rma__create_date__gte=datetime.date(this_year,m,1),
+                    rma__create_date__lte=datetime.date(this_year,m,calendar.monthrange(this_year,m)[1]),
+                    rma__complete_date__isnull=False,
                     defect=d).count()
             total += count
         totals_by_month.append(total)
@@ -325,9 +329,9 @@ def __this_year_top_five(request, data):
     grand_total = 0
     for m in range(1, this_month+1):
         total = ElsterMeterTrack.objects.filter(
-                rma_create_date__gte=datetime.date(this_year,m,1),
-                rma_create_date__lte=datetime.date(this_year,m,calendar.monthrange(this_year,m)[1]),
-                rma_complete_date__isnull=False).exclude(defect__in=top_five_this_year).count()
+                rma__create_date__gte=datetime.date(this_year,m,1),
+                rma__create_date__lte=datetime.date(this_year,m,calendar.monthrange(this_year,m)[1]),
+                rma__complete_date__isnull=False).exclude(defect__in=top_five_this_year).count()
         totals_others_by_month.append(total)
         grand_total += total
     totals_others_by_month.append(grand_total)
@@ -543,7 +547,7 @@ def elster_rma(request, rma_number):
         return response
     else:
         try:
-            rma = ElsterMeterTrack.objects.filter(rma_number__startswith=rma_number)
+            rma = ElsterMeterTrack.objects.filter(rma__number__startswith=rma_number)
             rec_count = rma.count()
         except Exception as err:
             messages.error(request, 'Error %s looking up rma number: %s' %(str(err),rma_number))
@@ -642,7 +646,7 @@ def elster_open_rma(request):
             return render(request, template, data)
     else:
         try:
-            open_rma = ElsterMeterTrack.objects.filter(rma_complete_date__isnull=True)
+            open_rma = ElsterMeterTrack.objects.filter(rma__complete_date__isnull=True)
             rec_count = open_rma.count()
         except Exception as err:
             messages.error(request, 'Error %s looking up rma number: %s' %(str(err),rma_number))
@@ -776,29 +780,39 @@ def __this_year_failure_vs_non(request, data):
         data['non_failure_defect_list'] = [nf.description for nf in non_failure_defects]
         
         data['all_time_failure_count'] = ElsterMeterTrack.objects.filter(
-                rma_complete_date__isnull=False,
-                rma_create_date__gte=datetime.date(data['first_defect_year'],1,1),
+                rma__complete_date__isnull=False,
+                rma__create_date__gte=datetime.date(data['first_defect_year'],1,1),
                 defect__in=failure_defects).count()
         data['customer_all_time_failure_count'] = CustomerMeterTrack.objects.all().count()
         
         data['this_year_failure_count'] = ElsterMeterTrack.objects.filter(
-                rma_complete_date__isnull=False,
-                rma_create_date__gte=datetime.date(data['this_year'],1,1),
+                rma__complete_date__isnull=False,
+                rma__create_date__gte=datetime.date(data['this_year'],1,1),
                 defect__in=failure_defects).count()
         data['customer_this_year_failure_count'] = CustomerMeterTrack.objects.filter(
                 failure_date__gte=datetime.date(data['this_year'],1,1)).count()
 
         data['all_time_non_failure_count'] = ElsterMeterTrack.objects.filter(
-                rma_complete_date__isnull=False,
-                rma_create_date__gte=datetime.date(data['first_defect_year'],1,1),
+                rma__complete_date__isnull=False,
+                rma__create_date__gte=datetime.date(data['first_defect_year'],1,1),
                 defect__in=non_failure_defects).count()
 
         data['this_year_non_failure_count'] = ElsterMeterTrack.objects.filter(
-                rma_complete_date__isnull=False,
-                rma_create_date__gte=datetime.date(data['this_year'],1,1),
+                rma__complete_date__isnull=False,
+                rma__create_date__gte=datetime.date(data['this_year'],1,1),
                 defect__in=non_failure_defects).count()
-        data['up_to'] = ElsterMeterTrack.objects.filter( rma_complete_date__isnull=False).order_by('rma_complete_date').last().rma_create_date
-        data['device_count'] = ElsterMeterCount.objects.filter().order_by('as_of_date').last().meter_count
+        last = ElsterMeterTrack.objects.filter( rma__complete_date__isnull=False).order_by('rma__complete_date').last()
+        up_to = datetime.datetime.now()
+        if last:
+        	if last.rma:
+        		if last.rma.create_date:
+        			up_to = last.rma.create_date
+        data['up_to'] = up_to
+        device_count = 0
+        mco = ElsterMeterCount.objects.filter().order_by('as_of_date').last()
+        if mco:
+        	device_count = mco.meter_count
+        data['device_count'] = device_count
     except Exception as err:
         print "oops: %s"%err
         messages.error(request, 'Error %s determing defect counts this year'%err )

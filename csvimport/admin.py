@@ -78,7 +78,7 @@ class CSVImportElsterMeterTrackAdmin(ModelAdmin):
 
 			
 CUSTOMER_METER_TRACK_CONTENT_HELP_TEXT = ' '.join(['<p>Assumes the following comma separated fields (all text fields should be double quoted):<br/>'
-		'elster_meter_serial_number, meter_type, meter_barcode, rma_number, order_date, set_date, failure_date, reason_for_removal, customer_defined_failure_code, failure_detail, exposure, ship_date, tracking_number, service_status, original_order_information,longitude,latitude, address, comments<br/>'
+		'elster_meter_serial_number, meter_type, meter_barcode, rma_number, order_date, set_date, failure_date, reason_for_removal, customer_defined_failure_code, failure_detail, exposure, pallet, service_status, original_order_information,longitude,latitude, address, comments<br/>'
 		'where: elster_meter_serial_number is the elster_manufacture_serial number for the device, represented as a text field<br/>'
 		'meter_type is the elster style number for the device represented as a text field<br/>'
 		'meter_barcode is the faceplate barcode scanned from the device represented as a text field<br/>'
@@ -90,7 +90,8 @@ CUSTOMER_METER_TRACK_CONTENT_HELP_TEXT = ' '.join(['<p>Assumes the following com
 		'customer_defined_failure_code is customer defined failure code represented as a text field (max 50 characters)<br/>'
 		'failure_detail is a place to record more detail than the abbreviated failure (max 2000 characters)<br/>'
 		'exposure is the compass direction the meter is facing (single character N, S, E or W)<br/>'
-		'shipment_reference is the reference number for the shipment meter returned to Elster represented as a text field (max 25 characters)<br/>'
+		'pallet is the pallet information represented as a text field (max 25 characters)<br/>'
+		'service_status is a one-character field representing whether the meter is in Inventory or Field (single character I or F)<br/>'
 		'original_order_information is contains any original meter order information you may wish to track for the device represented as a text field (max 100 characters)<br/>'
 		'longitude is the longitude of the field location for the device (12 digits 6 decimal places)<br/>'
 		'latitude is the latitude of the field location for the device (12 digits 6 decimal places)<br/>'

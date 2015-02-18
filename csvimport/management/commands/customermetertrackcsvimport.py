@@ -94,7 +94,7 @@ class Command(LabelCommand):
             'CUSTOMER_DEFINED_FAILURE_CODE':8,
             'FAILURE_DETAIL':9,
             'EXPOSURE':10,
-            'SHIPMENT_REFERENCE':11,
+            'PALLET':11,
             'SERVICE_STATUS':12,
             'ORIGINAL_ORDER_INFORMATION':13,
             'LONGITUDE':14,
@@ -195,17 +195,22 @@ class Command(LabelCommand):
                         continue
                 meter_barcode = self.eval_for_null(row[self.columns['METER_BARCODE']])
                 rma_number = self.eval_for_null(row[self.columns['RMA_NUMBER']])
-                
-                shipment_reference  =self.eval_for_null(row[self.columns['SHIPMENT_REFERENCE']])
-                shipment = None
-                if shipment_reference:
-                    try:
-                        shipment = Shipment.objects.get(reference_id = shipment_reference)
-                    except ObjectDoesNotExist:
-                        shipment = Shipment(reference_id = shipment_reference, pallet_number = shipment_reference)
-                        with transaction.atomic():
-                            shipment.save()
-                        loglist.append('Created shipment reference %s -- file line %d' %(shipment_reference, counter))
+                if rma_number == None:
+                    exception_count += 1
+                    loglist.append('Import Error:Elster RMA Number NULL - skipping record -- file line %d' % counter)
+                    if (exception_count > MAX_EXCEPTIONS):
+                        loglist.append('Exceeded MAX_EXCEPTIONS: %d at file line: %d' % (exception_count,counter))
+                        break 
+                    else:
+                        continue                
+                rma = None
+                try:
+                    rma = ElsterRma.objects.get(number = rma_number)
+                except ObjectDoesNotExist:
+                    rma = ElsterRma(number = rma_number)
+                    with transaction.atomic():
+                        rma.save()
+                    loglist.append('Created new RMA reference %s -- file line %d' %(rma_number, counter))
                         
                 # Pull the date fields
                 ds = row[self.columns['SET_DATE']]
@@ -241,11 +246,11 @@ class Command(LabelCommand):
             
                 cMeterTrack = None
                 try: # See if there is an existing record to update
-                    cMeterTrack = CustomerMeterTrack.objects.get(elster_meter_serial_number = elster_meter_serial_number, meter_barcode=meter_barcode, rma_number=rma_number)
+                    cMeterTrack = CustomerMeterTrack.objects.get(elster_meter_serial_number = elster_meter_serial_number, meter_barcode=meter_barcode, rma=rma)
                     # Update ElsterMeterTrack
                     cMeterTrack.meter_type = self.eval_for_null(row[self.columns['METER_TYPE']])
                     cMeterTrack.meter_barcode = meter_barcode
-                    cMeterTrack.rma_number = rma_number
+                    cMeterTrack.rma = rma
                     cMeterTrack.order_date = order_date
                     cMeterTrack.set_date = set_date
                     cMeterTrack.failure_date = failure_date
@@ -253,7 +258,7 @@ class Command(LabelCommand):
                     cMeterTrack.customer_defined_failure_code = self.eval_for_null(row[self.columns['CUSTOMER_DEFINED_FAILURE_CODE']])
                     cMeterTrack.failure_detail = self.eval_for_null(row[self.columns['FAILURE_DETAIL']])
                     cMeterTrack.exposure = self.eval_for_null(row[self.columns['EXPOSURE']])
-                    cMeterTrack.shipment = shipment
+                    cMeterTrack.pallet = self.eval_for_null(row[self.columns['PALLET']])
                     cMeterTrack.service_status = self.eval_for_null(row[self.columns['SERVICE_STATUS']])
                     cMeterTrack.original_order_information = self.eval_for_null(row[self.columns['ORIGINAL_ORDER_INFORMATION']])
                     cMeterTrack.longitude = self.eval_for_null(row[self.columns['LONGITUDE']])
@@ -265,7 +270,7 @@ class Command(LabelCommand):
                     cMeterTrack = CustomerMeterTrack(
                         elster_meter_serial_number = elster_meter_serial_number,
                         meter_barcode = meter_barcode,
-                        rma_number = rma_number,
+                        rma = rma,
                         meter_type = self.eval_for_null(row[self.columns['METER_TYPE']]),
                         order_date = order_date,
                         set_date = set_date,
@@ -274,7 +279,7 @@ class Command(LabelCommand):
                         customer_defined_failure_code = self.eval_for_null(row[self.columns['CUSTOMER_DEFINED_FAILURE_CODE']]),
                         failure_detail = self.eval_for_null(row[self.columns['FAILURE_DETAIL']]),
                         exposure = self.eval_for_null(row[self.columns['EXPOSURE']]),
-                        shipment = shipment,
+                        pallet = self.eval_for_null(row[self.columns['PALLET']]),
                         service_status = self.eval_for_null(row[self.columns['SERVICE_STATUS']]),
                         original_order_information = self.eval_for_null(row[self.columns['ORIGINAL_ORDER_INFORMATION']]),
                         longitude = self.eval_for_null(row[self.columns['LONGITUDE']]),

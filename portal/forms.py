@@ -15,9 +15,9 @@ import autocomplete_light
 autocomplete_light.autodiscover()
 
 class ElsterMeterTrackForm(ModelForm):
-	complaint = forms.CharField(widget=forms.Textarea())
-	finding =  forms.CharField(widget=forms.Textarea())
-	action_taken =  forms.CharField(widget=forms.Textarea())
+	complaint = forms.CharField(widget=forms.Textarea(), required=False)
+	finding =  forms.CharField(widget=forms.Textarea(), required=False)
+	action_taken =  forms.CharField(widget=forms.Textarea(), required=False)
 	class Meta:
 			model = ElsterMeterTrack
 			fields = '__all__'

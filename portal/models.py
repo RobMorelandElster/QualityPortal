@@ -60,7 +60,7 @@ class ElsterMeterType(models.Model):
             else:
                 return 'No Style Match %s'%self.style
         else:
-            return 'No Value'
+            return ''
 
 class ElsterRmaDefect(models.Model):
     def __unicode__(self):
@@ -80,6 +80,49 @@ class ElsterMeterCount(models.Model):
     meter_count = models.PositiveIntegerField(verbose_name="Meter Count")
     as_of_date = models.DateField(default=datetime.date.today)
     
+class ElsterRma(models.Model):
+    def __unicode__(self):
+        return self.number
+    class Meta:
+        ordering = ["complete_date"]
+        verbose_name = 'RMA'
+        verbose_name_plural = 'RMA\'s'
+    number = models.CharField(max_length=100, unique=True, verbose_name="Elster RMA Number")
+    create_date = models.DateField(null=True, blank=True)
+    receive_date = models.DateField(null=True, blank=True)
+    complete_date = models.DateField(null=True, blank=True)
+    
+    @property
+    def elster_meter_count(self):
+        return ElsterMeterTrack.objects.filter(rma=self).count()
+
+class Shipment(models.Model):
+    def __unicode__(self):
+        return ("%s/%s"%(self.rma_number, self.originator))
+    # shipment type choices
+    CUSTOMER = 'CUSTOMER'
+    ELSTER = 'ELSTER'
+    OTHER = 'OTHER'
+    SHIPMENT_ORIGINATOR_CHOICES = (
+        (CUSTOMER, 'Customer'),
+        (ELSTER, 'Elster'),
+        (OTHER, 'Other'),
+    )
+    
+    rma = models.ForeignKey(ElsterRma, null=False, verbose_name="RMA Reference for Shipment")
+    originator = models.CharField(max_length=10, choices = SHIPMENT_ORIGINATOR_CHOICES, default=CUSTOMER, verbose_name = "Originator") 
+    ship_date = models.DateField(null=True, blank=True,verbose_name="Shipment Date")
+    tracking_number = models.CharField(max_length=25, null=True,blank=True,verbose_name="Shipment Tracking Number")
+    carrier = models.CharField(max_length=25, null=True,blank=True)
+    notes = models.TextField(max_length=2000, null=True, blank=True)
+
+    @property
+    def rma_number(self):
+        if self.rma:
+            return self.rma.number
+        else:
+            return ''         
+
 class ElsterMeterTrack(models.Model):
 
     def __unicode__(self):
@@ -91,20 +134,17 @@ class ElsterMeterTrack(models.Model):
     manufacture_date = models.DateField(null=True, blank=True)
     #purchase_date = models.DateField(null=True, blank=True)
     #ship_date = models.DateField(null=True, blank=True)
-    rma_number = models.CharField(max_length=100, null=True, blank=True, verbose_name="Elster RMA Number")
-    rma_create_date = models.DateField(null=True, blank=True)
-    rma_receive_date = models.DateField(null=True, blank=True)
-    rma_complete_date = models.DateField(null=True, blank=True)
+    rma = models.ForeignKey(ElsterRma, null=True, blank=True, verbose_name="Assigned RMA")
     defect = models.ForeignKey(ElsterRmaDefect, null=True, blank=True, verbose_name="Defect after root cause analysis")
     complaint = models.CharField(max_length=300, verbose_name="Customer Complaint",null=True, blank=True)
     finding = models.CharField(max_length=300,null=True,blank=True)
     action_taken = models.CharField(max_length=300, verbose_name="Elster action",null=True, blank=True)
     
     class Meta:
-        unique_together = (("elster_serial_number","meter_barcode","rma_number"),)
-        ordering = ["rma_number"]
-        verbose_name = 'Elster RMA'
-        verbose_name_plural = 'Elster RMAs'
+        unique_together = (("elster_serial_number","meter_barcode","rma"),)
+        ordering = ["elster_serial_number"]
+        verbose_name = 'Elster RMA\'d Meters'
+        verbose_name_plural = 'Elster Meter RMAs'
         
     @property
     def meter_style_description(self):
@@ -114,14 +154,45 @@ class ElsterMeterTrack(models.Model):
             else:
                 return self.meter_style.style
         else:
-            return 'No Value'
-            
+            return ''
+
+    @property
+    def rma_number(self):
+        if self.rma:
+            return self.rma.number
+        else:
+            return ''
+                        
+    @property
+    def rma_create_date(self):
+        value = ''
+        if self.rma:
+            if self.rma.create_date:
+                value = self.rma.create_date
+        return value
+
+    @property
+    def rma_receive_date(self):
+        value = ''
+        if self.rma:
+            if self.rma.receive_date:
+                value = self.rma.receive_date
+        return value
+
+    @property
+    def rma_complete_date(self):
+        value = ''
+        if self.rma:
+            if self.rma.complete_date:
+                value = self.rma.complete_date
+        return value
+        
     @property
     def defect_id_desc(self):
         if self.defect:
             return self.defect.description
         else:
-            return 'No Value'
+            return ''
             
     def clean(self):
         if self.elster_serial_number is None:
@@ -130,26 +201,18 @@ class ElsterMeterTrack(models.Model):
             raise ValidationError('Elseter Serial Number must be filled in')
             
         # validate dates
-        if self.rma_create_date is not None and self.manufacture_date is not None:
-            if self.rma_create_date < self.manufacture_date:
-                raise ValidationError('RMA Create Date may not preceed Manufacture Date')
+        if self.rma:
+            if self.rma.create_date is not None and self.manufacture_date is not None:
+                if self.rma.create_date < self.manufacture_date:
+                    raise ValidationError('RMA Create Date may not preceed Manufacture Date')
                         
-        if self.rma_receive_date is not None and self.rma_complete_date is not None:
-            if self.rma_complete_date < self.rma_receive_date:
-                raise ValidationError('RMA Complete Date may not preceed RMA Receive Date')
+            if self.rma.receive_date is not None and self.rma.complete_date is not None:
+                if self.rma.complete_date < self.rma.receive_date:
+                    raise ValidationError('RMA Complete Date may not preceed RMA Receive Date')
                 
-        # validate defect entry
-        if self.rma_complete_date is not None and self.defect is None:
-            raise ValidationError('Defect Code may not be empty when RMA Complete Date is entered')
-
-class Shipment(models.Model):
-    def __unicode__(self):
-        return (self.reference_id)
-
-    reference_id = models.CharField(max_length=25,null=False, unique=True, verbose_name="Reference identifier for Shipment")
-    ship_date = models.DateField(null=True, blank=True,verbose_name="Return Shipment Date")
-    tracking_number = models.CharField(max_length=25,  null=True,blank=True,verbose_name="Return Shipment Tracking Number")
-    pallet_number = models.CharField(max_length=25,  null=True,blank=True,)
+            # validate defect entry
+            if self.rma.complete_date is not None and self.defect is None:
+                raise ValidationError('Defect Code may not be empty when RMA Complete Date is entered')
 
 class CustomerMeterTrack(models.Model):
     def __unicode__(self):
@@ -217,7 +280,7 @@ class CustomerMeterTrack(models.Model):
     elster_meter_serial_number = models.CharField(max_length=100,  verbose_name="Meter Number")
     meter_type = models.CharField(max_length = 15, null=True, blank=True, choices = METER_TYPE_CHOICES, default=REX,  verbose_name="Meter Type")
     meter_barcode = models.CharField(max_length=100)
-    rma_number = models.CharField(max_length=100, verbose_name="Assigned RMA Number")
+    rma = models.ForeignKey(ElsterRma, verbose_name="Assigned RMA")
     order_date = models.DateField(null=True, blank=True,verbose_name="Meter Order, Purchase or Reciept Date")
     set_date = models.DateField(null=True, blank=True,verbose_name="Meter Set Date")
     failure_date = models.DateField(null=True, blank=True,verbose_name="Meter Remove Date")
@@ -227,7 +290,7 @@ class CustomerMeterTrack(models.Model):
     comments = models.TextField(max_length=2000, null=True, blank=True)
     failure_detail = models.TextField(max_length=2000, verbose_name="Detailed Description",null=True, blank=True)
     exposure = models.CharField(max_length = 1, null=True,blank=True, choices = METER_EXPOSURE_CHOICES, verbose_name="Meter Facing Direction")
-    shipment = models.ForeignKey(Shipment, null=True, blank=True, verbose_name="Shipment reference")
+    pallet = models.CharField(max_length=25, null=True, blank=True, verbose_name="Pallet Information")
     original_order_information = models.CharField(max_length=100,null=True, blank=True,)
     service_status = models.CharField(max_length=1,null=True,blank=True, choices = METER_SERVICE_CHOICES, default=IN_INVENTORY)
     longitude = models.DecimalField(max_digits=12, decimal_places=6, null=True, blank=True,verbose_name="Meter Longitude Position")
@@ -235,11 +298,42 @@ class CustomerMeterTrack(models.Model):
     address = models.TextField(max_length=2000, verbose_name="Removed location address",null=True, blank=True)
     
     class Meta:
-        unique_together = (("elster_meter_serial_number","meter_barcode","rma_number"),)
+        unique_together = (("elster_meter_serial_number","meter_barcode","rma"),)
         ordering = ["meter_barcode"]
-        verbose_name = 'Customer RMA'
-        verbose_name_plural = 'Customer RMAs'   
-            
+        verbose_name = 'Customer RMA\'d Meter'
+        verbose_name_plural = 'Customer Meter RMAs'
+
+    @property
+    def rma_number(self):
+        if self.rma:
+            return self.rma.number
+        else:
+            return ''
+                        
+    @property
+    def rma_create_date(self):
+        value = ''
+        if self.rma:
+            if self.rma.create_date:
+                value = self.rma.create_date
+        return value
+
+    @property
+    def rma_receive_date(self):
+        value = ''
+        if self.rma:
+            if self.rma.receive_date:
+                value = self.rma.receive_date
+        return value
+
+    @property
+    def rma_complete_date(self):
+        value = ''
+        if self.rma:
+            if self.rma.complete_date:
+                value = self.rma.complete_date
+        return value
+     
         
 class UserProfile(models.Model):
     user = models.OneToOneField(User, related_name='profile')
