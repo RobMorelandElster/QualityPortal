@@ -22,10 +22,16 @@ def processElsterMeterTrackImportFile(self, defaults, obj, user):
 			obj.error_log = obj.error_log +'\n'.join(errors)
 		obj.import_user = str(user)
 		obj.import_date = datetime.datetime.now()
-		obj.save()
+		try:
+		    obj.save()
+		except IntegrityError:
+		    obj.update()
 	except Exception as inst:
 		obj.error_log = obj.error_log + '\nImport Error in background task: %s'% str(inst)
-		obj.save()
+		try:
+		    obj.save()
+		except IntegrityError:
+		    obj.update()
 	return obj.error_log
 	
 @shared_task (bind=True)
