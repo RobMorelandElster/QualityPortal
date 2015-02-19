@@ -12,6 +12,11 @@ from portal.tasks import processElsterMeterTrackImportFile, processCustomerMeter
 
 import traceback
         
+'''
+Example call:
+    curl -i -u username:pword -F file_name=test.csv -F upload_file=@local_file.csv 
+        https://elster-qp.herokuapp.com/customer_csv_import_file/
+'''
 @api_view(['POST','GET',])
 def customer_csv_import_file(request, format=None):
     parser_classes = (MultiPartParser, FormParser,FileUploadParser,)
