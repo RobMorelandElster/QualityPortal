@@ -164,6 +164,15 @@ class TestPortal(TestCase):
 
         self.assertEquals(response.context[-1]['top_five_this_year'][0], self.defect_3)
         self.assertEquals(response.context[-1]['top_five_this_year'][1], self.defect_1)
+        
+    def test_view_index_results(self):
+        login_successful = self.client.login(username=self.user.username, password='test')
+        self.assertTrue(login_successful)
+        # Now that the user is logged in we should be able to run the top_five report
+        response = self.client.get(reverse('index'))
+        self.assertEquals(response.status_code,200)
+        print(response.context[-1]['all_time_failure_count'])
+
 
 class TestImports(TestCase):
 

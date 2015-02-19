@@ -167,9 +167,13 @@ def export_elster_meter_track_csv(modeladmin, request, queryset):
                 defect_description = obj.defect.description
             else:
                 defect_description = 'None'
+            if obj.meter_style:
+                style_description = obj.meter_style.description
+            else:
+                style_description = 'None'
             writer.writerow([
                 smart_str(obj.elster_serial_number),
-                smart_str(obj.meter_style.description),
+                smart_str(style_description),
                 smart_str(obj.meter_barcode),
                 smart_str(obj.manufacture_date),
                 smart_str(obj.rma_number),
@@ -214,7 +218,7 @@ def export_customer_meter_track_csv(modeladmin, request, queryset):
         smart_str(u'exposure'),
         smart_str(u'ship_date'),
         smart_str(u'tracking_number'),
-        smart_str(u'pallet_number'),
+        smart_str(u'pallet'),
         smart_str(u'original_order_information'),
         smart_str(u'service_status'),
         smart_str(u'longitude'),
@@ -229,8 +233,8 @@ def export_customer_meter_track_csv(modeladmin, request, queryset):
             tracking_number = 'None'
             shipment = Shipment.objects.filter(rma=obj.rma, originator=Shipment.CUSTOMER)
             if len(shipment):
-                ship_date = shipment.ship_date
-                tracking_number = shipment.tracking_number
+                ship_date = shipment[0].ship_date
+                tracking_number = shipment[0].tracking_number
         
             writer.writerow([
                 smart_str(obj.elster_meter_serial_number),
@@ -247,7 +251,7 @@ def export_customer_meter_track_csv(modeladmin, request, queryset):
                 smart_str(obj.exposure),
                 smart_str(ship_date),
                 smart_str(tracking_number),
-                smart_str(obj.pallet_number),
+                smart_str(obj.pallet),
                 smart_str(obj.original_order_information),
                 smart_str(obj.service_status),
                 smart_str(obj.longitude),
@@ -342,7 +346,7 @@ class ElsterMeterCountAdmin(admin.ModelAdmin):
     
 class ElsterRmaAdmin(admin.ModelAdmin):
     fields=[]
-    list_display = ['number', 'create_date', 'complete_date', 'receive_date',]
+    list_display = ['number', 'create_date', 'complete_date', 'receive_date', 'elster_meter_count', 'customer_meter_count',]
         
 admin.site.register(ElsterMeterTrack, ElsterMeterTrackAdmin)
 admin.site.register(CustomerMeterTrack, CustomerMeterTrackAdmin)

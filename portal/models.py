@@ -84,7 +84,7 @@ class ElsterRma(models.Model):
     def __unicode__(self):
         return self.number
     class Meta:
-        ordering = ["complete_date"]
+        ordering = ["create_date"]
         verbose_name = 'RMA'
         verbose_name_plural = 'RMA\'s'
     number = models.CharField(max_length=100, unique=True, verbose_name="Elster RMA Number")
@@ -95,6 +95,9 @@ class ElsterRma(models.Model):
     @property
     def elster_meter_count(self):
         return ElsterMeterTrack.objects.filter(rma=self).count()
+    @property
+    def customer_meter_count(self):
+        return CustomerMeterTrack.objects.filter(rma=self).count()
 
 class Shipment(models.Model):
     def __unicode__(self):

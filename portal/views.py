@@ -510,7 +510,7 @@ def elster_rma_date_range(request, byear, bmonth, bday, eyear, emonth, eday):
         return response
     else:
         try:
-            rma = ElsterMeterTrack.objects.filter(rma_create_date__gte=from_date, rma_create_date__lte=to_date).order_by('rma_create_date')
+            rma = ElsterMeterTrack.objects.filter(rma__create_date__gte=from_date, rma__create_date__lte=to_date).order_by('rma__create_date')
             rec_count = rma.count()
         except Exception as err:
             messages.error(request, 'Error %s searching for Elster Meter Tracks %s' %(str(err), from_to_range_str))
@@ -703,7 +703,7 @@ def elster_rma_by_defect(request, defect_id):
             return render(request, template, data)
     else:
         try:
-            rma = ElsterMeterTrack.objects.filter(defect__defect_id=defect_id).order_by('-rma_create_date')
+            rma = ElsterMeterTrack.objects.filter(defect__defect_id=defect_id).order_by('-rma__create_date')
             defect_description = ElsterRmaDefect.objects.get(defect_id=defect_id).description
             rec_count = rma.count()
         except Exception as err:
@@ -766,7 +766,7 @@ def __this_year_failure_vs_non(request, data):
     
     try:
         try:
-            data['first_defect_year'] = ElsterMeterTrack.objects.all().order_by('rma_create_date').first().rma_create_date.year
+            data['first_defect_year'] = ElsterMeterTrack.objects.all().order_by('rma__create_date').first().rma.create_date.year
         except:
             data['first_defect_year'] = now.year
             
