@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+
+{# Load CSS and JavaScript #}
+
+{% bootstrap_css %}
+
+{% bootstrap_javascript %}
+
+{% bootstrap_messages %}
+
+{% block title %}Reports{% endblock %}
+
+{% block toggle_login %}{% endblock %}
+
+{% block heading %}
+Reports
+{% endblock %}
+
+{% block content %}
+	{% load breadcrumbs %}
+	{% block breadcrumbs %}
+	{% breadcrumb_style_open %}
+		{% breadcrumb_url 'Home' 'index' %}
+		{% breadcrumb "Reports" "#" %}
+	{% breadcrumb_style_close %}
+	{% endblock %}
+
+<!-- Navigation -->
+{% include 'navbar.html' %}
+<div style="background-color:white;border-radius:1em;margin-bottom:1em" >
+	<div style="margin: 1em auto 1em auto; color: black; ">
+		<div style="height: 1em; "></div>
+		<section id="summary">
+			
+            <div class="row row-padded" />
+                <div class="container">
+                    <div class = "col-md-12">
+                    <h1 class="text-center">Download Reports</h1>
+                    <h4 class="text-center">Clicking the link(s) below will run the report and download it to your computer</h4>
+                    </div>
+                </div>
+                <div class="container" width="auto;">
+                    <div class="chart-bordered">
+                        <div class="list-group">
+                        {% for report in reports %}
+                            <h3 class="list-group-heading"><a href="{{report.link}}">{{report.name}}</a></h3>
+                            <p class="list-group-item-text">{{report.description}}</p>
+                        {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+		</section>  
+	</div>
+</div>
+{% endblock %}

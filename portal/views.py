@@ -60,9 +60,9 @@ def __elster_defect_trending(request, data):
         
         latest = ElsterMeterTrack.objects.all().order_by('rma__create_date').last()
         if latest:
-        	last_date = latest.rma.create_date
+            last_date = latest.rma.create_date
         else:
-        	last_date = datetime.datetime.now()
+            last_date = datetime.datetime.now()
         beginning_date =  last_date - datetime.timedelta(weeks=one_year)
         date_index = beginning_date
         for w in range(month, one_year, month):
@@ -181,11 +181,11 @@ def __top_five_all_time(request, data):
     # Collect counts for all-time-top-5 by year
     from_year = this_year
     try:
-    	first = ElsterMeterTrack.objects.all().order_by('rma__create_date').first()
-    	if first:
-        	d = first.rma.create_date
+        first = ElsterMeterTrack.objects.all().order_by('rma__create_date').first()
+        if first:
+            d = first.rma.create_date
         else:
-        	d = None
+            d = None
     except ObjectDoesNotExist:
         d = None
     if d:
@@ -804,17 +804,23 @@ def __this_year_failure_vs_non(request, data):
         last = ElsterMeterTrack.objects.filter( rma__complete_date__isnull=False).order_by('rma__complete_date').last()
         up_to = datetime.datetime.now()
         if last:
-        	if last.rma:
-        		if last.rma.create_date:
-        			up_to = last.rma.create_date
+            if last.rma:
+                if last.rma.create_date:
+                    up_to = last.rma.create_date
         data['up_to'] = up_to
         device_count = 0
         mco = ElsterMeterCount.objects.filter().order_by('as_of_date').last()
         if mco:
-        	device_count = mco.meter_count
+            device_count = mco.meter_count
         data['device_count'] = device_count
     except Exception as err:
         print "oops: %s"%err
         messages.error(request, 'Error %s determing defect counts this year'%err )
         return HttpResponseRedirect(template)
     
+@login_required()
+def data_reports(request):
+    template = 'data_reports.html'
+    data = {}
+    data['reports'] = DataReport.objects.all()
+    return render(request, template, data)

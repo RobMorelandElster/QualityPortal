@@ -347,6 +347,9 @@ class ElsterMeterCountAdmin(admin.ModelAdmin):
 class ElsterRmaAdmin(admin.ModelAdmin):
     fields=[]
     list_display = ['number', 'create_date', 'complete_date', 'receive_date', 'elster_meter_count', 'customer_meter_count',]
+    
+class DataReportAdmin(admin.ModelAdmin):
+    fields=[]
         
 admin.site.register(ElsterMeterTrack, ElsterMeterTrackAdmin)
 admin.site.register(CustomerMeterTrack, CustomerMeterTrackAdmin)
@@ -356,3 +359,4 @@ admin.site.register(Account,AccountAdmin)
 admin.site.register(ElsterMeterCount, ElsterMeterCountAdmin)
 admin.site.register(ElsterRma, ElsterRmaAdmin)
 admin.site.register(Shipment, ShipmentAdmin)
+admin.site.register(DataReport, DataReportAdmin)

@@ -382,3 +382,9 @@ class Account(models.Model):
     name = models.CharField(max_length=25,  verbose_name="Account name")
     verification = models.CharField(max_length = 25,  verbose_name="Verification code")
 
+class DataReport(models.Model):
+    def __unicode__(self):
+        return self.name
+    name = models.CharField(max_length=50)
+    description = models.TextField(max_length=500, null=True, blank=True)
+    link = models.URLField(verbose_name="URL for Report")
