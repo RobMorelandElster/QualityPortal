@@ -371,6 +371,9 @@ def elster_meter_top_five_graph(request):
     template = 'portal/elster_top_five_graph.html'
 
     data = {} # Table data will go into this dictionary
+    if not ElsterMeterTrack.objects.filter(rma__create_date__gte=datetime.datetime(datetime.datetime.now().year, 1,1), rma__complete_date__gte=datetime.datetime(datetime.datetime.now().year, 1,1)).count():
+        data['this_year'] = datetime.datetime.now().year -1
+        data['this_month'] = 12
     __top_five_all_time(request, data)
     __this_year_top_five(request,data)
 
@@ -413,6 +416,9 @@ def top_five_all_time_to_csv(request):
 def top_five_monthly_to_csv(request):
     template = 'portal/elster_top_five.html'
     data = {}
+    if not ElsterMeterTrack.objects.filter(rma__create_date__gte=datetime.datetime(datetime.datetime.now().year, 1,1), rma__complete_date__gte=datetime.datetime(datetime.datetime.now().year, 1,1)).count():
+        data['this_year'] = datetime.datetime.now().year -1
+        data['this_month'] = 12
     __this_year_top_five(request, data)
 
     # Create the HttpResponse object with the appropriate CSV header.

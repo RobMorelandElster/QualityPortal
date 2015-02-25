@@ -346,7 +346,8 @@ class ElsterMeterCountAdmin(admin.ModelAdmin):
     
 class ElsterRmaAdmin(admin.ModelAdmin):
     fields=[]
-    list_display = ['number', 'create_date', 'complete_date', 'receive_date', 'elster_meter_count', 'customer_meter_count',]
+    list_display = ['number', 'create_date', 'complete_date', 'receive_date', 'shipment_tracking_number','elster_meter_count', 'customer_meter_count',]
+    search_fields = ['number',]
     
 class DataReportAdmin(admin.ModelAdmin):
     fields=[]

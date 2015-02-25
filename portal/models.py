@@ -98,6 +98,13 @@ class ElsterRma(models.Model):
     @property
     def customer_meter_count(self):
         return CustomerMeterTrack.objects.filter(rma=self).count()
+        
+    @property
+    def shipment_tracking_number(self):
+        try:
+            return Shipment.objects.get(rma=self).tracking_number
+        except ObjectDoesNotExist:
+            return ""
 
 class Shipment(models.Model):
     def __unicode__(self):
