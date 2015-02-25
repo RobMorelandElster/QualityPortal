@@ -1,4 +1,4 @@
-#import autocomplete_light
+import autocomplete_light
 #autocomplete_light.autodiscover()
 
 from django.contrib import admin
@@ -272,7 +272,8 @@ def export_customer_meter_track_csv(modeladmin, request, queryset):
 export_customer_meter_track_csv.short_description = u"Export Customer Meter Tracks CSV"
 
 class ElsterMeterTrackAdmin(admin.ModelAdmin):
-    form = ElsterMeterTrackForm
+    form = autocomplete_light.modelform_factory(ElsterMeterTrack)
+    #form = ElsterMeterTrackForm
     actions = [export_elster_meter_track_csv]
 
     list_display = ('elster_serial_number', 'meter_barcode', 'rma_number','meter_style_description','complaint','rma_create_date','rma_complete_date','defect_id_desc',)
@@ -280,6 +281,7 @@ class ElsterMeterTrackAdmin(admin.ModelAdmin):
     list_filter = [ElsterMeterRmaCreateListFilter, ElsterMeterRmaCompleteListFilter,'defect__description', 'meter_style',]
 
 class ShipmentAdmin(admin.ModelAdmin):
+    form = autocomplete_light.modelform_factory(Shipment)
     fields=[]
     search_fields = ['rma__number', 'ship_date', 'tracking_number', 'notes', ]
     list_display = ('rma_number', 'ship_date', 'tracking_number', )
@@ -324,6 +326,7 @@ set_shipment.short_description = 'Set shipment information'
 '''
     
 class CustomerMeterTrackAdmin(admin.ModelAdmin):
+    form = autocomplete_light.modelform_factory(CustomerMeterTrack)
     search_fields = ['elster_meter_serial_number','meter_barcode','failure_date','rma__number', 'pallet', 'reason_for_removal', 'comments',]
     list_display = ['elster_meter_serial_number','meter_barcode', 'failure_date','rma_number','pallet', 'reason_for_removal', 'rma_create_date','rma_complete_date',]
     #actions = [set_shipment, export_customer_meter_track_csv,]
@@ -346,7 +349,7 @@ class ElsterMeterCountAdmin(admin.ModelAdmin):
     
 class ElsterRmaAdmin(admin.ModelAdmin):
     fields=[]
-    list_display = ['number', 'create_date', 'complete_date', 'receive_date', 'shipment_tracking_number','elster_meter_count', 'customer_meter_count',]
+    list_display = ['number', 'create_date', 'complete_date', 'receive_date', 'shipment_tracking_number',]
     search_fields = ['number',]
     
 class DataReportAdmin(admin.ModelAdmin):
