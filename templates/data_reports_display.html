@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+
+{# Load CSS and JavaScript #}
+
+{% bootstrap_css %}
+
+{% bootstrap_javascript %}
+
+{% bootstrap_messages %}
+
+{% block title %}Reports{% endblock %}
+
+{% block toggle_login %}{% endblock %}
+
+{% block heading %}
+Reports
+{% endblock %}
+
+{% block content %}
+	{% load breadcrumbs %}
+	{% block breadcrumbs %}
+	{% breadcrumb_style_open %}
+		{% breadcrumb_url 'Home' 'index' %}
+		{% breadcrumb_url 'Custom Reports' 'data_reports' %}
+		{% breadcrumb "Reports" "#" %}
+	{% breadcrumb_style_close %}
+	{% endblock %}
+
+<!-- Navigation -->
+{% include 'navbar.html' %}
+
+<style><link rel="stylesheet" 
+href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"></style>
+<script type="text/javascript" 
+src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+
+<div style="background-color:white;border-radius:1em;margin-bottom:1em" >
+	<div style="margin: 1em auto 1em auto; color: black; ">
+		<div style="height: 1em; "></div>
+		<section id="summary">
+			
+            <div class="row row-padded" />
+            <div class="container">
+                <div class = "col-md-12">
+                    <h1 class="text-center">{{report.name}}</h1> 
+                    <a href="{{report.link}}.csv">
+                        <button type="button" class="btn btn-default pull-right">
+                        <i class="fa fa-download"> Download </i>
+                        </button>
+                    </a>
+                    <h4 class="text-center">{{report.description}}</h4>
+                </div>
+                <div class = "col-md-12">
+                    <div class="list-group">
+                        <h3 class="list-group-heading">
+                        </h3>
+                        <div class="row row-padded" />
+                        <div class="table-responsive">
+                            <table id="stable" class="table table-striped table-hover" >
+                            <thead>
+                            <tr  class="success">
+                            {% for field in fields %}
+                                <th>{{field}}</th>
+                            {% endfor %}
+                            </thead>
+                            <tbody>
+                            {% for value in values %}
+                                <tr>
+                                    {% for item in value %}
+                                        <td >{{item}}</td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+		</section>  
+	</div>
+</div>
+
+<script>
+    $(document).ready(function(){
+        $('#stable').dataTable();
+    });
+</script>
+{% endblock %}

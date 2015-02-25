@@ -21,6 +21,9 @@ import csv
 from django.utils.encoding import smart_str
 from django.http import HttpResponse
 
+from urllib2 import urlopen
+import json
+
 from .rest_calls import *
 
 ITEMS_PER_PAGE = settings.ITEMS_PER_PAGE
@@ -266,7 +269,7 @@ def __this_year_top_five(request, data):
         this_year = data['this_year']
         this_month = data['this_month']
     except KeyError:
-    	now = datetime.datetime.now()
+        now = datetime.datetime.now()
         this_year = now.year
         this_month = now.month
     all_time_defects = {}
@@ -836,4 +839,26 @@ def data_reports(request):
     template = 'data_reports.html'
     data = {}
     data['reports'] = DataReport.objects.all()
+    return render(request, template, data)
+    
+@login_required()
+def run_one_report(request, report_id):    
+    redirect_template = '/'
+    template = 'data_reports_display.html'
+    data = {}
+    try:
+        report = DataReport.objects.get(pk=report_id)
+        print("Getting Report {}".format(report))
+        response=urlopen("{}.json".format(report.link))
+        result = response.read()
+        if len(result):
+        	data = json.loads(result)
+        	data['report'] = report
+        else:
+        	messages.error(request, 'No Data from report URL')
+        	return HttpResponseRedirect(redirect_template)
+    except Exception as err:
+    	print "oops: %s"%err
+        messages.error(request, 'Error %s rendering report'%err )
+        return HttpResponseRedirect(redirect_template)
     return render(request, template, data)

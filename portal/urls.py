@@ -42,6 +42,7 @@ urlpatterns += patterns('',
 	url(r'^elster_rma_edit/(?P<id>\d+)?$', views.edit_elster_rma, name='edit_elster_rma'),
 	url(r'^choose_elster_rma/$', 'portal.views.choose_elster_rma', name='choose_elster_rma'),
 	url(r'^data_reports/$', 'portal.views.data_reports', name='data_reports'),
+	url(r'^run_one_report/(?P<report_id>\S+)/$', 'portal.views.run_one_report', name='run_one_report'),
 )
 	
 urlpatterns += patterns('',
