@@ -18,6 +18,7 @@ from django.contrib import messages
 
 import traceback
 import csv
+from collections import OrderedDict
 from django.utils.encoding import smart_str
 from django.http import HttpResponse
 
@@ -852,13 +853,136 @@ def run_one_report(request, report_id):
         response=urlopen("{}.json".format(report.link))
         result = response.read()
         if len(result):
-        	data = json.loads(result)
-        	data['report'] = report
+            data = json.loads(result)
+            data['report'] = report
         else:
-        	messages.error(request, 'No Data from report URL')
-        	return HttpResponseRedirect(redirect_template)
+            messages.error(request, 'No Data from report URL')
+            return HttpResponseRedirect(redirect_template)
     except Exception as err:
-    	print "oops: %s"%err
+        print "oops: %s"%err
         messages.error(request, 'Error %s rendering report'%err )
         return HttpResponseRedirect(redirect_template)
     return render(request, template, data)
+    
+@login_required()
+def rma_summary(request):
+    template = 'rma_summary.html'
+    redirect_template = '/'
+    
+    data = {}
+    try:
+        __rma_summary(data)
+    except Exception as err:
+        print("oops: {}".format(err))
+        messages.error(request, 'Error rendering summary report {}'.format(err) )
+        return HttpResponseRedirect(redirect_template)
+
+    return render(request, template, data)
+
+def __monthly_summary(year, month):
+    first_day, last_day = calendar.monthrange(year,month)
+    r_dict = OrderedDict()
+    mc = ElsterMeterCount.objects.filter(as_of_date__lt=datetime.datetime(year, month, last_day)).order_by('-as_of_date')
+    if mc.count():
+        r_dict['Total_Installed_Meters'] = mc[0].meter_count
+    else:
+        r_dict['Total_Installed_Meters'] = -1
+    r_dict['Month_Year_of_RMA'] = datetime.datetime(year, month, 1).strftime('%b\'%y')
+    nw = NonWarrantyCount.objects.filter(
+        as_of_date__lt=datetime.datetime(year, month, last_day),
+        as_of_date__gte=datetime.datetime(year, month, 1))
+    if nw.count():
+        r_dict['Non_Warranty'] = nw[0].count
+    else:
+        r_dict['Non_Warranty'] = 0
+    crma = CustomerMeterTrack.objects.filter(
+        rma__create_date__gte=datetime.datetime(year, month, 1),
+        rma__create_date__lt=datetime.datetime(year, month, last_day)).count()
+    r_dict['Meters_RMA_to_Elster'] = crma
+    r_dict['Total_Meters_Removed'] = r_dict['Meters_RMA_to_Elster'] - r_dict['Non_Warranty']
+    r_dict['Total_Removed_Rate'] = "{0:.3f}%".format(float(r_dict['Total_Meters_Removed']) / r_dict['Total_Installed_Meters'] *100.0)
+    emt = ElsterMeterTrack.objects.filter(
+        rma__create_date__gte=datetime.datetime(year, month, 1),
+        rma__create_date__lt=datetime.datetime(year, month, last_day))
+    r_dict['U6_Failure'] = emt.filter(defect__description__icontains='U6').count()
+    r_dict['Other_Failures'] = emt.count() - r_dict['U6_Failure']
+    r_dict['No_Problem_Found'] = emt.filter(defect__defect_id__in=(58,397)).count()
+    r_dict['In_Process'] = r_dict['Meters_RMA_to_Elster'] - r_dict['U6_Failure'] - r_dict['No_Problem_Found'] - emt.filter(defect__description__icontains='recall').count()
+    r_dict['Total_Failures'] = r_dict['U6_Failure'] + r_dict['Other_Failures'] + r_dict['No_Problem_Found'] + r_dict['In_Process']
+    r_dict['Recall'] =  emt.filter(defect__description__icontains='recall').count()
+    r_dict['Total_RMA'] = r_dict['Meters_RMA_to_Elster']
+    r_dict['U6_Rate'] = "{0:.3f}%".format(float(r_dict['U6_Failure']) / r_dict['Total_Installed_Meters'] * 100.0)
+    r_dict['Other_Rate'] = "{0:.3f}%".format(float(r_dict['Other_Failures']) / r_dict['Total_Installed_Meters'] * 100.0)
+    r_dict['No_Problem_Found_Rate'] = "{0:.3f}%".format(float(r_dict['No_Problem_Found']) / r_dict['Total_Installed_Meters'] * 100.0)
+    r_dict['Total_Failure_Rate'] = "{0:.3f}%".format(float(r_dict['Total_Failures']) / r_dict['Total_Installed_Meters'] * 100.0)
+    r_dict['Recall_Rate'] = "{0:.3f}%".format(float(r_dict['Recall']) / r_dict['Total_Installed_Meters'] * 100.0)
+    r_dict['Total_RMA_Rate'] = "{0:.3f}%".format(float(r_dict['Total_RMA']) / r_dict['Total_Installed_Meters'] * 100.0)
+
+    return r_dict
+    
+def __yearly_summary(year):
+    y_dict = OrderedDict()
+    for month in range(1,13):
+        y_dict[month] = __monthly_summary(year, month)
+    return y_dict
+    
+def __rma_summary(data):
+    if not ElsterMeterTrack.objects.filter(
+        rma__create_date__gte=datetime.datetime(datetime.datetime.now().year, 1,1), 
+        rma__complete_date__gte=datetime.datetime(datetime.datetime.now().year, 1,1)).count():
+        data['summary_this_year'] = datetime.datetime.now().year -1
+        data['summary_this_month'] = 12
+    else:
+        data['summary_this_year'] = datetime.datetime.now().year
+        data['summary_this_month'] = datetime.datetime.now().month 
+    data['summary_previous_year'] = data['summary_this_year'] -1
+    
+    data['summary_header_fields'] = ['Total Installed Meters', 'Month Year of RMA', 'Non Warranty',
+        'Meters RMA\'d to Elster', 'Total Meters Removed', 'Total Removed Rate', 'U6 Failure', 'Other Problems', 'No Problem Found',
+        'In Process', 'Total Failures', 'Recall', 'Total RMA', 'U6 Rate', 'Other Rate', 'No Problem Found Rate',
+        'Total Failure Rate', 'Recall Rate', 'Total RMA Rate']
+    data['summary_this_year_data'] = __yearly_summary(data['summary_this_year'])
+    data['summary_previous_year_data'] = __yearly_summary(data['summary_previous_year'])
+    
+@login_required
+def rma_summary_to_csv(request):
+    template = '/rma_summary/'
+    
+    data = {}
+    try:
+        __rma_summary(data)
+    except Exception as err:
+        print("oops: {}".format(err))
+        messages.error(request, 'Error rendering summary report {}'.format(err) )
+        return HttpResponseRedirect(template)
+
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="elster_top_5_all_time.csv"'
+    
+    writer = csv.writer(response)
+        
+    try:
+        response.write(u'\ufeff'.encode('utf8')) # BOM (optional...Excel needs it to open UTF-8 file properly)
+        #header
+        header = []
+        for field in data['summary_header_fields']:
+            header.append(smart_str(field))
+        writer.writerow(header)
+        
+        for month in data['summary_previous_year_data'].values():
+            row = []
+            for value in month.values():
+                row.append(smart_str(value))
+            writer.writerow(row)
+        for month in data['summary_this_year_data'].values():
+            row = []
+            for value in month.values():
+                row.append(smart_str(value))
+            writer.writerow(row)
+
+    except Exception as err:
+        messages.error(request, 'Error %s building download'%err )
+        return HttpResponseRedirect(template)
+    print("about to return response from rma_summary_to_csv")
+    return response

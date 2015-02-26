@@ -80,6 +80,31 @@ class ElsterMeterCount(models.Model):
     meter_count = models.PositiveIntegerField(verbose_name="Meter Count")
     as_of_date = models.DateField(default=datetime.date.today)
     
+class NonWarrantyCount(models.Model):
+    def __unicode__(self):
+        return ("%d as of %s"%(self.count, self.as_of_date))
+    class Meta:
+        ordering = ["-as_of_date"]
+        
+    count = models.PositiveIntegerField(verbose_name="Count of Non-Warranty removals")
+    as_of_date = models.DateField(default=datetime.date.today, unique=True)
+
+    def clean(self):
+        existing = NonWarrantyCount.objects.filter(
+            as_of_date__gte=datetime.datetime(self.as_of_date.year, self.as_of_date.month, 1),
+            as_of_date__lte=datetime.datetime(self.as_of_date.year, self.as_of_date.month, 28))
+        if existing.count():
+            raise ValidationError('Only one entry per month allowed')
+            
+    def year_month(self):
+        return self.as_of_date.year, self.as_of_date.month
+        
+    @property
+    def as_of_year_month(self):
+        year, month = self.year_month()
+        return "{} / {}".format(year, month)
+        
+    
 class ElsterRma(models.Model):
     def __unicode__(self):
         return self.number
@@ -353,7 +378,7 @@ class CustomerMeterTrack(models.Model):
             except:
                 return value
         return value
-        
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User, related_name='profile')
 
@@ -401,6 +426,9 @@ class Account(models.Model):
 class DataReport(models.Model):
     def __unicode__(self):
         return self.name
+    class Meta:
+        ordering = ["-pk"]
+        
     name = models.CharField(max_length=50)
     description = models.TextField(max_length=500, null=True, blank=True)
     link = models.URLField(verbose_name="URL for Report")

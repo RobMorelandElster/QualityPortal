@@ -43,6 +43,9 @@ urlpatterns += patterns('',
 	url(r'^choose_elster_rma/$', 'portal.views.choose_elster_rma', name='choose_elster_rma'),
 	url(r'^data_reports/$', 'portal.views.data_reports', name='data_reports'),
 	url(r'^run_one_report/(?P<report_id>\S+)/$', 'portal.views.run_one_report', name='run_one_report'),
+	url(r'^rma_summary/$', 'portal.views.rma_summary', name='rma_summary'),
+	url(r'^rma_summary_to_csv/$', views.rma_summary_to_csv, name='rma_summary_to_csv'),
+
 )
 	
 urlpatterns += patterns('',

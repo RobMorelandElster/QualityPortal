@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+
+{# Load CSS and JavaScript #}
+
+{% bootstrap_css %}
+
+{% bootstrap_javascript %}
+
+{% bootstrap_messages %}
+
+{% block title %}Reports{% endblock %}
+
+{% block toggle_login %}{% endblock %}
+
+{% block heading %}
+Reports
+{% endblock %}
+
+{% block content %}
+	{% load breadcrumbs %}
+	{% block breadcrumbs %}
+	{% breadcrumb_style_open %}
+		{% breadcrumb_url 'Home' 'index' %}
+		{% breadcrumb "Summary" "#" %}
+	{% breadcrumb_style_close %}
+	{% endblock %}
+
+<!-- Navigation -->
+{% include 'navbar.html' %}
+
+<style><link rel="stylesheet" 
+href="{{STATIC_URL}}css/jquery.dataTables.min.css"></style>
+<script type="text/javascript" 
+src="{{STATIC_URL}}/js/jquery.dataTables.min.js"></script>
+
+<div class="table-container condensed_content" style="background-color:white;border-radius:.5em; margin-bottom:1em; margin:1em auto 1em auto; color: black; " >
+		<div style="height: 1em; "></div>
+                <h1 class="text-center">RMA Summary for {{summary_previous_year}} and {{summary_this_year}}</h1> 
+                <a href="{% url 'rma_summary_to_csv' %}"
+                    <button type="button" class="btn btn-default pull-right">
+                    <i class="fa fa-download"> Download </i>
+                    </button>
+                </a>
+                    <table id="stable" class="table table-striped table-hover" >
+                    <thead>
+                    <tr  class="success">
+                    {% for field in summary_header_fields %}
+                        <th>{{field}}</th>
+                    {% endfor %}
+                    </thead>
+                    <tbody>
+                    {% for month, value in summary_previous_year_data.items %}
+                        <tr>
+                            {% for key, value in value.items %}
+                                <td >{{value}}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    {% for month, value in summary_this_year_data.items %}
+                        <tr>
+                            {% for key, value in value.items %}
+                                <td >{{value}}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    </table>
+</div>
+<script>
+    $(document).ready(function(){
+        $('#stable').dataTable();
+    });
+</script>
+{% endblock %}
