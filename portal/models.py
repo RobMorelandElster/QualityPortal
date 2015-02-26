@@ -343,7 +343,16 @@ class CustomerMeterTrack(models.Model):
             if self.rma.complete_date:
                 value = self.rma.complete_date
         return value
-     
+        
+    @property
+    def elster_rma_finding(self):
+        value = ''
+        if self.rma and self.meter_barcode:
+            try:
+                value = ElsterMeterTrack.objects.get(rma=self.rma, meter_barcode=self.meter_barcode).defect.description
+            except:
+                return value
+        return value
         
 class UserProfile(models.Model):
     user = models.OneToOneField(User, related_name='profile')

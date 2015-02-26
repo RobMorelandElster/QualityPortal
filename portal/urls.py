@@ -61,6 +61,8 @@ router.register(r'groups', views.GroupViewSet)
 router.register(r'meter_count', views.ElsterMeterCountViewSet)
 router.register(r'defect_types', views.ElsterRmaDefectViewSet)
 router.register(r'elster_rmas', views.ElsterMeterTrackViewSet)
+router.register(r'shipment', views.ShipmentViewSet)
+router.register(r'rma', views.ElsterRmaViewSet)
 
 
 # Wire up our API using automatic URL routing.

@@ -39,6 +39,7 @@ class CustomerMeterTrackTable(tables.Table):
 	meter_barcode = tables.Column(accessor = 'meter_barcode')
 	elster_meter_serial_number = tables.Column(accessor = 'elster_meter_serial_number', verbose_name='Meter Number')
 	rma_number = tables.Column(accessor = 'rma__number')
+	elster_rma_finding = tables.Column(accessor = 'elster_rma_finding')
 	class Meta:
 		model = CustomerMeterTrack
 		# add class="paleblue" to <table> tag

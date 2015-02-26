@@ -132,9 +132,23 @@ class ElsterRmaDefectViewSet(viewsets.ModelViewSet):
     queryset = ElsterRmaDefect.objects.all()
     serializer_class = ElsterRmaDefectSerializer
 
+class ElsterRmaViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = ElsterRma.objects.all()
+    serializer_class = ElsterRmaSerializer
+
 class ElsterMeterTrackViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
     """
     queryset = ElsterMeterTrack.objects.all()
     serializer_class = ElsterMeterTrackSerializer
+
+class ShipmentViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = Shipment.objects.all()
+    serializer_class = ShipmentSerializer
