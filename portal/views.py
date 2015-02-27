@@ -849,7 +849,6 @@ def run_one_report(request, report_id):
     data = {}
     try:
         report = DataReport.objects.get(pk=report_id)
-        print("Getting Report {}".format(report))
         response=urlopen("{}.json".format(report.link))
         result = response.read()
         if len(result):
@@ -958,7 +957,7 @@ def rma_summary_to_csv(request):
 
     # Create the HttpResponse object with the appropriate CSV header.
     response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="elster_top_5_all_time.csv"'
+    response['Content-Disposition'] = 'attachment; filename="rma-summary.csv"'
     
     writer = csv.writer(response)
         
