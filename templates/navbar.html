@@ -28,7 +28,8 @@
 		<li class="dropdown">
 			<a href="#" data-toggle="dropdown" id="dropdownMenu2" class="dropdown-toggle"><i class="fa fa-medkit fa-fw"></i>Quality<b class="caret"></b></a>
 			<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2">
-				<li class=""><a href="{% url 'rma_summary' %}"><i class="fa fa-table fa-fw"></i>RMA Summary</a></li>
+				<li class=""><a href="{% url 'rma_summary' %}"><i class="fa fa-table fa-fw"></i>RMA Monthly Summary</a></li>
+				<li class=""><a href="{% url 'rma_yearly_summary' %}"><i class="fa fa-table fa-fw"></i>Yearly RMA Summary</a></li>
 				<li class=""><a href="{% url 'elster_top_five' %}"><i class="fa fa-bomb fa-fw"></i>Top 5 RMA Root Causes</a></li>
 				<li class=""><a href="{% url 'elster_top_five_graph' %}"><i class="fa fa-bar-chart fa-fw"></i>Top 5 RMA Root Cause Analysis</a></li>
 				<li class=""><a href="{% url 'data_reports' %}"><i class="fa fa-table fa-fw"></i>Custom Reports</a></li>

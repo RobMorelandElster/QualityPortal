@@ -76,21 +76,24 @@ class ElsterRmaDefect(models.Model):
 class ElsterMeterCount(models.Model):
     def __unicode__(self):
         return ("%d as of %s"%(self.meter_count, self.as_of_date))
-
-    meter_count = models.PositiveIntegerField(verbose_name="Meter Count")
-    as_of_date = models.DateField(default=datetime.date.today)
-    
-class NonWarrantyCount(models.Model):
-    def __unicode__(self):
-        return ("%d as of %s"%(self.count, self.as_of_date))
     class Meta:
         ordering = ["-as_of_date"]
         
-    count = models.PositiveIntegerField(verbose_name="Count of Non-Warranty removals")
+    meter_count = models.PositiveIntegerField(verbose_name="Meter Count")
+    as_of_date = models.DateField(default=datetime.date.today)
+    
+class RemovalCount(models.Model):
+    def __unicode__(self):
+        return ("Warranty Removals:{}, Non-Warranty Removals:{} as of {}".format(self.warranty_removal_count, self.non_warranty_removal_count, self.as_of_date))
+    class Meta:
+        ordering = ["-as_of_date"]
+        
+    warranty_removal_count = models.PositiveIntegerField(verbose_name="Count of Warranty removals")
+    non_warranty_removal_count = models.PositiveIntegerField(verbose_name="Count of Warranty removals")
     as_of_date = models.DateField(default=datetime.date.today, unique=True)
 
     def clean(self):
-        existing = NonWarrantyCount.objects.filter(
+        existing = RemovalCount.objects.filter(
             as_of_date__gte=datetime.datetime(self.as_of_date.year, self.as_of_date.month, 1),
             as_of_date__lte=datetime.datetime(self.as_of_date.year, self.as_of_date.month, 28))
         if existing.count():
@@ -103,8 +106,7 @@ class NonWarrantyCount(models.Model):
     def as_of_year_month(self):
         year, month = self.year_month()
         return "{} / {}".format(year, month)
-        
-    
+
 class ElsterRma(models.Model):
     def __unicode__(self):
         return self.number
@@ -112,10 +114,10 @@ class ElsterRma(models.Model):
         ordering = ["create_date"]
         verbose_name = 'RMA'
         verbose_name_plural = 'RMA\'s'
-    number = models.CharField(max_length=100, unique=True, verbose_name="Elster RMA Number")
-    create_date = models.DateField(null=True, blank=True)
-    receive_date = models.DateField(null=True, blank=True)
-    complete_date = models.DateField(null=True, blank=True)
+    number = models.CharField(max_length=100, unique=True, verbose_name="Elster RMA Number", db_index=True)
+    create_date = models.DateField(null=True, blank=True, db_index=True)
+    receive_date = models.DateField(null=True, blank=True, db_index=True)
+    complete_date = models.DateField(null=True, blank=True, db_index=True)
     
     @property
     def elster_meter_count(self):

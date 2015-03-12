@@ -36,12 +36,7 @@ src="{{STATIC_URL}}/js/jquery.dataTables.min.js"></script>
 
 <div class="condensed_content" style="overflow: auto;background-color:white;border-radius:.5em; margin-bottom:1em; margin:1em auto 1em auto; color: black; " >
 		<div style="height: 0.9em; "></div>
-                <h1 class="text-center">RMA Summary for {{summary_previous_year}} and {{summary_this_year}}</h1> 
-                <a href="{% url 'rma_summary_to_csv' %}"
-                    <button type="button" class="btn btn-default pull-right">
-                    <i class="fa fa-download"> Download </i>
-                    </button>
-                </a>
+                <h1 class="text-center">RMA Yearly Summary</h1> 
                     <table id="stable" class="table table-striped table-hover" >
                     <thead>
                     <tr  class="success">
@@ -54,14 +49,7 @@ src="{{STATIC_URL}}/js/jquery.dataTables.min.js"></script>
                     {% endfor %}
                     </thead>
                     <tbody>
-                    {% for month, value in summary_previous_year_data.items %}
-                        <tr>
-                            {% for key, value in value.items %}
-                                <td >{{value}}</td>
-                            {% endfor %}
-                        </tr>
-                    {% endfor %}
-                    {% for month, value in summary_this_year_data.items %}
+                    {% for year, value in yearly_summary.items %}
                         <tr>
                             {% for key, value in value.items %}
                                 <td >{{value}}</td>
@@ -80,6 +68,8 @@ src="{{STATIC_URL}}/js/jquery.dataTables.min.js"></script>
     </div>
 </div>
 </div>
+
+{{yearly_summary}}
 
 <script>
     $(document).ready(function(){

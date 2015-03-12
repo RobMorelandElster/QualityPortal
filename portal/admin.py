@@ -357,9 +357,9 @@ class ElsterRmaAdmin(admin.ModelAdmin):
 class DataReportAdmin(admin.ModelAdmin):
     fields=[]
 
-class NonWarrantyCountAdmin(admin.ModelAdmin):
+class RemovalCountAdmin(admin.ModelAdmin):
     fields=[]
-    list_display = ['as_of_year_month', 'count']
+    list_display = ['as_of_year_month', 'non_warranty_removal_count', 'warranty_removal_count']
     
 admin.site.register(ElsterMeterTrack, ElsterMeterTrackAdmin)
 admin.site.register(CustomerMeterTrack, CustomerMeterTrackAdmin)
@@ -370,4 +370,4 @@ admin.site.register(ElsterMeterCount, ElsterMeterCountAdmin)
 admin.site.register(ElsterRma, ElsterRmaAdmin)
 admin.site.register(Shipment, ShipmentAdmin)
 admin.site.register(DataReport, DataReportAdmin)
-admin.site.register(NonWarrantyCount, NonWarrantyCountAdmin)
+admin.site.register(RemovalCount, RemovalCountAdmin)
