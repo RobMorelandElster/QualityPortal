@@ -89,7 +89,7 @@ class RemovalCount(models.Model):
         ordering = ["-as_of_date"]
         
     warranty_removal_count = models.PositiveIntegerField(verbose_name="Count of Warranty removals")
-    non_warranty_removal_count = models.PositiveIntegerField(verbose_name="Count of Warranty removals")
+    non_warranty_removal_count = models.PositiveIntegerField(verbose_name="Count of Non Warranty removals")
     as_of_date = models.DateField(default=datetime.date.today, unique=True)
 
     def clean(self):
