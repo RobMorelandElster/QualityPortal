@@ -171,8 +171,8 @@ class TestPortal(TestCase):
         # Now that the user is logged in we should be able to run the top_five report
         response = self.client.get(reverse('index'))
         self.assertEquals(response.status_code,200)
-        print(response.context[-1]['all_time_failure_count'])
-
+        #print(response.context[-1]['all_time_failure_count'])
+        print('Defect counts:{}'.format(response.context[-1]['defect_counts']))
 
 class TestImports(TestCase):
 

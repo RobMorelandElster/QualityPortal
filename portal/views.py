@@ -58,8 +58,7 @@ def __elster_defect_trending(request, data):
     t_defects = {}
     # Top defects 'all time'
     try:
-        # Find latest defects for the past six months
-        one_year = 56 #weeks
+        one_year = 52 #weeks
         month = 4 #weeks
         
         latest = ElsterMeterTrack.objects.all().order_by('rma__create_date').last()
